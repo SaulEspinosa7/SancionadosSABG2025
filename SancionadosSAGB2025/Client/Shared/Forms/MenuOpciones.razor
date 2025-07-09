@@ -1,0 +1,18 @@
+﻿@inject NavigationManager Navigation
+
+
+@foreach (var modulo in Modulos)
+{
+    <MudMenu FullWidth="false" ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        <ActivatorContent>
+            <MudChip T="string" Icon="@GetIcon(modulo.IconModulo)" Color="Color.Dark">@modulo.NombreModulo</MudChip>
+        </ActivatorContent>
+        <ChildContent>
+            @foreach (var subModulo in modulo.SubModulos)
+            {
+                <MudMenuItem OnClick="@(() => Dirreccionar(@subModulo.UrlSubModulo))">@subModulo.NombreSubModulo </MudMenuItem>
+            }
+         
+        </ChildContent>
+    </MudMenu>
+}

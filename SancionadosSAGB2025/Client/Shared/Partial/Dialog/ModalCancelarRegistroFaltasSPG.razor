@@ -1,0 +1,98 @@
+﻿<MudDialog Class="blur rounded-xl shadow-xl"
+           TitleClass="dialog-title"
+           ContentClass="dialog-content p-6"
+           ActionsClass="dialog-actions px-6 pb-4 pt-2 d-flex justify-between flex-wrap gap-2">
+
+    <DialogContent>
+        <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-2">
+            ¿Deseas cancelar el registro?
+        </MudText>
+
+        <MudDivider Class="my-2" />
+
+        <MudText Typo="Typo.body1" Align="Align.Center">
+            <span class="fw-bold text-danger">Sí:</span> Esta opción elimina por completo cualquier información previamente guardada.
+        </MudText>
+        <MudText Typo="Typo.body1" Align="Align.Center" Class="mt-2">
+            <span class="fw-bold text-success">No:</span> Mantiene toda la información registrada hasta el momento.
+        </MudText>
+        <MudDivider Class="my-2" />
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Error" Variant="Variant.Text" OnClick="Cancel" StartIcon="@Icons.Material.Filled.Close">
+            Cancelar
+        </MudButton>
+        <div class="d-flex gap-2">
+            <MudButton Color="Color.Dark" Variant="Variant.Outlined" OnClick="() => MudDialog.Close(DialogResult.Ok(false))" EndIcon="@Icons.Material.Filled.DoNotDisturb">
+                No
+            </MudButton>
+            <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="() => MudDialog.Close(DialogResult.Ok(true))" EndIcon="@Icons.Material.Filled.CheckCircle">
+                Sí
+            </MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+
+
+<style>
+    .blur {
+        backdrop-filter: blur(12px);
+    }
+
+    .dialog-title {
+        background: var(--main-color-general);
+        color: white;
+        padding: 1rem;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+
+    .dialog-content {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+    }
+
+    .dialog-actions {
+        background-color: rgba(250, 250, 250, 0.9);
+    }
+
+    .rounded-xl {
+        border-radius: 1rem;
+    }
+
+    .shadow-xl {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+
+    .text-danger {
+        color: var(--mud-palette-error);
+    }
+
+    .text-success {
+        color: var(--mud-palette-success);
+    }
+</style>
+
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

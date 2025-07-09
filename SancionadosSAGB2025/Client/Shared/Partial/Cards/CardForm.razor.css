@@ -1,0 +1,19 @@
+﻿.CardStylerFirts, .CardStylerSecond {
+    width: 7rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -9rem;
+    margin: 2rem 0rem;
+    animation: CardStyler .45s ease forwards;
+}
+
+.CardStylerFirts {
+    background-color: var(--main-color-general);
+}
+
+@keyframes CardStyler {
+    to {
+        left: -5.5rem;
+    }
+}

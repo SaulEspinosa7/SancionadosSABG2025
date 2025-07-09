@@ -1,0 +1,20 @@
+﻿<MudAppBar Color="Color.Dark" Elevation="4" Fixed="false">
+    <MudImage Src="img/logo_PUEBLA_GOB_2025_TOP_RL.svg" Alt="Mony the dog" Elevation="25" Class="rounded-lg" Style="width:150px;" />
+    <MudSpacer />
+    <MenuOpciones/>
+    <MudSpacer />
+    @*   @if (InformacionPerfilBD is not null)
+                {
+                    <MenuOpciones InformacionPerfilBD="InformacionPerfilBD" />
+                    <MudSpacer />
+                    @if (InformacionPerfilBD.Notificaciones is not null) 
+                    {
+                        @if (InformacionPerfilBD.Notificaciones.Count() > 0) 
+                        {
+                            <MenuNotificaciones InformacionPerfilBD="InformacionPerfilBD" />
+                        }
+                    }               
+                    <MenuPerfil UsuarioNombre="@InformacionPerfilBD!.NombreUsuario" />
+                }             *@
+    <MenuPerfil  />
+</MudAppBar>

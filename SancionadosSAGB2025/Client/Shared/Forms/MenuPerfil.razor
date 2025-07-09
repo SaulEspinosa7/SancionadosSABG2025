@@ -1,0 +1,12 @@
+﻿@* @inject ILocalStorageService localStorage; *@
+@inject NavigationManager Navigation;
+
+<MudMenu FullWidth="true" ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <ActivatorContent>
+        <MudChip T="string" Icon="@Icons.Material.Filled.PersonPin" Color="Color.Dark">@UsuarioNombre</MudChip>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem Icon="@Icons.Material.Filled.Person" IconColor="Color.Info" OnClick="ConsultarIdUsuario">Perfil</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="CerrarSesion">Cerrar sesión</MudMenuItem>
+    </ChildContent>
+</MudMenu>

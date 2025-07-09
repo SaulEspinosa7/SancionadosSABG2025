@@ -1,0 +1,42 @@
+﻿<MudCard Class="position-relative overflow-hidden shadow-lg mb-5">
+    @if (BorderActive)
+    {
+        <div class="CardStylerFirts"></div>
+    }
+    @if (Header is not null)
+    {
+        <MudCardHeader Class="ps-5 pb-0 pt-4">
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@Header</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+    }
+    @if (Content is not null)
+    {
+        <MudCardContent Class="ps-5 pb-4" Style="background-color:#FAFAFA">
+            @Content
+        </MudCardContent>
+    }
+    @if (Actions is not null)
+    {
+        <MudCardActions Class="ps-5 pb-4">
+            @Actions
+        </MudCardActions>
+    }
+
+    <MudOverlay Visible="@Progress" LightBackground="true" DarkBackground="true" Absolute="true">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    </MudOverlay>
+
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public bool Progress { set; get; }
+    [Parameter] public bool BorderActive { set; get; } = true;
+    [Parameter] public RenderFragment? Header { set; get; }
+    [Parameter] public RenderFragment? HeaderActions { set; get; }
+    [Parameter] public RenderFragment? Content { set; get; }
+    [Parameter] public RenderFragment? Actions { set; get; }
+}

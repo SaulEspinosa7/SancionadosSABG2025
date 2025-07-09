@@ -1,0 +1,65 @@
+﻿<MudDialog Class="blur rounded-xl shadow-lg"
+           TitleClass="dialog-title"
+           ContentClass="dialog-content p-6"
+           ActionsClass="dialog-actions px-6 pb-4 pt-2 d-flex justify-end gap-2">
+
+    <DialogContent>
+        <MudText Typo="Typo.h6" Align="Align.Center">
+            <b>¿Confirmas que la información ingresada es correcta y deseas guardarla?</b>
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" StartIcon="@Icons.Material.Filled.Cancel">
+            Cancelar
+        </MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit" EndIcon="@Icons.Material.Filled.CheckCircle">
+            Guardar
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+<style>
+    .blur {
+        backdrop-filter: blur(12px);
+    }
+
+    .dialog-title {
+        background: var(--main-color-general); /* Azul transparente */
+        color: white;
+        padding: 1rem;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+    }
+
+    .dialog-content {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .dialog-actions {
+        background-color: rgba(245, 245, 245, 0.8);
+    }
+
+    .rounded-xl {
+        border-radius: 1rem;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+</style>
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

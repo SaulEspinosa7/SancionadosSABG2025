@@ -1,0 +1,24 @@
+﻿@inject NavigationManager Navigation
+
+@if (loading)
+{
+    <div class="d-flex justify-content-center align-items-center" style="height:100vh">
+        <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+    </div>
+}
+else
+{
+    <div class="content_form">
+        <header>
+          <AppBar/>
+        </header>
+        <br />
+        <main class="container" style="width:80vw;margin: 0 auto; min-height:29vw;">
+            @Main
+        </main>   
+        <br />        
+            <Footer>
+               
+            </Footer>     
+    </div>
+}

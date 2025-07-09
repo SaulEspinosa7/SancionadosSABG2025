@@ -1,0 +1,36 @@
+﻿::deep .mud-input-root {
+    text-transform: uppercase !important;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 9;
+}
+
+main {
+    padding-top: 13rem;
+    padding-bottom: 9rem;
+}
+
+#header {
+    background: #A2A2A2;
+}
+
+#escudo {
+    background: #E5E0DA;
+    color: #aeaba2;
+}
+
+#informacion {
+    background: #E0DACE;
+    color: #aeaba2;
+}
+
+a {
+    text-decoration: none;
+    opacity: 75%;
+    color: #aeaba2;
+}

@@ -1,0 +1,137 @@
+﻿@page "/"
+@using SancionadosSAGB2025.Shared.Login
+@using MudBlazor
+@using MudBlazor.Components
+@using SancionadosSAGB2025.Client.Services;
+@inject AuthService AuthService
+
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f5f5f5;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .login-container-card {
+        display: flex;
+        flex-direction: row;
+        max-width: 900px;
+        width: 100%;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .logo-section {
+        flex: 1;
+        background-color: var(--main-color-general);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+        .logo-section img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .form-section {
+        flex: 1;
+        padding: 40px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .login-title {
+        color: var(--main-color-general);
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    .loading-text {
+        color: var(--main-color-general);
+        margin-top: 20px;
+    }
+
+    .loading-subtext {
+        color: var(--main-color-general);
+        margin-bottom: 20px;
+        opacity: 0.8;
+    }
+</style>
+
+<div class="login-wrapper">
+    <MudPaper Class="login-container-card">
+        <!-- Imagen -->
+        <div class="logo-section">
+            <img src="img/puebla_gob_imagen_2025.svg" alt="Logo Puebla Gobierno" class="rounded-lg" />
+        </div>
+
+        <!-- Formulario -->
+        <div class="form-section">
+            @if (!MostrarSpinner)
+            {
+                <MudText Align="Align.Center" Typo="Typo.h4" >
+                    Servidores Públicos y Particulares Sancionados
+                </MudText>
+                <MudText Align="Align.Center" Typo="Typo.h6" Class="login-title">
+                    Iniciar Sesión
+                </MudText>
+
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                    <MudTextField Label="Usuario" HelperText="Escribe tu Usuario" Required="true" RequiredError="El usuario es requerido"
+                                  @bind-Value="loginModel.User" For="@(() => loginModel.User)"
+                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person"
+                                  Variant="Variant.Outlined" Class="mb-4" />
+
+                    <MudTextField Label="Contraseña" HelperText="Escribe tu password" Required="true" RequiredError="La contraseña es requerida"
+                                  @bind-Value="loginModel.Password" For="@(() => loginModel.Password)"
+                                  InputType="@(showPassword? InputType.Text: InputType.Password)"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@(showPassword? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
+                                  OnAdornmentClick="TogglePasswordVisibility"
+                                  Variant="Variant.Outlined" Class="mb-6" />
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="Submit"
+                               Style="background-color:var(--main-color-general); color:white;">
+                        @if (isSubmitting)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Secondary" />
+                            <MudText Class="ms-2">Ingresando...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Ingresar</MudText>
+                        }
+                    </MudButton>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <MudText Color="Color.Error" Align="Align.Center" Class="mt-3">@errorMessage</MudText>
+                    }
+                </MudForm>
+
+                <MudText Align="Align.Center" Typo="Typo.subtitle2" Class="login-title mt-4">
+                    v03.07
+                </MudText>
+            }
+            else
+            {
+                <MudText Align="Align.Center" Typo="Typo.h5" Class="loading-text">
+                    Cargando Información
+                </MudText>
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                <MudText Align="Align.Center" Typo="Typo.body1" Class="loading-subtext">
+                    Espere un momento por favor...
+                </MudText>
+            }
+        </div>
+    </MudPaper>
+</div>
