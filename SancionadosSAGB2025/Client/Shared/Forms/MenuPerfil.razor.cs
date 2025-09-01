@@ -8,7 +8,7 @@ namespace SancionadosSAGB2025.Client.Shared.Forms
 
 		private async Task CerrarSesion()
 		{
-			///await Auth.LogoutAsync();
+			await Auth.LogoutAsync();
 		}
 
 		private async Task ConsultarIdUsuario()

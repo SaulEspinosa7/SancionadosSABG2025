@@ -1,0 +1,22 @@
+﻿@* @page "/VerServidoresPúblicosG/{id:int}"; *@
+@using Microsoft.AspNetCore.Components.Forms
+@using SancionadosSAGB2025.Client.Services
+@using SancionadosSAGB2025.Shared.Sanciones
+
+<SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+    <Main>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm BorderActive="true">
+            <Content>
+                <MudText Typo="Typo.h5" Style="color:var(--main-color-general);">
+                    Modificar Faltas de <b>Servidores Públicos Graves</b>
+                </MudText>
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+            <Content>
+                <SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Components.FormAgregarFaltasServidoresPG FaltasDeServidoresPublicosG="_faltasDeServidoresPublicosG" IsEditMode="3" />
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+    </Main>
+</SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+

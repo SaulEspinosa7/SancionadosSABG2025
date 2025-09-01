@@ -1,0 +1,19 @@
+﻿@page "/AgregarFaltasGravesPersonasMorales";
+@using Microsoft.AspNetCore.Components.Forms
+
+<SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+    <Main>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm BorderActive="true">
+            <Content>
+                <MudText Typo="Typo.h5" Color="Color.Primary">
+                    Registro de Faltas <b>Graves Personas Morales</b>
+                </MudText>
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+            <Content>
+                <FormFaltasGPM />
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+    </Main>
+</SancionadosSAGB2025.Client.Shared.Forms.MainForm>

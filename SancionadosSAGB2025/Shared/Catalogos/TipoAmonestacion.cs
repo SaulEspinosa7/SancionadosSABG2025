@@ -8,7 +8,7 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 {
 	public class TipoAmonestacion
 	{
-		public int IdTipoAmonestacion { set; get; }
+		public int? IdTipoAmonestacion { set; get; }
 		public string Descripcion { get; set; } = string.Empty;
 		public DateTime FechaCreacion { get; set; }
 		public DateTime FechaModificacion { get; set; }

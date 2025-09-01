@@ -11,17 +11,13 @@ namespace SancionadosSAGB2025.Client.Services
 	public class FaltasSPGService : IFaltasSPG
 	{
 		private readonly HttpClient _http;
-		private readonly Blazored.LocalStorage.ILocalStorageService _localStorage;
-		private readonly NavigationManager _navigation;
 
-		public FaltasSPGService(HttpClient http, Blazored.LocalStorage.ILocalStorageService localStorage, NavigationManager navigation)
+		public FaltasSPGService(HttpClient http)
 		{
 			_http = http;
-			_localStorage = localStorage;
-			_navigation = navigation;
 		}
 
-		public async Task<RespondeUpdateFaltas> ActualizarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
+		public async Task<RespuestaRegistro> ActualizarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
 		{
 			try
 			{
@@ -30,7 +26,7 @@ namespace SancionadosSAGB2025.Client.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<RespondeUpdateFaltas>();
+				var result = await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
 
 				return result;
 			}
@@ -51,6 +47,18 @@ namespace SancionadosSAGB2025.Client.Services
 
 			var result = await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
 			
+			return result;
+		}
+
+		public async Task<List<AddFaltasDeServidoresPublicosG>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
+		{
+			var response = await _http.PostAsJsonAsync("api/FaltasServidoresPublicosG/ObtenerFaltasSPG",searchFaltasDeServidoresPublicosG);
+
+			if (!response.IsSuccessStatusCode)
+				return null;
+
+			var result = await response.Content.ReadFromJsonAsync<List<AddFaltasDeServidoresPublicosG>>();
+
 			return result;
 		}
 	}

@@ -5,7 +5,7 @@
 {
     <MudMenu FullWidth="false" ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
         <ActivatorContent>
-            <MudChip T="string" Icon="@GetIcon(modulo.IconModulo)" Color="Color.Dark">@modulo.NombreModulo</MudChip>
+            <MudChip T="string" Icon="@GetIcon(modulo.IconModulo)" Style="background-color:var(--main-color-general); color:white;">@modulo.NombreModulo</MudChip>
         </ActivatorContent>
         <ChildContent>
             @foreach (var subModulo in modulo.SubModulos)

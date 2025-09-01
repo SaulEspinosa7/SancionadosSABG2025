@@ -1,4 +1,5 @@
-﻿using SancionadosSAGB2025.Shared.Sanciones;
+﻿using SancionadosSAGB2025.Shared.Moral;
+using SancionadosSAGB2025.Shared.Sanciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -139,17 +140,33 @@ namespace SancionadosSAGB2025.Shared.Registros
 
 	public class RespuestaRegistro
 	{
+		public bool? Response { get; set; }
 		public string? Mensaje { get; set; }
-		public DTORegistroFaltasSPG? Sancion { get; set; }
+		public AddFaltasDeServidoresPublicosG? Data { get; set; }
 	}
 
-	public class RespondeUpdateFaltas
+	public class RespuestaRegistroNoGraves
 	{
+		public bool? Response { get; set; }
 		public string? Mensaje { get; set; }
-		public UpdateFaltasSPG? Sancion { get; set; }
+		public AddFaltasDeServidoresPublicosNoGraves? Data { get; set; }
 	}
 
-	public class DTODatosGenerales
+	public class RespuestaRegistroFaltasGravesPersonasFisicas
+	{
+		public bool? Response { get; set; }
+		public string? Mensaje { get; set; }
+		public AddFaltasGravesPersonasFisicas? Data { get; set; }
+	}
+
+    public class RespuestaRegistroFaltasGravesPersonasMorales
+    {
+        public bool? Response { get; set; }
+        public string? Mensaje { get; set; }
+        public PersonaMoralEntidad? Data { get; set; }
+    }
+
+    public class DTODatosGenerales
 	{
 		[JsonPropertyName("idDatosGenerales")]
 		public int? IdDatosGenerales { set; get; }

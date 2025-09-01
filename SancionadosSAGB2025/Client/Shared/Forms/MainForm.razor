@@ -1,4 +1,7 @@
-﻿@inject NavigationManager Navigation
+﻿@using SancionadosSAGB2025.Client.Services
+@inject NavigationManager Navigation
+@inject AuthService AuthService;
+
 
 @if (loading)
 {
@@ -10,15 +13,14 @@ else
 {
     <div class="content_form">
         <header>
-          <AppBar/>
+          <AppBar InformacionPerfilBD="InformacionPerfilBD"/>
         </header>
         <br />
         <main class="container" style="width:80vw;margin: 0 auto; min-height:29vw;">
             @Main
         </main>   
         <br />        
-            <Footer>
-               
+            <Footer>               
             </Footer>     
     </div>
 }

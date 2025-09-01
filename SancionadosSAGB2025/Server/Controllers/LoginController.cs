@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SancionadosSAGB2025.Server.Services;
 using SancionadosSAGB2025.Shared.Login;
+using SancionadosSAGB2025.Shared.Modulos;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SancionadosSAGB2025.Server.Controllers
 {
@@ -25,6 +28,17 @@ namespace SancionadosSAGB2025.Server.Controllers
 				return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
 			return Ok(new { usuario.Token });
+		}
+
+		[HttpPost("consultarInformacionPerfil")]
+		public async Task<IActionResult> ConsultarInformacionPerfil([FromBody] TokenResponse token)
+		{
+			var usuario = await _loginService.ConsultarInformacionDePerfil(token);
+
+			if (usuario == null)
+				return Unauthorized(new { message = "Hubo un error al consultar la informacion de Perfil" });
+
+			return Ok(new { usuario });
 		}
 	}
 }

@@ -8,10 +8,10 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 {
 	public class EntidadFederativa
 	{
-		public int IdEntidadFederativa { set; get; }
-		public string Descripcion { get; set; } = string.Empty;
-		public DateTime FechaCreacion { get; set; }
-		public DateTime FechaModificacion { get; set; }
-		public int Activo { get; set; }
+		public int? IdEntidadFederativa { set; get; }
+		public string? Descripcion { get; set; } = string.Empty;
+		public DateTime? FechaCreacion { get; set; }
+		public DateTime? FechaModificacion { get; set; }
+		public int? Activo { get; set; }
 	}
 }

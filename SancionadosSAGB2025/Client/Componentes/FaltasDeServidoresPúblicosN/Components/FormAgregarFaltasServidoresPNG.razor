@@ -1,0 +1,1301 @@
+﻿@using SancionadosSAGB2025.Client.Services
+@using SancionadosSAGB2025.Shared.Sanciones;
+@inject ISnackbar Snackbar;
+
+@inject FaltasSPNoGravesService FaltasSPNoGravesService
+@inject AuthService AuthService
+@inject CatalagosServiceClient CatalagosService
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+
+<MudGrid Justify="Justify.FlexEnd">
+    @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+    {
+        @if(FaltasDeServidoresPublicosG.Id is not null)
+        {
+            <MudItem xs="2">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Cancel" OnClick="() => MostrarModalDeCancelarRegistro()" Size="Size.Large">
+                    Cancelar
+                </MudButton>
+            </MudItem>
+        }else
+        {
+            <MudItem>
+                <MudItem xs="3">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Primary" Size="Size.Large" href="ServidoresPúblicosN">Regresar</MudButton>
+                </MudItem>
+            </MudItem>
+        }
+    }else
+    {
+        <MudItem>
+            <MudItem xs="3">
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Primary" Size="Size.Large" href="ServidoresPúblicosN">Regresar</MudButton>
+            </MudItem>
+        </MudItem>
+    }
+  
+</MudGrid>
+<br />
+
+<MudExpansionPanels>
+    <MudExpansionPanel MaxHeight="500" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Fecha))" Style="background-color:#E0E0E0; color:black;" HideIcon="true">
+      <!--Esta sección del Fecha-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>1. FECHA</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Fecha])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudDatePicker Label="Fecha" @bind-Date="FaltasDeServidoresPublicosG.Fecha" required="true" helpertext="Indicar la fecha en la que se registra la información" Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                        @if (FaltasDeServidoresPublicosG.Fecha is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de fecha es obligatorio</MudText>
+                        }
+                    </MudItem>                    
+                </MudGrid>
+                <MudSpacer />
+                @{
+                    _ = ValidarInformacionFecha();
+                }
+                <MudGrid>
+                    <MudItem xs="12" class="d-flex justify-end">
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Fecha])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="Fecha">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel MaxHeight="500" Expanded="@expediente" Style="background-color:#E0E0E0; color:black;" HideIcon="true" Disabled="!expediente">
+        <!--Esta sección del Expdiente-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>2. EXPEDIENTE</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Expediente])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>             
+                    <MudItem xs="6">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.Expediente"
+                                      label="Expediente"
+                                      required="true"
+                                      RequiredError="El campo de expediente es obligatorio"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      helpertext="Registrar el número de expediente en el que recae la resolución." />
+                    </MudItem>
+                </MudGrid>
+                <MudSpacer />
+                @{
+                    _ = ValidarInformacionExpediente();
+                }
+                <MudGrid>
+                    <MudItem xs="12" class="d-flex justify-end">
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Expediente])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Expediente)">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel MaxHeight="500" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales))" Style="background-color:#E0E0E0; color:black;" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales)">
+        <!--Esta sección de Datos Generales-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>3. DATOS GENERALES DE LA PERSONA SERVIDORA PÚBLICA SANCIONADA*</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Warning" Variant="Variant.Filled">
+                            Se deberá escribir el o los nombres, así como los apellidos, sin abreviaturas, sin acentos, ni signos especiales.
+                            En caso de tener sólo un apellido, deberá colocarse en el espacio del primer apellido y dejar el espacio del segundo apellido en blanco
+                        </MudAlert>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.Nombres"
+                                      label="NOMBRE (S)"
+                                      required="true"
+                                      RequiredError="El campo Nombres es obligatorio."
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "nombresInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.PrimerApellido"
+                                      label="PRIMER APELLIDO"
+                                      required="true"
+                                      RequiredError="El campo Primer Apellido es obligatorio."
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "primerApellidoInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.SegundoApellido"
+                                      label="SEGUNDO APELLIDO"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "segundoApellidoInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.Curp"
+                                      label="CURP"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo Curp es obligatorio."
+                                      MaxLength="18"
+                                      helpertext="Escribir los dieciocho caracteres alfanuméricos como aparece en el documento que emite la Secretaría de Gobernación."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "curpInput" })" />
+                        @if (FaltasDeServidoresPublicosG!.DatosGenerales!.Curp is not null && FaltasDeServidoresPublicosG!.DatosGenerales!.Curp.Length != 18)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Curp no es valido.</MudText>
+                        }
+                        @* <MudAlert Severity="Severity.Info" Variant="Variant.Filled"> En caso de no contar con ese dato, podrá consultarlo en la siguiente página: <u>https://www.gob.mx/curp/</u></MudAlert> *@
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.Rfc"
+                                      label="RFC CON HOMOCLAVE"
+                                      required="true"
+                                      MaxLength="13"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo RFC es obligatorio."
+                                      helpertext="Escribir los primeros diez caracteres básicos y los tres correspondientes a la homoclave."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "rfcInput" })" />
+                        @if (FaltasDeServidoresPublicosG!.DatosGenerales!.Rfc is not null && FaltasDeServidoresPublicosG!.DatosGenerales!.Rfc.Length != 13)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Rfc no es valido.</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.Sexo"
+                                   Label="SEXO"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   HelperText="Selecciona la opción que corresponda: HOMBRE, MUJER"
+                                   required="true"
+                                   RequiredError="El campo Sexo obligatorio.">
+                            @foreach (var sexo in Sexos)
+                            {
+                                <MudSelectItem Value="@sexo">@sexo.Descripcion</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.DatosGenerales.Sexo is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Sexo es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionDatosPersonales();
+                }
+                <MudGrid>
+
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales)">
+                                Siguiente
+                            </MudButton>
+                        }
+
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel MaxHeight="1000" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision))" Style="background-color:#E0E0E0; color:black;" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision)">
+        <!--Sección de Cargo comisión-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>4.DATOS DEL EMPLEO, CARGO O COMISIÓN DE LA PERSONA SERVIDORA PÚBLICA SANCIONADA*</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.EntidadFederativa"
+                                   Label="ENTIDAD FEDERATIVA"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   Required="true"
+                                   RequiredError="El campo de Entidad Federativa es obligatorio."
+                                   HelperText="Seleccionar la entidad federativa donde se ubica el Ente público donde labora o laboraba la persona servidora pública sancionada, al momento de cometer la falta administrativa. ">
+                            @foreach (var entidad in EntidadesFederativas)
+                            {
+                                <MudSelectItem Value="@entidad">@entidad.Descripcion</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.EmpleoCargoComision!.EntidadFederativa is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Entidad Federativa es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.NivelOrdenGobierno"
+                                   Label="NIVEL/ORDEN DE GOBIERNO"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   Required="true"
+                                   RequiredError="El campo de Nivel Orden Gobierno es obligatorio."
+                                   HelperText="Seleccionar el nivel u orden de gobierno">
+                            @if (NivelOrdenGobierno is not null)
+                            {
+                                @foreach (var nivel in NivelOrdenGobierno)
+                                {
+                                    <MudSelectItem Value="@nivel">@nivel.Descripcion</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.EmpleoCargoComision!.NivelOrdenGobierno is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Nivel Orden Gobierno es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.AmbitoPublico"
+                                   Label="ÁMBITO PÚBLICO"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   Required="true"
+                                   RequiredError="El campo de Ambito Publico es obligatorio."
+                                   HelperText="Seleccionar el ámbito público">
+                            @foreach (var ambito in AmbitoPublico)
+                            {
+                                <MudSelectItem Value="@ambito">@ambito.Descripcion</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.EmpleoCargoComision!.AmbitoPublico is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Ambito Publico es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.EmpleoCargoComision.NombreEnte"
+                                      label="NOMBRE DEL ENTE PÚBLICO"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo Nombre Ente Publico es obligatorio"
+                                      helpertext="Indicar el nombre completo del Ente público, sin abreviaturas, sin acentos, ni signos especiales."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "nombreEnteInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.EmpleoCargoComision.SiglasEntePublico"
+                                      label="SIGLAS DEL ENTE PÚBLICO"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      helpertext="Indicar las siglas del Ente público."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "siglasEntePublicoInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.NivelJerarquico.Clave"
+                                   Label="NIVEL JERÁRQUICO DEL EMPLEO, CARGO O COMISIÓN"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   HelperText="Señalar el nivel jerárquico del empleo, cargo o comisión:">
+                            @if (NivelJerarquico is not null)
+                            {
+                                @foreach (var nivel in NivelJerarquico)
+                                {
+                                    <MudSelectItem Value="@nivel">@nivel.Clave</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.NivelJerarquico!.Clave is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                    @if (FaltasDeServidoresPublicosG!.NivelJerarquico?.Clave?.Clave?.Contains("OTRO (Especifique)") == true)
+                    {
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG.NivelJerarquico.Valor"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="Valor"
+                                          required="true"
+                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "valorInput" })"
+                                          RequiredError="El campo de Valor es obligatorio."
+                                          helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el tipo de nivel jerárquico del empleo, cargo o comisión que desempeña la persona servidora pública sancionada." />
+                        </MudItem>
+                    }
+
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.NivelJerarquico.Denominacion"
+                                      label="DENOMINACIÓN DEL EMPLEO, CARGO O COMISIÓN"
+                                      required="true"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo de Denominacion es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "denominacionInput" })"
+                                      helpertext="Escribir la denominación completa del empleo, cargo o comisión que aparece en el recibo de nómina, nombramiento, contrato u oficio de comisión, sin abreviaturas, sin acentos, ni signos especiales." />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG.NivelJerarquico.AreaAdscripcion"
+                                      label="ÁREA DE ADSCRIPCIÓN"
+                                      required="true"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo de Area Adscripcion es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "areaAdscripcionInput" })"
+                                      helpertext="Especificar el nombre de la Unidad Administrativa del Ente público a la que está o estaba adscrita la persona servidora pública sancionada, sin abreviaturas, sin acentos, ni signos especiales." />
+                    </MudItem>
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionEmpleoCargoComision();
+                }
+
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision)">
+                                Siguiente
+                            </MudButton>
+                        }
+
+                    </MudItem>
+                </MudGrid>
+
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+@*     <MudExpansionPanel Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico)">
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>NIVEL JERÁRQUICO DEL EMPLEO, CARGO O COMISIÓN</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent> *@
+@*         <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.NivelJerarquico!.Clave"
+                                   Label="Clave"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   HelperText="Señalar el nivel jerárquico del empleo, cargo o comisión:">
+                            @if (NivelJerarquico is not null)
+                            {
+                                @foreach (var nivel in NivelJerarquico)
+                                {
+                                    <MudSelectItem Value="@nivel">@nivel.Clave</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.NivelJerarquico!.Clave is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
+                        }
+                    </MudItem>
+                    @if (FaltasDeServidoresPublicosG!.NivelJerarquico?.Clave?.Clave?.Contains("OTRO (Especifique)") == true)
+                    {
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.NivelJerarquico!.Valor"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="Valor"
+                                          required="true"
+                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "valorInput" })"
+                                          RequiredError="El campo de Valor es obligatorio."
+                                          helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el tipo de nivel jerárquico del empleo, cargo o comisión que desempeña la persona servidora pública sancionada." />
+                        </MudItem>
+                    }
+
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.NivelJerarquico!.Denominacion"
+                                      label="Denominacion"
+                                      required="true"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo de Denominacion es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "denominacionInput" })"
+                                      helpertext="Escribir la denominación completa del empleo, cargo o comisión que aparece en el recibo de nómina, nombramiento, contrato u oficio de comisión, sin abreviaturas, sin acentos, ni signos especiales." />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.NivelJerarquico!.AreaAdscripcion"
+                                      label="Area Adscripción"
+                                      required="true"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo de Area Adscripcion es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "areaAdscripcionInput" })"
+                                      helpertext="Especificar el nombre de la Unidad Administrativa del Ente público a la que está o estaba adscrita la persona servidora pública sancionada, sin abreviaturas, sin acentos, ni signos especiales." />
+                    </MudItem>
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionNivelJerarquico();
+                }
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico)">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent> *@
+@*     </MudExpansionPanel> *@
+    <MudExpansionPanel Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico)">
+        <!--Sección de Origen del Procedimiento-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>5. ORIGEN DEL PROCEDIMIENTO*</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.OrigenProcedimiento])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="4">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.OrigenProcedimiento.Clave"
+                                   Label="Clave"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   HelperText="Se deberá señalar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave.">
+                            @foreach (var origen in ListaOrigenesInvestigacion)
+                            {
+                                <MudSelectItem Value="@origen">@origen.Clave</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (FaltasDeServidoresPublicosG.OrigenProcedimiento!.Clave is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
+                        }
+
+                    </MudItem>
+                    @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Clave?.Contains("OTRO (Especifique)") == true)
+                    {
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.OrigenProcedimiento!.Valor"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="Valor"
+                                          required="true"
+                                          RequiredError="El campo de Valor es obligatorio."
+                                          helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave."
+                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "ValorOrigenInput" })" />
+                        </MudItem>
+                    }
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionOrigenProcedimiento();
+                }
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.OrigenProcedimiento)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.OrigenProcedimiento])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.OrigenProcedimiento)">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida)">
+        <!--Sección de Falta Cometida-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>6. TIPO DE FALTA COMETIDA POR LA PERSONA SERVIDORA PÚBLICA SANCIONADA*</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.FaltaCometida!.MultipleFalta"
+                                   T="string" MultiSelection="true" @bind-SelectedValues="_optionsFaltaComedia"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   Label="Por actos u omisiones que incumplan o transgredan las siguientes obligaciones"
+                                   HelperText="Seleccionar del catálogo la (s) falta (s) cometida (s) por la persona servidora pública. Se podrán elegir de las siguientes opciones:">
+                            @foreach (var falta in FaltasCometidas)
+                            {
+                                <MudSelectItem Value="@falta.Clave">@falta.Clave</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (!(_optionsFaltaComedia ?? Enumerable.Empty<string>()).Any())
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
+                        }
+                    </MudItem>
+
+                    @if ((_optionsFaltaComedia ?? Enumerable.Empty<string>()).Contains("OTRO (Especifique)"))
+                    {
+                        <MudItem xs="6">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.Valor"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="Valor"
+                                          required="true"
+                                          RequiredError="El campo de Valor es obligatorio."
+                                          helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el tipo de falta cometida por parte de la persona servidora pública sancionada."
+                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "ValorFaltaCometidaInput" })" />
+                        </MudItem>
+                    }
+                    <MudItem xs="6">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.NombreNormatividad"
+                                      label="NORMATIVIDAD INFRINGIDA"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo de Nombre Normatividad es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "nombreNormatividadInput" })"
+                                      helpertext="Escribir el nombre de la normatividad infringida por la persona servidora pública, sin abreviaturas, sin acentos, ni signos especiales;" />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.Articulo"
+                                      label="ARTÍCULO(S) DE LA NORMATIVIDAD INFRINGIDA"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo de Articulo es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "articuloInput" })"
+                                      helpertext="Escribir el (los) artículo (s) infringido (s)." />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.FraccionNormatividad"
+                                      label="FRACCIÓN (ES) DE LA NORMATIVIDAD INFRINGIDA"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      helpertext="En su caso, escribir la (s) fracción (es) infringida (s)." />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.DescripcionHechos"
+                                      label="DESCRIPCIÓN BREVE DE LOS HECHOS"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "descripcionHechosInput" })"
+                                      required="true"
+                                      RequiredError="El campo de Descripcion Hechos es obligatorio."
+                                      Lines="4"
+                                      AutoGrow
+                                      helpertext="Redactar una descripción breve de los hechos, sin incluir información reservada o confidencial, de conformidad con la normatividad en materia de transparencia y protección de datos personales." />
+                    </MudItem>
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionFaltaCometida();
+                }
+
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida)">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Resolucion))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.Resolucion)">
+        <!--Sección de Resolución-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>7. RESOLUCIÓN SANCIONATORIA DE LA FALTA COMETIDA POR LA PERSONA SERVIDORA PÚBLICA*</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Resolucion])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>Resolucion </b></MudText>
+                <MudGrid>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Resolucion!.TituloDocumento"
+                                      label="TÍTULO DEL DOCUMENTO"
+                                      required="true"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      RequiredError="El campo Titulo Documento es obligatorio."
+                                      helpertext="Escribir el nombre del documento que resuelve el procedimiento de responsabilidad administrativa y que ha quedado firme."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "tituloDocumentoInput" })" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudDatePicker Label="FECHA DE LA RESOLUCIÓN* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Resolucion!.FechaResolucion" required="true"
+                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                       RequiredError="El campo Fecha Resolucion es obligatorio." helpertext="Colocar la fecha en la que se emite la resolución definitiva." />
+                        @if (FaltasDeServidoresPublicosG.Resolucion!.FechaResolucion is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Resolucion es obligatorio</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudDatePicker Label="FECHA DE NOTIFICACIÓN* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Resolucion!.FechaNotificacion" required="true"
+                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                       RequiredError="El campo Fecha Notificacion es obligatorio." helpertext="Indicar la fecha en que se notifica la resolución definitiva a la persona servidora pública sancionada." />
+                        @if (FaltasDeServidoresPublicosG.Resolucion!.FechaNotificacion is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Notificacion es obligatorio</MudText>
+                        }
+                    </MudItem>
+
+                    <MudItem xs="4">
+                        <MudDatePicker Label="FECHA EN QUE ADQUIRIÓ FIRMEZA LA RESOLUCIÓN*(DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Resolucion!.FechaResolucionFirme"
+                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" required="true" RequiredError="El campo Fecha Resolucion Firme es obligatorio."
+                                       helpertext="Colocar la fecha en que adquirió firmeza la resolución de la persona servidora pública." />
+                        @if (FaltasDeServidoresPublicosG.Resolucion!.FechaResolucionFirme is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Resolucion Firme es obligatorio</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudDatePicker Label="FECHA DE NOTIFICACIÓN DE LA RESOLUCIÓN FIRME*(DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Resolucion!.FechaNotificacionFirme" required="true" Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" RequiredError="El campo Fecha Notificacion Firme es obligatorio."
+                                       helpertext="Indicar la fecha en que se notifica a la persona servidora pública que la resolución ha quedado firme." />
+                        @if (FaltasDeServidoresPublicosG.Resolucion!.FechaNotificacionFirme is null)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Notificacion Firme es obligatorio</MudText>
+                        }
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudDatePicker Label="FECHA DE EJECUCIÓN DE LA SANCIÓN(DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Resolucion!.FechaEjecucion" Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" helpertext="Anotar la fecha en la que se ejecutó la sanción a la persona servidora pública.
+                                            Si al momento de registrar la información la autoridad no cuenta con el dato señalado en el presente numeral, esta podrá registrarse posteriormente mediante una actualización de su registro." />
+                    </MudItem>
+
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Resolucion!.AutoridadResolutora"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      label="AUTORIDAD RESOLUTORA"
+                                      required="true"
+                                      RequiredError="El campo Autoridad Resolutora es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadResolutoraInput" })"
+                                      helpertext="Indicar el nombre de la autoridad facultada para dictar la sanción" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Resolucion!.AutoridadInvestigadora"
+                                      label="AUTORIDAD INVESTIGADORA"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo Autoridad Investigadora es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadInvestigadoraInput" })"
+                                      helpertext="Especificar el nombre de la autoridad encargada de la investigación de la falta administrativa grave." />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Resolucion!.AutoridadSubstanciadora"
+                                      label="AUTORIDAD SUBSTANCIADORA"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      required="true"
+                                      RequiredError="El campo Autoridad Substanciadora es obligatorio."
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadSubstanciadoraInput" })"
+                                      helpertext="Señalar el nombre de la autoridad substanciadora del procedimiento." />
+                    </MudItem>
+                </MudGrid>
+                @{
+                    _ = ValidarCampos();
+                    _ = ValidarInformacionResolucion();
+                }
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Resolucion)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Resolucion])
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Resolucion)">
+                                Siguiente
+                            </MudButton>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion)">
+        <!--Sección de Tipo de Sanción-->
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>8. TIPO DE SANCIÓN IMPUESTA A LA PERSONA SERVIDORA PÚBLICA</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.MultipleSancion"
+                                   @bind-SelectedValues="_options"
+                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                   T="string"
+                                   Label="TIPO DE AMONESTACIÓN"
+                                   required="true"
+                                   RequiredError="El campo Clave es obligatorio."
+                                   HelperText="Elegir una o varias sanciones, según corresponda, conforme al catálogo y que fueron dictaminadas en la resolución definitiva. Se podrán elegir de las siguientes opciones:"
+                                   MultiSelection="true">
+                            @foreach (var clave in TipoSancionClaves)
+                            {
+                                <MudSelectItem Value="@clave.Clave">@clave.Clave</MudSelectItem>
+                            }
+                        </MudSelect>
+                        @if (!(_options ?? Enumerable.Empty<string>()).Any())
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
+                        }
+
+                    </MudItem>
+                </MudGrid>
+                <MudSpacer />
+                @{
+                    _ = ValidarInformacionTipoSancion();
+                }
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion])
+                        {
+                            @if ((_options ?? Enumerable.Empty<string>()).Any())
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion)">
+                                    Siguiente
+                                </MudButton>
+                            }
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+
+    @if ((_options ?? Enumerable.Empty<string>()).Contains("SUSPENSIÓN DEL EMPLEO,CARGO O COMISIÓN"))
+    {
+        <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);">
+                        <b>
+                            B. SUSPENSIÓN DEL EMPLEO, CARGO O COMISIÓN*
+                        </b>
+                    </MudText>
+                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Suspension])
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                    <MudGrid>
+                        <MudItem xs="4">
+                            <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoMeses" label="MES (ES)"
+                                             Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                             Variant="Variant.Text" Min="0" required="true" RequiredError="El campo Plazo Meses es obligatorio."
+                                             helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoDias" label="DÍA (S)"
+                                             Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                             Variant="Variant.Text" Min="0" required="true" RequiredError="El campo Plazo Dias es obligatorio."
+                                             helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudDatePicker Label="FECHA INICIAL*(DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaInicial" required="true"
+                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                           helpertext="Indicar la fecha en la que inició la suspensión de la persona servidora pública." />
+                            @if (FaltasDeServidoresPublicosG.Suspension!.FechaInicial is null)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
+                            }
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudDatePicker Label="FECHA FINAL*(DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaFinal" required="true"
+                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                           helpertext="Indicar la fecha en la que se concluye la suspensión de la persona servidora pública." />
+                            @if (FaltasDeServidoresPublicosG.Suspension!.FechaFinal is null)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
+                            }
+                        </MudItem>
+                    </MudGrid>
+                    <MudSpacer />
+                    @{
+                        _ = ValidarInformacionSuspencion();
+                    }
+                    <MudGrid>
+
+                        <MudItem xs="6" class="d-flex justify-end">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension)">
+                                Anterior
+                            </MudButton>
+                            @if (ListActivePanel.Count() > 0)
+                            {
+                                @if (ListActivePanel.Max() == (int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension)
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Suspension])
+                                    {
+                                        @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                                        {
+                                            <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                                Finalizar registro
+                                            </MudButton>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Suspension])
+                                    {
+                                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension)">
+                                            Siguiente
+                                        </MudButton>
+                                    }
+                                }
+                            }
+
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+
+    @if ((_options ?? Enumerable.Empty<string>()).Contains("DESTITUCIÓN DEL EMPLEO,CARGO O COMISIÓN"))
+    {
+        <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>C. DESTITUCIÓN DEL EMPLEO, CARGO O COMISIÓN*</b></MudText>
+                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo])
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudDatePicker Label="FECHA DE LA DESTITUCIÓN* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.DestitucionEmpleo!.FechaDestitucion" required="true"
+                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                           helpertext="Indicar la fecha de destitución de la persona servidora pública." />
+                           
+                        </MudItem>
+                    </MudGrid>
+                    <MudSpacer />
+                    @{
+                        _ = ValidarInformacionDestitucionEmpleo();
+                    }
+                    <MudGrid>
+
+                        <MudItem xs="6" class="d-flex justify-end">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo)">
+                                Anterior
+                            </MudButton>
+                            @if (ListActivePanel.Count() > 0)
+                            {
+                                @if (ListActivePanel.Max() == (int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo)
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo])
+                                    {
+                                        @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                                        {
+                                            <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                                Finalizar registro
+                                            </MudButton>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo])
+                                    {
+                                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo)">
+                                            Siguiente
+                                        </MudButton>
+                                    }
+                                }
+                            }
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+
+    @if ((_options ?? Enumerable.Empty<string>()).Contains("AMONESTACION"))
+    {
+        <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>A. AMONESTACIÓN PÚBLICA O PRIVADA</b></MudText>
+                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion])
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.TipoAmonestacion"
+                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                       Label="TIPO DE AMONESTACIÓN"
+                                       required="true"
+                                       RequiredError="El campo Tipo es obligatorio."
+                                       HelperText="Seleccionar el tipo de amonestación">
+                                @foreach (var clave in TiposAmonestacion)
+                                {
+                                    <MudSelectItem Value="@clave">@clave.Descripcion</MudSelectItem>
+                                }
+                            </MudSelect>
+                            @if (FaltasDeServidoresPublicosG!.TipoAmonestacion is null)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Tipo es obligatorio.</MudText>
+                            }
+                        </MudItem>
+                    </MudGrid>
+                    <MudSpacer />
+                    @{
+                        _ = ValidarInformacionTipoAmonestacion();
+                    }
+                    <MudGrid>
+
+                        <MudItem xs="6" class="d-flex justify-end">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion)">
+                                Anterior
+                            </MudButton>
+
+                            @if (ListActivePanel.Count() > 0)
+                            {
+                                @if (ListActivePanel.Max() == (int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion)
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion])
+                                    {
+                                        @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                                        {
+                                            <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                                Finalizar registro
+                                            </MudButton>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion])
+                                    {
+                                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion)">
+                                            Siguiente
+                                        </MudButton>
+                                    }
+                                }
+                            }
+
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+
+    @if ((_options ?? Enumerable.Empty<string>()).Contains("INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS"))
+    {
+        <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);">
+                        <b>
+                            D. INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS, CARGOS O COMISIONES EN EL SERVICIO PÚBLICO Y PARA PARTICIPAR EN
+                            ADQUISICIONES, ARRENDAMIENTOS, SERVICIOS U OBRAS PÚBLICAS *
+                        </b>
+                    </MudText>
+                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion])
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                    <div>
+                        <MudText Class="mb-4" Style="color:var(--main-color-general);"><b>PLAZO DE LA INHABILITACIÓN*</b></MudText>
+                    </div>
+                    <MudGrid Justify="Justify.FlexStart">
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Anio"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="AÑO (S)"
+                                          required="true"
+                                          RequiredError="El campo Año es obligatario." />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Mes"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="MES (ES)"
+                                          required="true"
+                                          RequiredError="El campo Mes es obligatario." />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Dia"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          label="DÍA (S)"
+                                          required="true"
+                                          RequiredError="El campo Dia es obligatario." />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudDatePicker Label="FECHA INICIAL* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial" required="true" helpertext="Indicar la fecha en la que inició la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                            @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial is null)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
+                            }
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudDatePicker Label="FECHA FINAL* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal" required="true" helpertext="Indicar la fecha en la que se concluyó la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                            @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal is null)
+                            {
+                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
+                            }
+                        </MudItem>
+                    </MudGrid>
+                    @{
+                        _ = ValidarInformacionInhabilitacion();
+                    }
+                    <MudSpacer />
+                    <MudGrid>
+
+                        <MudItem xs="6" class="d-flex justify-end">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion)">
+                                Anterior
+                            </MudButton>
+                            @if (ListActivePanel.Count() > 0)
+                            {
+                                @if (ListActivePanel.Max() == (int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion)
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion])
+                                    {
+                                        @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                                        {
+                                            <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                                Finalizar registro
+                                            </MudButton>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion])
+                                    {
+                                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.NavigateNext" OnClick="() => MostrarSiguientePanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion)">
+                                            Siguiente
+                                        </MudButton>
+                                    }
+                                }
+                            }
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+
+    @if ((_options ?? Enumerable.Empty<string>()).Contains("OTRO (Especifique)"))
+    {
+        <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Otro))" HideIcon="true" Disabled="!BloqueoSesiones.Contains((int)SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales)">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>E. OTRO*</b></MudText>
+                    @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Otro])
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                    <MudGrid Justify="Justify.FlexStart">
+                        <MudItem xs="6">
+                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Otro!.DenominacionSancion"
+                                          label="DENOMINACIÓN DE LA SANCIÓN"
+                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                          required="true"
+                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "denominacionSancionInput" })"
+                                          RequiredError="El campo Denominacion Sancion es obligatorio."
+                                          helpertext="Indicar el nombre de la sanción, sin abreviaturas, sin acentos, ni signos especiales." />
+                        </MudItem>              
+                    </MudGrid>
+                    <MudSpacer />
+                    @{
+                        _ = ValidarInformacionOtro();
+                    }
+                    <MudGrid>
+
+                        <MudItem xs="6" class="d-flex justify-end">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Otro)">
+                                Anterior
+                            </MudButton>
+                            @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Otro])
+                            {
+                                @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                                {
+                                    <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                        Finalizar registro
+                                    </MudButton>
+                                }
+                            }
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+    <MudExpansionPanel MaxHeight="500" Style="background-color:#E0E0E0; color:black;" Expanded="@((ActivePanel == (int)SesionesFaltasDeServidoresPublicosNoGraves.Observaciones))" HideIcon="true">
+        <TitleContent>
+            <div class="d-flex">
+                <MudText Typo="Typo.h6" Class="mb-4" Style="color:var(--main-color-general);"><b>9. OBSERVACIONES</b></MudText>
+                @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Otro])
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Color="Color.Success" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Color="Color.Warning" Class="d-flex ml-auto" Size="Size.Large" />
+                }
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudPaper Class="pa-4 mx-auto" Style="max-width: 70vw;">
+                <MudGrid Justify="Justify.FlexStart">                
+                    <MudItem xs="8">
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Otro!.Observaciones"
+                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                      label="Observaciones" Lines="4"
+                                      helpertext="En este espacio se podrán realizar las aclaraciones u observaciones que se consideren pertinentes respecto de alguno o algunos de los apartados del Formato." />
+                    </MudItem>
+                </MudGrid>
+                <MudSpacer />         
+                <MudGrid>
+
+                    <MudItem xs="6" class="d-flex justify-end">
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.NavigateBefore" OnClick="() => MostrarAnteriorPanel((int)SesionesFaltasDeServidoresPublicosNoGraves.Observaciones)">
+                            Anterior
+                        </MudButton>
+                        @if (BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Otro])
+                        {
+                            @if (IsEditMode != (int)TipoVistaComponentes.Ver)
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.Send" OnClick="() => OpenDialogAsync()" StartIcon="@Icons.Material.Filled.AssignmentTurnedIn">
+                                    Finalizar registro
+                                </MudButton>
+                            }
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </ChildContent>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+

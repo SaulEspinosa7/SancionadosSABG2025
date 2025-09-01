@@ -23,6 +23,10 @@ namespace SancionadosSAGB2025.Shared.Login
 		public Usuario Usuario { get; set; }
 		public string Token { get; set; }
 	}
+	public class TokenResponse
+	{
+		public string Token { get; set; }
+	}
 
 	public class Usuario
 	{

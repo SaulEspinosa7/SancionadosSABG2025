@@ -8,8 +8,8 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 {
 	public class NivelOrdenGobierno
 	{
-		public int IdNivelOrdenGobierno { set; get; }
-		public string Descripcion { get; set; } = string.Empty;
+		public int? IdNivelOrdenGobierno { set; get; }
+		public string? Descripcion { get; set; } = string.Empty;
 		public DateTime FechaCreacion { get; set; }
 		public DateTime FechaModificacion { get; set; }
 		public int Activo { get; set; }

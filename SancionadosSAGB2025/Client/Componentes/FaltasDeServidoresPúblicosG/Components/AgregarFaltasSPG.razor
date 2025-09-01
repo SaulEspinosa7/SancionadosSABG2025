@@ -1,0 +1,19 @@
+﻿@page "/AgregarServidoresPúblicosG";
+@using Microsoft.AspNetCore.Components.Forms
+
+<SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+    <Main>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm BorderActive="true">
+            <Content>
+                <MudText Typo="Typo.h5" Style="color:var(--main-color-general);">
+                    Registro de Faltas de <b>Servidores Públicos Graves</b>
+                </MudText>
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+        <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+            <Content>
+                <SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Components.FormAgregarFaltasServidoresPG />
+            </Content>
+        </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+    </Main>
+</SancionadosSAGB2025.Client.Shared.Forms.MainForm>

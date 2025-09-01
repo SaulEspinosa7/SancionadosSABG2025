@@ -6,6 +6,7 @@ namespace SancionadosSAGB2025.Client.Interfaces
 	public interface IFaltasSPG
 	{
 		Task<RespuestaRegistro> AgregarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG);
-		Task<RespondeUpdateFaltas> ActualizarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG);
+		Task<RespuestaRegistro> ActualizarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG);
+		Task<List<AddFaltasDeServidoresPublicosG>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG);
 	}
 }

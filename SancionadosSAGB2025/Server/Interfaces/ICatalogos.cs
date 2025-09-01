@@ -6,15 +6,15 @@ namespace SancionadosSAGB2025.Server.Interfaces
 	{
 		Task<Catalogos> ObtenerTodosLosCatalogos();
 		Task<List<EntidadFederativa>> ObtenerEntidadFederativa();
-		Task<List<FaltaCometida>> ObtenerFaltaCometida();
+		Task<List<FaltaCometidaCat>> ObtenerFaltaCometida();
 		Task<List<NivelOrdenGobierno>> ObtenerNivelOrdenGobierno();
 		Task<List<OrdenJurisdiccional>> ObtenerOrdenJurisdiccional();
-		Task<List<OrigenProcedimiento>> ObtenerOrigenProcedimiento();
+		Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento();
 		Task<List<Sexo>> ObtenerSexo();
 		Task<List<TipoAmonestacion>> ObtenerTipoAmonestacion();
 		Task<List<TipoSancion>> ObtenerTipoSancion();
 		Task<List<TipoVialidad>> ObtenerTipoVialidad();
 		Task<List<AmbitoPublico>> ObtenerAmbitoPublico();
-		Task<List<NivelJerarquico>> ObtenerNivelJerarquico();
+		Task<List<NivelJerarquicoCat>> ObtenerNivelJerarquico();
 	}
 }

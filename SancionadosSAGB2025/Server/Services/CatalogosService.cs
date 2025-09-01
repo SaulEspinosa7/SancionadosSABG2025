@@ -7,9 +7,8 @@ namespace SancionadosSAGB2025.Server.Services
 	public class CatalogosService : ICatalogos
 	{
 		private readonly HttpClient _http;
-		private readonly RegistroFaltasSPG registroFaltasSPG;
 
-		public CatalogosService(HttpClient http, IConfiguration config)
+		public CatalogosService(HttpClient http)
 		{
 			_http = http;
 		}
@@ -26,135 +25,271 @@ namespace SancionadosSAGB2025.Server.Services
 				catalogos.AmbitoPublico = await ObtenerAmbitoPublico();
 				catalogos.FaltaCometidas = await ObtenerFaltaCometida();
 				catalogos.NivelJerarquico = await ObtenerNivelJerarquico();
-
-				return catalogos;
+				catalogos.OrdenJurisdiccional = await ObtenerOrdenJurisdiccional();
+				catalogos.OrigenProcedimiento = await ObtenerOrigenProcedimiento();
+				catalogos.TipoAmonestacion = await ObtenerTipoAmonestacion();
+				catalogos.TipoSancion = await ObtenerTipoSancion();
+				catalogos.TipoVialidad = await ObtenerTipoVialidad();
+				catalogos.Monedas = await ObtenerMonedas();
+				catalogos.Paises = await ObtenerPaises();
+                return catalogos;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Hubo un error al momento de realizar la consulta de los catalogos.");
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta de los catalogos. {ex.Message}");
 				return null;
 			}
+		}
+
+		public async Task<List<MonedaCat>> ObtenerMonedas()
+		{
+			try
+			{
+				var response = await _http.GetAsync($"Moneda");
+
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<MonedaCat>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Ambito Publico. {ex.Message}");
+				return null;
+			}
+
 		}
 
 		public async Task<List<AmbitoPublico>> ObtenerAmbitoPublico()
 		{
-			var response = await _http.GetAsync($"AmbitoPublico");
+			try
+			{
+				var response = await _http.GetAsync($"AmbitoPublico");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<AmbitoPublico>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Ambito Publico. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<AmbitoPublico>>();
-			return result;
+			}
+			
 		}		
 
 		public async Task<List<EntidadFederativa>> ObtenerEntidadFederativa()
 		{
-			var response = await _http.GetAsync($"EntidadFederativaCat");
+			try
+			{
+				var response = await _http.GetAsync($"EntidadFederativaCat");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativa>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Entidad Federativa. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativa>>();
-			return result;
+			}		
 		}
 
-		public async Task<List<FaltaCometida>> ObtenerFaltaCometida()
+		public async Task<List<FaltaCometidaCat>> ObtenerFaltaCometida()
 		{
-			var response = await _http.GetAsync($"FaltaCometida");
+			try
+			{
+				var response = await _http.GetAsync($"FaltaCometida");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<FaltaCometidaCat>>();
+				return result.Where(f => f.Activo == 1).ToList();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Falta Cometida. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<FaltaCometida>>();
-			return result;
+			}		
 		}
 
-		public async Task<List<NivelJerarquico>> ObtenerNivelJerarquico()
+		public async Task<List<NivelJerarquicoCat>> ObtenerNivelJerarquico()
 		{
-			var response = await _http.GetAsync($"NivelJerarquico");
+			try
+			{
+				var response = await _http.GetAsync($"NivelJerarquico");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquicoCat>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Nivel Jerarquico. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquico>>();
-			return result;
+			}
+		
 		}
 
 		public async Task<List<NivelOrdenGobierno>> ObtenerNivelOrdenGobierno()
 		{
-			var response = await _http.GetAsync($"NivelOrdenGobierno");
+			try
+			{
+				var response = await _http.GetAsync($"NivelOrdenGobierno");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<NivelOrdenGobierno>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Nivel Orden Gobierno. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<NivelOrdenGobierno>>();
-			return result;
+			}		
 		}
 
 		public async Task<List<OrdenJurisdiccional>> ObtenerOrdenJurisdiccional()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
+			try
+			{
+				var response = await _http.GetAsync($"OrdenJurisdiccionalCat");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<OrdenJurisdiccional>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Orden Jurisdiccional. {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<OrdenJurisdiccional>>();
-			return result;
+			}
+			
 		}
 
-		public async Task<List<OrigenProcedimiento>> ObtenerOrigenProcedimiento()
+		public async Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
+			try
+			{
+				var response = await _http.GetAsync($"OrigenProcedimientoCat");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimientoCat>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Origen Procedimiento {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimiento>>();
-			return result;
+			}
+		
 		}
 
 		public async Task<List<Sexo>> ObtenerSexo()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
+			try
+			{
+				var response = await _http.GetAsync($"Sexo");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<Sexo>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Sexo {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<Sexo>>();
-			return result;
+			}			
 		}
-
-		public async Task<List<TipoAmonestacion>> ObtenerTipoAmonestacion()
+		public async Task<List<PaisCat>> ObtenerPaises()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
-
-			if (!response.IsSuccessStatusCode)
+			try
+			{
+				var response = await _http.GetAsync($"Paises");
+				if (!response.IsSuccessStatusCode)
+					return null;
+				var result = await response.Content.ReadFromJsonAsync<List<PaisCat>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago paises {ex.Message}");
 				return null;
+			}
+        }
 
-			var result = await response.Content.ReadFromJsonAsync<List<TipoAmonestacion>>();
-			return result;
+        public async Task<List<TipoAmonestacion>> ObtenerTipoAmonestacion()
+		{
+			try
+			{
+				var response = await _http.GetAsync($"TipoAmonestacion");
+
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<TipoAmonestacion>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Tipo Amonestacion {ex.Message}");
+				return null;
+			}
+			
 		}
 
 		public async Task<List<TipoSancion>> ObtenerTipoSancion()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
+			try
+			{
+				var response = await _http.GetAsync($"TipoSancionCat");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<TipoSancion>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Tipo Sancion {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<TipoSancion>>();
-			return result;
+			}
+			
 		}
 
 		public async Task<List<TipoVialidad>> ObtenerTipoVialidad()
 		{
-			var response = await _http.PostAsync($"FaltasServidoresPG/AddAsync", null);
+			try
+			{
+				var response = await _http.GetAsync($"TipoVialidad");
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				var result = await response.Content.ReadFromJsonAsync<List<TipoVialidad>>();
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Tipo Vialidad {ex.Message}");
 				return null;
-
-			var result = await response.Content.ReadFromJsonAsync<List<TipoVialidad>>();
-			return result;
+			}		
 		}
 	}
 }

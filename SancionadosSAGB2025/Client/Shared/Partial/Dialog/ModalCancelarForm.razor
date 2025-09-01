@@ -1,0 +1,93 @@
+﻿<MudDialog Class="blur rounded-xl shadow-xl"          
+           TitleClass="dialog-title"
+           ContentClass="dialog-content p-6"
+           ActionsClass="dialog-actions px-6 pb-4 pt-2 d-flex justify-between flex-wrap gap-2">
+    <DialogContent>
+         <MudText  Typo="Typo.h5" Align="Align.Center" Class="mb-2">
+            ¿Deseas cancelar el registro?
+        </MudText>
+
+        <MudDivider Class="my-2" />
+
+        <MudText Typo="Typo.body1" Align="Align.Center">
+           <span class="fw-bold text-success">Sí:</span> Se borrará toda la información que hayas ingresado en el formulario. No podrás recuperarla.
+        </MudText>
+        <MudText Typo="Typo.body1" Align="Align.Center" Class="mt-2">
+            <span class="fw-bold text-danger"> No:</span> La información que ya capturaste se conservará sin cambios.
+        </MudText>
+        <MudDivider Class="my-2" />
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Cancel" EndIcon="@Icons.Material.Filled.DoNotDisturb"> @(btnCancel ?? "NO")</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@Submit" EndIcon="@Icons.Material.Filled.CheckCircle">@(btnConfirm ?? "SÍ")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<style>
+    .blur {
+        backdrop-filter: blur(12px);
+    }
+
+    .dialog-title {
+        background: var(--main-color-general);
+        color: white;
+        padding: 1rem;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+
+    .dialog-content {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+    }
+
+    .dialog-actions {
+        background-color: rgba(250, 250, 250, 0.9);
+    }
+
+    .rounded-xl {
+        border-radius: 1rem;
+    }
+
+    .shadow-xl {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+
+    .text-danger {
+        color: var(--mud-palette-error);
+    }
+
+    .text-success {
+        color: var(--mud-palette-success);
+    }
+</style>
+
+@code {
+
+
+
+    [Parameter]
+    public string? btnCancel { set; get; }
+
+    [Parameter]
+    public string? btnConfirm { set; get; }
+
+
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

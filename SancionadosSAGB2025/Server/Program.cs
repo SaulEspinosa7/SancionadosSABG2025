@@ -15,10 +15,11 @@ builder.Services.AddScoped<DatosGeneralesService>();
 var baseUrl = builder.Configuration["UrlApi:test"];
 
 builder.Services.AddHttpClient<FaltasServidoresPublicosGService>(client => { client.BaseAddress = new Uri(baseUrl!); });
-
 builder.Services.AddHttpClient<DatosGeneralesService>(client => {	client.BaseAddress = new Uri(baseUrl!);});
-
 builder.Services.AddHttpClient<CatalogosService>(client => {	client.BaseAddress = new Uri(baseUrl!);});
+builder.Services.AddHttpClient<FaltasServidoresPublicosNoGravesService>(client => {	client.BaseAddress = new Uri(baseUrl!);});
+builder.Services.AddHttpClient<FaltasGravesPersonasFisicasService>(client => {	client.BaseAddress = new Uri(baseUrl!);});
+builder.Services.AddHttpClient<FaltasGravesPersonasMoralesService>(client => {	client.BaseAddress = new Uri(baseUrl!);});
 
 var app = builder.Build();
 

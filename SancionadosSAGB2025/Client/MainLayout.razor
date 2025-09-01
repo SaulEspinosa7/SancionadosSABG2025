@@ -1,9 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
+
 <main>
     @Body
     @* Required *@
-    <MudThemeProvider />
+    <MudThemeProvider Theme="_theme" />
     <MudPopoverProvider />
 
     @* Needed for dialogs *@
@@ -12,3 +13,28 @@
     @* Needed for snackbars *@
     <MudSnackbarProvider />
 </main>
+@* <MudThemeProvider Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudLayout>
+    <MudMainContent Class="p-0 position-relative overflow-hidden">
+        @Body
+    </MudMainContent>
+</MudLayout> *@
+
+@code {
+
+    readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#5f1b2d",
+            PrimaryDarken = "#861e34",
+            Secondary = "#7a7a7a",
+            SecondaryDarken = "#afafaf",
+            Tertiary = "#10312B",
+            Info = "#BC955C",
+        }
+       
+    };
+}

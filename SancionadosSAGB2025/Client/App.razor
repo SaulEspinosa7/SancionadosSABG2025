@@ -1,4 +1,23 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@* @inject NavigationManager navigate;
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized >
+                @{
+                    navigate.NavigateTo("/");
+                 }
+            </NotAuthorized>
+        </Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView>
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+     <NotFound>  
+         <Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+            NO ENCONTRADO
+         </Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>           
+    </NotFound>
+</Router> *@
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />

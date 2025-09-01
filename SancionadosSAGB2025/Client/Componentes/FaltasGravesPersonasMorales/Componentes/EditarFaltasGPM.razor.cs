@@ -1,0 +1,44 @@
+﻿using Microsoft.AspNetCore.Components;
+using SancionadosSAGB2025.Shared.Catalogos;
+using SancionadosSAGB2025.Shared.Moral;
+using SancionadosSAGB2025.Shared.Sanciones;
+
+namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Componentes
+{
+    partial class EditarFaltasGPM
+    {
+        [Parameter] public PersonaMoralEntidad? faltasDeServidoresPublicosMorales { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (faltasDeServidoresPublicosMorales is null)
+            {
+                faltasDeServidoresPublicosMorales = new PersonaMoralEntidad();
+            }
+
+            faltasDeServidoresPublicosMorales.DatosGenerales ??= new DatosGeneralesMorales();
+            faltasDeServidoresPublicosMorales.DirectorGeneral ??= new DirectorGeneral();
+            faltasDeServidoresPublicosMorales.DirectorGeneral.RepresentanteLegal ??= new RepresentanteLegal();
+            faltasDeServidoresPublicosMorales.EmpleoCargoComision ??= new EmpleoCargoComision();
+            faltasDeServidoresPublicosMorales.EmpleoCargoComision.EntidadFederativa ??= new EntidadFederativa();
+            faltasDeServidoresPublicosMorales.EmpleoCargoComision.AmbitoPublico ??= new AmbitoPublico();
+            faltasDeServidoresPublicosMorales.EmpleoCargoComision.NivelOrdenGobierno ??= new NivelOrdenGobierno();
+            faltasDeServidoresPublicosMorales.OrigenProcedimiento ??= new OrigenProcedimiento();
+            faltasDeServidoresPublicosMorales.FaltaCometida ??= new FaltaCometida();
+            faltasDeServidoresPublicosMorales.Resolucion ??= new Resolucion();
+            faltasDeServidoresPublicosMorales.Inhabilitacion ??= new Inhabilitacion();
+
+            faltasDeServidoresPublicosMorales.Indeminizacion ??= new Indemnizacion();
+            faltasDeServidoresPublicosMorales.Indeminizacion.EfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
+            faltasDeServidoresPublicosMorales.Indeminizacion.EfectivamenteCobrada.Moneda ??= new MonedaCat();
+
+            faltasDeServidoresPublicosMorales.PlazoPago ??= new PlazoPago();
+            faltasDeServidoresPublicosMorales.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
+            faltasDeServidoresPublicosMorales.SancionEconomica ??= new SancionEconomica();
+            faltasDeServidoresPublicosMorales.SuspensionActividades ??= new SuspensionActividades();
+            faltasDeServidoresPublicosMorales.DisolucionSociedad ??= new DisolucionSociedad();
+            faltasDeServidoresPublicosMorales.Otro ??= new Otro();
+        }
+
+    }
+}

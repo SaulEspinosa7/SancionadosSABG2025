@@ -1,0 +1,12 @@
+﻿using SancionadosSAGB2025.Shared.Registros;
+using SancionadosSAGB2025.Shared.Sanciones;
+
+namespace SancionadosSAGB2025.Server.Interfaces
+{
+	public interface IFaltasGravesPersonasFisicas
+	{
+		Task<RespuestaRegistroFaltasGravesPersonasFisicas> AgregarFaltasGravesPersonasFisicas(AddFaltasGravesPersonasFisicas addFaltasGravesPersonasFisicas);
+		Task<AddFaltasGravesPersonasFisicas> ConstruirFaltasGravesPersonasFisicas(AddFaltasGravesPersonasFisicas addFaltasGravesPersonasFisicas);
+		Task<List<AddFaltasGravesPersonasFisicas>> ObtenerFaltasGravesPersonasFisicas(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG);
+	}
+}

@@ -25,12 +25,12 @@ namespace SancionadosSAGB2025.Client.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<List<FaltaCometida>> ObtenerFaltaCometida()
+		public Task<List<FaltaCometidaCat>> ObtenerFaltaCometida()
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<List<NivelJerarquico>> ObtenerNivelJerarquico()
+		public Task<List<NivelJerarquicoCat>> ObtenerNivelJerarquico()
 		{
 			throw new NotImplementedException();
 		}
@@ -45,7 +45,7 @@ namespace SancionadosSAGB2025.Client.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<List<OrigenProcedimiento>> ObtenerOrigenProcedimiento()
+		public Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento()
 		{
 			throw new NotImplementedException();
 		}

@@ -5,5 +5,6 @@ namespace SancionadosSAGB2025.Server.Interfaces
 	public interface ILogin
 	{
 		Task<AutenticacionResponse> LoginAsync(LoginModel loginModel);
+		Task<AutenticacionResponse> ConsultarInformacionDePerfil(TokenResponse autenticacionResponse);
 	}
 }

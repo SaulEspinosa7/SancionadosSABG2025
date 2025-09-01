@@ -1,0 +1,110 @@
+﻿@page "/BuscarServidoresPúblicosG";
+@using Microsoft.AspNetCore.Components.Forms
+@using SancionadosSAGB2025.Client.Services
+@using SancionadosSAGB2025.Shared.Sanciones
+
+@inject FaltasSPGService FaltasSPGService
+@inject AuthService AuthService
+@inject ISnackbar Snackbar;
+
+@if ((TiposEventos == TipoEvento.Principal))
+{
+    <SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+        <Main>
+            <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm BorderActive="true">
+                <Content>
+                    <MudText Typo="Typo.h5" Style="color:var(--main-color-general);">
+                        Busqueda Faltas de <b>Servidores Públicos Graves</b>
+                    </MudText>
+                </Content>
+            </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+            <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+                <Content>
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="6">
+                            @* <MudTextField @bind-Value="searchFaltasDeServidoresPublicosG.Expediente" Label="Expediente" Variant="Variant.Outlined" HelperText="Escribe el expediente para buscar"></MudTextField> *@
+                        </MudItem>
+                        <MudItem xs="3">
+                            <br />
+                            @* <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Search" Color="Color.Info" Size="Size.Large" OnClick="BuscarFaltasServidoresPG" /> *@
+                        </MudItem>
+                        <MudItem xs="3">
+                            <br />
+                            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Dark" Size="Size.Large" href="ServidoresPúblicosG">Regresar</MudButton>
+                        </MudItem>
+                        <MudItem xs="12">
+                            @if (faltasDeServidoresPublicosGs.Count() > 0)
+                            {
+                                <MudDataGrid T="AddFaltasDeServidoresPublicosG" MultiSelection="true" Items="@faltasDeServidoresPublicosGs" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
+                                             Hideable="true" RowClick="@RowClicked" RowContextMenuClick="RowRightClicked" SelectedItemsChanged="@SelectedItemsChanged" Class="faltas-grid"
+                                              Striped="true" Bordered="false">
+                                    @* Agrega una clase CSS para apuntar a esta instancia de la tabla *@
+                                    <ToolBarContent>
+                                        <MudText Typo="Typo.h6" Style="color:var(--main-color-general);">Faltas Graves</MudText>
+                                        <MudSpacer />
+                                        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                                    </ToolBarContent>
+                                    <Columns>
+                                        <PropertyColumn Property="x => x.Fecha" Title="Fecha" Sortable="false" Filterable="false" Format="dd/MM/yyyy"  />
+                                        <PropertyColumn Property="x => x.Expediente" Title="Expediente" Sortable="false" Filterable="false"/>
+                                        <PropertyColumn Property="x => x.DatosGenerales.Nombres" Title="Nombres" Sortable="false" Filterable="false" />
+                                        <PropertyColumn Property="x => x.DatosGenerales.PrimerApellido" Title="Primer Apellido" Sortable="false" Filterable="false" />
+                                        <PropertyColumn Property="x => x.DatosGenerales.SegundoApellido" Title="Segundo Apellido" Sortable="false" Filterable="false" />
+                                        <PropertyColumn Property="x => x.DatosGenerales.Curp" Title="Curp" Sortable="false" Filterable="false" />
+                                        <PropertyColumn Property="x => x.DatosGenerales.Rfc" Title="RFC" Sortable="false" Filterable="false" />
+                                        <PropertyColumn Property="x => x.EmpleoCargoComision.NombreEnte" Title="Nombre Ente" Sortable="false" Filterable="false" />
+                                        <TemplateColumn Title="Acciones">
+                                            <CellTemplate>
+                                                <MudStack Row>
+                                                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Visibility" Color="Color.Info" OnClick="(() => MostrarVisualizacionFalta(context.Item))">Ver</MudButton>
+                                                    @if (context.Item.IdUsuarioFK == IdUsuario)
+                                                    {
+                                                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="(() => MostrarVistaActualizarFalta(context.Item))">Editar</MudButton>
+                                                    }
+                                                </MudStack>
+                                            </CellTemplate>
+                                        </TemplateColumn>
+                                    </Columns>
+                                    <PagerContent>
+                                        <MudDataGridPager T="AddFaltasDeServidoresPublicosG" />
+                                    </PagerContent>
+                                </MudDataGrid>
+                            }else
+                            {
+                                @* <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" /> *@
+                        
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+                                <MudText Typo="Typo.h6" Align="Align.Center">Cargando información...</MudText>
+                            }
+                        </MudItem>
+                    </MudGrid>
+                </Content>
+            </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
+        </Main>
+    </SancionadosSAGB2025.Client.Shared.Forms.MainForm>
+}
+@if (TiposEventos == TipoEvento.Ver)
+{
+    <VerFaltasSPG faltasDeServidoresPublicosG="faltasDeServidoresPublicosGsSeleccionadas" />
+}
+
+@if (TiposEventos == TipoEvento.Actualizar)
+{
+    <EditarFaltasSPG faltasDeServidoresPublicosG="faltasDeServidoresPublicosGsSeleccionadas" />
+}
+
+ <style>
+    .faltas-grid thead th {
+        color: white !important;
+        font-weight: bold;
+        text-transform: uppercase;
+        background-color: var(--main-color-general); /* Color de fondo personalizado */
+        background-size: 15px;
+    }
+
+        .faltas-grid thead th .mud-table-sort-label {
+            color: white !important;
+        }
+ </style>

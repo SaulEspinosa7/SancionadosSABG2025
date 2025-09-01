@@ -24,26 +24,26 @@ namespace SancionadosSAGB2025.Client.Shared.Forms
 						//},
 						new SubModulos
 						{
-							NombreSubModulo = "Faltas de Servidores Públicos G",
+							NombreSubModulo = "Faltas de Servidores Públicos Graves",
 							UrlSubModulo = "/ServidoresPúblicosG",
 						}
 						,
 						new SubModulos
 						{
-							NombreSubModulo = "Faltas de Servidores Públicos N",
-							UrlSubModulo = "/historial",
+							NombreSubModulo = "Faltas de Servidores Públicos No Graves",
+							UrlSubModulo = "/ServidoresPúblicosN",
 						}
 						,
 						new SubModulos
 						{
 							NombreSubModulo = "Faltas Graves Personas Físicas",
-							UrlSubModulo = "/historial",
+							UrlSubModulo = "/FaltasGravesPersonasFísicas",
 						}
 						,
 						new SubModulos
 						{
 							NombreSubModulo = "Faltas Graves Personas Morales",
-							UrlSubModulo = "/historial",
+							UrlSubModulo = "/FaltasGravesPersonasMorales",
 						}
 					}
 				},

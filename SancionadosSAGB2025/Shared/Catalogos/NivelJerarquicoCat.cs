@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SancionadosSAGB2025.Shared.Catalogos
 {
-	public class NivelJerarquico
+	public class NivelJerarquicoCat
 	{
 		public int IdNivelJerarquicoCat { set; get; }
 		public string Clave { get; set; } = string.Empty;
