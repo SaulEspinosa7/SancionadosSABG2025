@@ -4,9 +4,12 @@ using MudBlazor;
 using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 using SancionadosSAGB2025.Shared.Catalogos;
 using SancionadosSAGB2025.Shared.Login;
+using SancionadosSAGB2025.Shared.Moral;
 using SancionadosSAGB2025.Shared.Registros;
 using SancionadosSAGB2025.Shared.Sanciones;
+using System.Net.Http.Json;
 using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
 
 namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Componentes
 {
@@ -14,7 +17,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 	{
 		[Parameter] public AddFaltasGravesPersonasFisicas FaltasDeServidoresPublicosG { set; get; } = new();
 		[Parameter] public int IsEditMode { set; get; } = (int)TipoVistaComponentes.Agregar;
-		[Inject] private NavigationManager Navigation { get; set; }
+		[Parameter] public bool modoVista { set; get; } = false;	
+        [Inject] private NavigationManager Navigation { get; set; }
 		private int ActivePanel { set; get; } = 0; // 0: Expediente, 1: Datos Generales, etc.
 		private bool ResultadoCorrecto { set; get; } // 0: Expediente, 1: Datos Generales, etc.
 		private List<int> ListActivePanel { set; get; } = new();
@@ -36,7 +40,38 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private List<PaisCat> Paises { get; set; } = new();
 		private IEnumerable<string> _options { get; set; } = new HashSet<string>();
 		private IEnumerable<string> _optionsFaltaComedia { get; set; } = new HashSet<string>();
-		private Dictionary<SesionesFaltasGravesPersonasFisicas, bool> BloquearBotonSiguientePorSesion { get; set; } =
+
+        private MudForm? _formFecha;
+        private MudForm? _formExpediente;
+        private MudForm? _formDatosGenerales;
+        private MudForm? _formDatosDirectorGeneral;
+        private MudForm? _formDatosEntePublico;
+
+        private MudForm? _formOrigenProcedimiento;
+
+        private MudForm? _formTipoFaltaCometida;
+
+        private MudForm? _formResolucionSancionatoria;
+
+        private MudForm? _formTipoSancionImpuesta;
+
+        private MudForm? _formInhabilitacionTemporal;
+
+        private MudForm? _formIndemnizacion;
+
+        private MudForm? _formSancionEconomica;
+
+        private MudForm? _formSuspensionActividades;
+
+        private MudForm? _formDisolucion;
+
+        private MudForm? _formOtro;
+
+        private bool[] _isStep1Valid = new bool[16];
+        private bool[] _isPanelCompleted = new bool[16];
+		private int index;
+		private bool loading = false;
+        private Dictionary<SesionesFaltasGravesPersonasFisicas, bool> BloquearBotonSiguientePorSesion { get; set; } =
 						Enum.GetValues(typeof(SesionesFaltasGravesPersonasFisicas))
 							.Cast<SesionesFaltasGravesPersonasFisicas>()
 							.ToDictionary(key => key, value => false); // o true si quieres bloquear todos inicialmente
@@ -54,6 +89,287 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
         void Fecha()
         {
             expediente = true;
+        }
+        private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
+        {
+            if (arg.Action == StepAction.Complete)
+            {
+                // occurrs when clicking next
+                await ControlStepCompletion(arg);
+            }
+        }
+
+        private async Task ControlStepCompletion(StepperInteractionEventArgs arg)
+        {
+            // 1. Inicia el estado de carga
+            loading = true;
+
+            try
+            {
+				Console.WriteLine(FaltasDeServidoresPublicosG);
+                bool isFormValid = false;
+
+                switch (arg.StepIndex)
+                {
+                    case 0:
+                        await _formFecha!.Validate();
+                        isFormValid = _isStep1Valid[0];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        break;
+                    case 1:
+                        await _formExpediente!.Validate();
+                        isFormValid = _isStep1Valid[1];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 2:
+                        await _formDatosGenerales!.Validate();
+                        isFormValid = _isStep1Valid[2];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 3:
+                        await _formDatosEntePublico!.Validate();
+                        isFormValid = _isStep1Valid[3];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 4:
+                        await _formOrigenProcedimiento!.Validate();
+                        isFormValid = _isStep1Valid[4];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 5:
+                        await _formTipoFaltaCometida!.Validate();
+                        isFormValid = _isStep1Valid[5];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 6:
+                        await _formResolucionSancionatoria!.Validate();
+                        isFormValid = _isStep1Valid[6];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else if (!modoVista)
+                        {
+                            isFormValid = await GuardarTemporal();
+                            if (!isFormValid)
+                                arg.Cancel = true;
+                        }
+                        break;
+                    case 7:
+                        await _formTipoSancionImpuesta!.Validate();
+                        isFormValid = _isStep1Valid[7];
+                        if (!isFormValid && !modoVista)
+                            arg.Cancel = true;
+                        else
+                        {
+                            if (!modoVista)
+                            {
+                                var resp = await OpcionesTipoSancion();
+                                if (!resp)
+                                    arg.Cancel = true;
+                                else
+                                {
+                                    isFormValid = await GuardarTemporal();
+                                    if (!isFormValid)
+                                        arg.Cancel = true;
+                                }
+                            }
+
+                        }
+                        break;                  
+                    
+                }
+            }
+            finally
+            {
+                // 2. Detiene el estado de carga al finalizar la ejecución del método
+                loading = false;
+            }
+        }
+        private async Task<bool> OpcionesTipoSancion()
+        {
+            try
+            {
+                // REGLA 1: Si es modo vista, salimos inmediatamente.
+                if (modoVista)
+                {
+                    return true;
+                }
+
+                bool todasLasOpcionesSonValidas = true;
+
+                if (_options.Contains("INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS"))
+                {
+                    await _formInhabilitacionTemporal!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[8];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("INDEMNIZACION"))
+                {
+                    await _formIndemnizacion!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[9];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("SANCION ECONOMICA"))
+                {
+                    await _formSancionEconomica!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[10];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }           
+
+                if (_options.Contains("OTRO (Especifique)"))
+                {
+                    await _formOtro!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[11];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                return todasLasOpcionesSonValidas;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        private async Task FinalizarRegistro()
+        {
+            try
+            {
+                loading = true;
+                if (modoVista)
+                {
+                    Regresar();
+                }
+                else
+                {
+                    bool guardado = await GuardarTemporal();
+                    if (guardado && FaltasDeServidoresPublicosG is null)
+                    {
+                        Snackbar.Add("REGISTRO GUARDADO CORRECTAMENTE", Severity.Success);
+                        Navigation.NavigateTo("/BuscarServidoresPublicosGravesFisica");
+                    }
+                    else
+                    {
+                        Regresar();
+                    }
+                }
+            }
+            finally
+            {
+                loading = false;
+            }
+
+        }
+        private void Regresar()
+        {
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+        }
+
+        private async Task<bool> GuardarTemporal()
+        {
+
+            await ConsultarIdUsuario();
+            if (_options is not null && _options.Any())
+            {
+                FaltasDeServidoresPublicosG.MultipleSancion = string.Join(", ", _options);
+            }
+
+            var response = await _http.PostAsJsonAsync<AddFaltasGravesPersonasFisicas>(
+                "api/FaltasGravesPersonasFisicas/AgregarFaltasGravesPersonasFisicas",
+                FaltasDeServidoresPublicosG);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error en el servidor: {error}");
+                Snackbar.Add($"Error al guardar temporalmente: {error}", Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                });
+                // Snackbar.Add($"Error al guardar temporalmente: {error}", Severity.Error);
+                return false;
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasFisicas>();
+            if (result?.Response == true && result.Mensaje is null)
+            {
+                FaltasDeServidoresPublicosG = result.Data!;
+                Snackbar.Add("INFORMACIÓN GUARDADA CORRECTAMENTE", Severity.Success);
+                return true;
+            }
+            else if (result?.Response == true && result.Mensaje is not null)
+            {
+
+                Snackbar.Add("INFORMACIÓN ELIMINADA CORRECTAMENTE", Severity.Success);
+                return true;
+
+            }
+            else
+            {
+                Snackbar.Add(result.Mensaje, Severity.Error);
+                return false;
+            }
         }
 
         private async Task InicializarVariables() 
@@ -73,12 +389,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
-			if (IsEditMode != (int)TipoVistaComponentes.Agregar)
-			{
-				foreach (var key in BloquearBotonSiguientePorSesion.Keys.ToList())
-				{
-					BloquearBotonSiguientePorSesion[key] = true;
-				}
+			
 
                 _options = FaltasDeServidoresPublicosG.MultipleSancion?
                             .Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
@@ -90,11 +401,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 						.Select(s => s.Trim()) // elimina espacios antes/después
 						.ToHashSet()!; // crea un HashSet<string>
 
-				BloqueoSesiones = Enum.GetValues(typeof(SesionesFaltasGravesPersonasFisicas))
-					.Cast<int>()
-					.ToList();
 
-			}
+			
 			//if (firstRender)
 			//{
 			//	objRef = DotNetObjectReference.Create(this);
@@ -102,16 +410,27 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 			//	await JS.InvokeVoidAsync("registerGeneralBeforeUnload", objRef);
 			//}
 		}
+        private async Task CancelarForm()
+        {
 
-		[JSInvokable]
-		public async Task OnBeforeUnload()
-		{
-			Console.WriteLine("F5 fue presionado");
-			Console.WriteLine("El usuario está recargando o cerrando la página.");
-			await MostrarModalDeCancelarRegistro();
-			// Aquí puedes realizar alguna lógica, como mostrar un mensaje o guardar estado
-		}
+            var parameters = new DialogParameters<ModalCancelarForm>();
 
+            var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.Small, BackdropClick = false };
+
+            var dialog = await DialogService.ShowAsync<ModalCancelarForm>("", parameters, options);
+            var result = await dialog.Result;
+
+
+            if (!result.Canceled)
+            {
+                FaltasDeServidoresPublicosG.Activo = 0;
+                await GuardarTemporal();
+                Navigation.NavigateTo("/FaltasGravesPersonasFísicas");
+            }
+
+        }
+
+       
 		private async Task MostrarOpcionCatalogos()
 		{
 			FaltasDeServidoresPublicosG.DatosGenerales!.Sexo = Sexos.FirstOrDefault(x => x.IdSexo == FaltasDeServidoresPublicosG.DatosGenerales.IdSexoFk);
@@ -124,415 +443,13 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 			FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.IdMonedaFK);
 		}
 
-		private async Task ValidarCampos()
-		{
-			await JS.InvokeVoidAsync("formatAndValidateClave", "curpInput", "CURP");
-			await JS.InvokeVoidAsync("formatAndValidateClave", "rfcInput", "RFC");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombresInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "primerApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "segundoApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreEnteInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "siglasEntePublicoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "valorInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "areaAdscripcionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorOrigenInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorFaltaCometidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "normatividadInfringidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreNormatividadInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "articuloInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "descripcionHechosInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "tituloDocumentoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadResolutoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadInvestigadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadSubstanciadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionSancionInput", "");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionInput", "url");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionFirmeInput", "url");			
-		}
-
-        private async Task ValidarInformacionFecha()
-        {
-            if (IsEditMode == (int)TipoVistaComponentes.Ver)
-                return;
-
-            if (FaltasDeServidoresPublicosG!.Fecha is not null)
-            {
-                BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Fecha] = true;
-            }
-            else
-            {
-                BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Fecha] = false;
-            }
-        }
-		private async Task ValidarInformacionExpediente()
-		{
-            if (IsEditMode == (int)TipoVistaComponentes.Ver)
-                return;
-
-            if (!string.IsNullOrEmpty(FaltasDeServidoresPublicosG.Expediente))
-            {
-                BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Expediente] = true;
-            }
-            else
-            {
-                BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Expediente] = false;
-            }
-        }
+	
         private bool EsValido(string? valor)
         {
             if (string.IsNullOrWhiteSpace(valor)) return true; // permitir vacío si es opcional
             return Regex.IsMatch(valor, @"^[a-zA-ZÁÉÍÓÚáéíóúÑñ0-9 ]+$");
         }
 
-        private async Task ValidarInformacionDatosPersonales()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var datos = FaltasDeServidoresPublicosG!.DatosGenerales;
-			
-			bool esValido =
-				!string.IsNullOrWhiteSpace(datos!.Nombres) &&
-				!string.IsNullOrWhiteSpace(datos.PrimerApellido) &&
-				!string.IsNullOrWhiteSpace(datos.Curp) && datos.Curp.Length == 18 &&
-				!string.IsNullOrWhiteSpace(datos.Rfc) && datos.Rfc.Length == 13;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.DatosGenerales] = esValido;
-
-		}
-
-		private async Task ValidarInformacionEmpleoCargoComision()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			if (FaltasDeServidoresPublicosG!.EmpleoCargoComision!.EntidadFederativa is not null && FaltasDeServidoresPublicosG!.EmpleoCargoComision!.NivelOrdenGobierno is not null )
-			{
-				BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.EmpleoCargoComision] = true;
-			}
-			else
-			{
-				BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.EmpleoCargoComision] = false;
-			}
-		}		
-
-		private async Task ValidarInformacionOrigenProcedimiento()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var origen = FaltasDeServidoresPublicosG?.OrigenProcedimiento;
-			var clave = origen?.Clave?.Clave;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.OrigenProcedimiento] = origen?.Clave is not null && FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Clave?.Contains("OTRO (Especifique)") == true && FaltasDeServidoresPublicosG!.OrigenProcedimiento!.Valor is not null || origen?.Clave is not null && FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Clave?.Contains("OTRO (Especifique)") == false; 
-		}
-
-		private async Task ValidarInformacionFaltaCometida()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var falta = FaltasDeServidoresPublicosG!.FaltaCometida;
-
-			bool datosCompletos =
-				_optionsFaltaComedia.Any() &&
-				!string.IsNullOrWhiteSpace(falta?.NombreNormatividad) &&
-				!string.IsNullOrWhiteSpace(falta?.Articulo) &&
-				!string.IsNullOrWhiteSpace(falta?.DescripcionHechos);			
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.FaltaCometida] =
-				datosCompletos;
-		}
-
-		private async Task ValidarInformacionResolucion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var resolucion = FaltasDeServidoresPublicosG!.Resolucion;
-
-			bool datosCompletos =
-				!string.IsNullOrWhiteSpace(resolucion?.TituloDocumento) &&
-				resolucion?.FechaResolucion != null &&
-				resolucion?.FechaNotificacion != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.UrlResolucion) &&
-				resolucion?.FechaResolucionFirme != null &&
-				resolucion?.FechaNotificacionFirme != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.UrlResolucionFirme) &&
-				resolucion?.OrdenJurisdiccional != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadResolutora) &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadInvestigadora) &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadSubstanciadora);
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Resolucion] = datosCompletos;
-		}
-
-		private async Task ValidarInformacionTipoSancion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			bool datosCompletos = false;
-			if (_options.Count() > 0) datosCompletos = true;
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.TipoSancion] = datosCompletos;
-		}
-
-		private async Task ValidarInformacionSancionEconomica()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var suspension = FaltasDeServidoresPublicosG.SancionEconomica;
-
-			bool datosCompletos =
-				suspension!.Moneda != null && suspension.Monto != null;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.SancionEconomica] = datosCompletos;
-		}
-
-		private async Task ValidarInformacionIndeminizacion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var indeminizacion = FaltasDeServidoresPublicosG.Indeminizacion;
-
-			bool datosCompletos = indeminizacion!.Moneda != null && indeminizacion.Monto != null;
-			//bool datosCompletos = true;
-
-			//Console.WriteLine($"ValidarInformacionIndeminizacion: Moneda: {indeminizacion!.Moneda}, Monto: {indeminizacion.Monto}, Datos Completos: {datosCompletos}");				
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Indeminizacion] = datosCompletos;
-
-			//foreach (var activelPanel in ListActivePanel) 
-			//{
-			//	Console.WriteLine($"ValidarInformacionIndeminizacion: ActivelPanel: {activelPanel}");
-			//}
-		}
-
-		private async Task ValidarInformacionInhabilitacion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var inhabilitacion = FaltasDeServidoresPublicosG.Inhabilitacion;
-
-			bool datosCompletos =
-				inhabilitacion!.Anio != null && inhabilitacion.Anio != string.Empty &&
-				inhabilitacion!.Mes != null && inhabilitacion.Mes != string.Empty &&
-				inhabilitacion!.Dia != null && inhabilitacion.Dia != string.Empty &&
-				inhabilitacion!.FechaInicial != null && inhabilitacion!.FechaFinal != null;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Inhabilitacion] = datosCompletos;
-		}
-
-		private async Task ValidarInformacionOtro()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var inhabilitacion = FaltasDeServidoresPublicosG.Otro;
-
-			bool datosCompletos =
-				inhabilitacion!.DenominacionSancion != null && inhabilitacion.DenominacionSancion != string.Empty;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Otro] = datosCompletos;
-		}
-
-		private async Task ValidarInformacionObservaciones()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var inhabilitacion = FaltasDeServidoresPublicosG.Otro;
-
-			bool datosCompletos = true;
-
-			BloquearBotonSiguientePorSesion[SesionesFaltasGravesPersonasFisicas.Observaciones] = datosCompletos;
-		}
-
-        private async Task ObtenerCatalogosFormulario()
-		{
-			try
-			{
-				var result = await CatalagosService.ObtenerTodosLosCatalogos();
-
-				if (result is not null)
-				{
-					CatalogosBD = result;                 
-                    if (CatalogosBD is not null)
-					{
-						EntidadesFederativas = CatalogosBD.EntidadFederativas!;
-						NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
-						AmbitoPublico = CatalogosBD.AmbitoPublico!;
-						OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
-						NivelJerarquico = CatalogosBD.NivelJerarquico!;
-						FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
-						Sexos = CatalogosBD.Sexo!;
-						ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 3 || c.Bandera == 1).ToList();										
-                        TipoMonedas = CatalogosBD.Monedas!;
-						Paises = CatalogosBD.Paises!;
-                        TiposVialidades = CatalogosBD.TipoVialidad!;
-					}
-				}
-				else
-				{
-					Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
-				}
-			}
-			catch (Exception ex)
-			{
-				Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
-				//Snackbar.Add("Se guardó la información previa.", Severity.Success);
-				//RespuestaRegistro = result!;
-			}
-		}
-
-		private List<PlazoPago> PlazoPagos { get; set; } = new List<PlazoPago>
-		{
-			new PlazoPago { Clave = "1", Valor = "Años" },
-			new PlazoPago { Clave = "2", Valor = "Meses" },
-			new PlazoPago { Clave = "3", Valor = "Dias" },
-		};
-
-		private async Task MostrarSiguientePanel(int posicionPanel)
-		{
-			Console.WriteLine($"MostrarSiguientePanel - ActivePanel: {ActivePanel}, posicionPanel: {posicionPanel}");
-			if (IsEditMode != (int)TipoVistaComponentes.Ver)
-			{
-				if (RespuestaRegistro is not null)
-				{
-					if (RespuestaRegistro!.Data is null && IsEditMode == (int)TipoVistaComponentes.Agregar)
-						await GuardarInformacionDeFaltasTemporales();
-					else
-						await ActualizarInformacionDeFaltasTemporales();
-
-				}
-			}
-            if (ResultadoCorrecto && IsEditMode == (int)TipoVistaComponentes.Agregar) await MostrarPanel(posicionPanel);
-            else if (IsEditMode != (int)TipoVistaComponentes.Agregar) await MostrarPanel(posicionPanel);
-        
-		}
-
-        private async Task MostrarPanel(int posicionPanel)
-        {
-            // Lógica para la sección de tipo de sanción
-            if ((int)SesionesFaltasGravesPersonasFisicas.TipoSancion == posicionPanel)
-            {
-                ListActivePanel.Clear();
-
-                if (_options.Contains("INDEMNIZACION"))
-                {
-                    ListActivePanel.Add((int)SesionesFaltasGravesPersonasFisicas.Indeminizacion);
-                }
-                if (_options.Contains("SANCION ECONOMICA"))
-                {
-                    ListActivePanel.Add((int)SesionesFaltasGravesPersonasFisicas.SancionEconomica);
-                }
-                if (_options.Contains("INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS"))
-                {
-                    ListActivePanel.Add((int)SesionesFaltasGravesPersonasFisicas.Inhabilitacion);
-                }
-                if (_options.Contains("OTRO (Especifique)"))
-                {
-                    ListActivePanel.Add((int)SesionesFaltasGravesPersonasFisicas.Otro);
-                }
-
-                BloqueoSesiones.Add(ActivePanel);
-
-                // AÑADE ESTA LÍNEA para verificar si la lista tiene elementos
-                if (ListActivePanel.Any())
-                {
-                    // Si hay elementos, navegamos al panel con el valor más bajo
-                    ActivePanel = ListActivePanel.Min();
-                    BloqueoSesiones.Add(ActivePanel);
-                }
-                else
-                {
-                    // Si la lista está vacía, no se seleccionó ninguna sanción.
-                    // Por lo tanto, saltamos directamente al panel de Observaciones.
-                    ActivePanel = (int)SesionesFaltasGravesPersonasFisicas.Observaciones;
-                    BloqueoSesiones.Add(ActivePanel);
-                }
-            }
-            // Lógica para avanzar entre los paneles de sanciones (dinámicos)
-            else if (posicionPanel >= (int)SesionesFaltasGravesPersonasFisicas.Indeminizacion && posicionPanel < (int)SesionesFaltasGravesPersonasFisicas.Observaciones)
-            {
-                var listaOrdenada = ListActivePanel.OrderBy(x => x).ToList();
-                int index = listaOrdenada.IndexOf(posicionPanel);
-
-                if (index >= 0 && index < listaOrdenada.Count - 1)
-                {
-                    ActivePanel = listaOrdenada[index + 1];
-                }
-                else
-                {
-                    // Si es el último panel de sanción, pasamos a Observaciones
-                    ActivePanel = (int)SesionesFaltasGravesPersonasFisicas.Observaciones;
-                }
-
-                BloqueoSesiones.Add(ActivePanel);
-            }
-            // Lógica para avanzar en los paneles iniciales (antes de sanciones)
-            else
-            {
-                ActivePanel = posicionPanel + 1;
-                BloqueoSesiones.Add(ActivePanel);
-            }
-        }
-
-        private async Task MostrarAnteriorPanel(int posicionPanel)
-		{
-			if (posicionPanel > (int)SesionesFaltasGravesPersonasFisicas.TipoSancion)
-			{
-				var listaOrdenada = ListActivePanel.OrderBy(x => x).ToList();
-				int index = listaOrdenada.IndexOf(posicionPanel);
-				int? anterior = (index > 0 && index < listaOrdenada.Count)
-						? listaOrdenada[index - 1]
-						: null;
-				ActivePanel = anterior ?? 7;
-			}
-			else
-			{
-				ActivePanel = posicionPanel;
-				ActivePanel--;
-			}
-			//await GuardarInformacionDeFaltasTemporales();
-		}
-
-		public async Task GuardarInformacionDeFaltasTemporales()
-		{
-			try
-			{
-				await ConsultarIdUsuario();
-				var result = await FaltasGravesPersonasFisicasService.AgregarFaltasGravesPersonasFisicas(FaltasDeServidoresPublicosG);
-
-				if (result.Data?.Id > 0)
-				{
-					Snackbar.Add("Se guardó la información previa.", Severity.Success);
-					RespuestaRegistro = result!;
-					ResultadoCorrecto = true;
-				}
-				else
-				{
-					if (result.Mensaje is not null) Snackbar.Add($"{result.Mensaje}", Severity.Error);
-					else Snackbar.Add($"Hubo un error al guardar la información previa.", Severity.Error);
-					RespuestaRegistro = result!;
-					ResultadoCorrecto = false;
-				}
-			}
-			catch (Exception ex)
-			{
-				Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
-			}
-		}
-
-		public async Task ActualizarInformacionDeFaltasTemporales(bool finalizar = false)
-		{
-			try
-			{
-				await ConstruirFaltasSPG();
-				var result = await FaltasGravesPersonasFisicasService.AgregarFaltasGravesPersonasFisicas(FaltasDeServidoresPublicosG);
-
-				if (result.Response == true)
-				{
-					Snackbar.Add("Se guardó la información previa.", Severity.Success);
-					RespuestaRegistro = result!;
-					ResultadoCorrecto = true;
-					if (finalizar) Navigation.NavigateTo("/FaltasGravesPersonasFísicas");
-				}
-				else
-				{
-					ResultadoCorrecto = false;
-					if (result.Mensaje is not null) Snackbar.Add($"{result.Mensaje}", Severity.Error);
-					else Snackbar.Add($"Hubo un error al guardar la información previa.", Severity.Error);
-				}
-			}
-			catch (Exception ex)
-			{
-				Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
-			}
-		}
 
 		private async Task ConstruirFaltasSPG()
 		{
@@ -574,40 +491,50 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 				FaltasDeServidoresPublicosG.DatosGenerales.IdDomicilioExtranjeroFK = FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero?.IdDomicilioExtranjero;
 			}
 		}
+        private List<PlazoPago> PlazoPagos { get; set; } = new List<PlazoPago>
+        {
+            new PlazoPago { Clave = "1", Valor = "Años" },
+            new PlazoPago { Clave = "2", Valor = "Meses" },
+            new PlazoPago { Clave = "3", Valor = "Dias" },
+        };
+        private async Task ObtenerCatalogosFormulario()
+        {
+            try
+            {
+                var result = await CatalagosService.ObtenerTodosLosCatalogos();
 
-		private async Task OpenDialogAsync()
-		{
-			var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.Small, BackdropClick = false };
-
-			//return DialogService.ShowAsync<ModalFinalizarRegistroFaltasSPG>("Finalizar registro", options);
-
-			var dialog = await DialogService.ShowAsync<ModalFinalizarRegistroFaltasSPG>("Finalizar registro", options);
-			var result = await dialog.Result;
-
-			if (!result.Canceled)
-			{
-				await ActualizarInformacionDeFaltasTemporales(true);
-			}
-		}
-
-		private async Task MostrarModalDeCancelarRegistro()
-		{
-			var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.Small, BackdropClick = false };
-
-			var dialog = await DialogService.ShowAsync<ModalCancelarRegistroFaltasSPG>("Cancelar registro", options);
-			var result = await dialog.Result;
-
-			if (!result.Canceled)
-			{
-				Console.WriteLine($"Data  - {result.Data}");
-				bool responde = (bool)result.Data!;
-				if (responde) FaltasDeServidoresPublicosG.Activo = 0;
-				else FaltasDeServidoresPublicosG.Activo = 1;
-				await ActualizarInformacionDeFaltasTemporales(true);
-			}
-		}
-
-		private async Task ConsultarIdUsuario()
+                if (result is not null)
+                {
+                    CatalogosBD = result;
+                    if (CatalogosBD is not null)
+                    {
+                        EntidadesFederativas = CatalogosBD.EntidadFederativas!;
+                        NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
+                        AmbitoPublico = CatalogosBD.AmbitoPublico!;
+                        OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
+                        NivelJerarquico = CatalogosBD.NivelJerarquico!;
+                        FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
+                        Sexos = CatalogosBD.Sexo!;
+                        ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
+                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 3 || c.Bandera == 1).ToList();
+                        TipoMonedas = CatalogosBD.Monedas!;
+                        Paises = CatalogosBD.Paises!;
+                        TiposVialidades = CatalogosBD.TipoVialidad!;
+                    }
+                }
+                else
+                {
+                    Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
+                //Snackbar.Add("Se guardó la información previa.", Severity.Success);
+                //RespuestaRegistro = result!;
+            }
+        }
+        private async Task ConsultarIdUsuario()
 		{
 			try
 			{

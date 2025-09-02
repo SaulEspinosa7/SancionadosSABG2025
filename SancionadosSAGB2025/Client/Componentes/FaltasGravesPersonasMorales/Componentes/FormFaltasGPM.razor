@@ -41,7 +41,7 @@
             }
 
         }
-                <MudStepper NonLinear="modoVista" ShowResetButton OnPreviewInteraction="OnPreviewInteraction" Vertical="true">
+        <MudStepper NonLinear="modoVista" @bind-ActiveIndex="index" ShowResetButton OnPreviewInteraction="OnPreviewInteraction" Vertical="true">
                         <ChildContent>
                         <MudStep Title="1. FECHA* (DD-MM-AAAA)*" CompletedStepColor="Color.Success">
 
@@ -705,7 +705,7 @@
                                                                       helpertext="Colocar el monto total de la sanción económica." />
                                                     </MudItem>
                                                     <MudItem xs="4">
-                                                        <MudSelect @bind-Value="_modelo!.Indeminizacion!.Moneda.Id"
+                                                        <MudSelect @bind-Value="_modelo!.Indeminizacion!.IdTipoMonedaFK"
                                                                    Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
                                                                    Disabled="modoVista"
                                                                    Required="!modoVista"
@@ -757,14 +757,14 @@
                                                     <MudCardActions>
                                                         <MudGrid>
                                                             <MudItem xs="6">
-                                                                <MudNumericField @bind-value="_modelo!.Indeminizacion!.SancionEfectivamenteCobrada!.Monto"
+                                                                <MudNumericField @bind-value="_modelo!.SancionEfectivamenteCobrada!.Monto"
                                                                              HideSpinButtons="true"
                                                                              Disabled="modoVista"
                                                                               label="MONTO"
                                                                               helpertext="Indicar el monto efectivamente cobrado" />
                                                             </MudItem>
                                                             <MudItem xs="6">
-                                                                <MudSelect @bind-Value="_modelo!.Indeminizacion!.SancionEfectivamenteCobrada!.Moneda.Id"
+                                                                <MudSelect @bind-Value="_modelo!.SancionEfectivamenteCobrada!.IdMonedaFK"
                                                                            Disabled="modoVista"
                                                                            Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
                                                                            HelperText="Elegir el tipo de moneda:">
@@ -776,10 +776,10 @@
                                                             </MudItem>
 
                                                             <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                                             </MudItem>
                                                             <MudItem xs="6">
-                                                                <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                                                <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                                             </MudItem>
                                                         </MudGrid>
                                                     </MudCardActions>
@@ -1013,54 +1013,47 @@
                       
                        
                         </ChildContent>
-                        <ActionContent Context="stepper">
-                            <MudButton EndIcon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="@(() => stepper.PreviousStepAsync())">Regresar</MudButton>
-                            <MudSpacer />
-                            @* @if (personaMoralEntidadVistaEdicion is not null)
-                            {
-                                @if (stepper.ActiveIndex < stepper.Steps.Count() - 1)
-                                {
-                                    @if (loading)
-                                    {
-                                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                                    }
-                                    else
-                                    {
-                                        <MudButton StartIcon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="@(() => stepper.NextStepAsync())">Pasar al Siguiente</MudButton>
-                                    }
-                                }
-                                else
-                                {
-                                    <MudButton StartIcon="@Icons.Material.Filled.Check"
-                                               Color="Color.Primary"
-                                               OnClick="FinalizarRegistro">
-                                        Finalizar
-                                    </MudButton>
-                                    
-                                }
-                            }
-                            else
-                            { *@
-                                @if (stepper.ActiveIndex < stepper.Steps.Count() - 1)
-                                {
-                                    @if (loading)
-                                    {
-                                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                                    }
-                                    else
-                                    {
-                                        <MudButton StartIcon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="@(() => stepper.NextStepAsync())">Pasar al Siguiente</MudButton>
-                                    }
+            <ActionContent Context="stepper">
+                <MudButton EndIcon="@Icons.Material.Filled.NavigateBefore"
+                           Color="Color.Primary"
+                           OnClick="@(() => stepper.PreviousStepAsync())">
+                    Regresar
+                </MudButton>
 
-                                }
-                                else
-                                {
-                                    <MudButton StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary" OnClick="FinalizarRegistro">Finalizar</MudButton>
-                                }
-                            
-                                
-                          
-                        </ActionContent>
+                <MudSpacer />
+
+                @if (stepper.ActiveIndex < stepper.Steps.Count - 1)
+                {
+                    @if (loading)
+                    {
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.NavigateNext"
+                                   Color="Color.Primary"
+                                   OnClick="@(() => stepper.NextStepAsync())">
+                            Pasar al Siguiente
+                        </MudButton>
+                    }
+                }
+                else
+                {
+                    @if (loading)
+                    {
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.Check"
+                                   Color="Color.Primary"
+                                   OnClick="FinalizarRegistro">
+                            Finalizar
+                        </MudButton>
+                    }                    
+                }
+            </ActionContent>
+
                     </MudStepper>                            
             </Content>
         </CardForm>
@@ -1198,10 +1191,7 @@
                         }
                        
                     }
-                    break;
-                case 9:
-                    await FinalizarRegistro();
-                    break;
+                    break;                
             }
         }
         finally

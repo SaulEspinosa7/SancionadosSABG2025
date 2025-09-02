@@ -48,7 +48,7 @@ namespace SancionadosSAGB2025.Shared.Moral
         public PlazoPago? PlazoPago { get; set; } = new PlazoPago();
 
         public int? IdSancionEfectivamenteCobradaFK { get; set; }
-        public  SancionEfectivamenteCobrada? SancionEfectivamenteCobrada { get; set; } = new SancionEfectivamenteCobrada();
+        public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new SancionEfectivamenteCobradaMoral();
 
         public int? IdSancionEconomicaFK { get; set; }
         public  SancionEconomica? SancionEconomica { get; set; } = new SancionEconomica();
@@ -167,45 +167,38 @@ namespace SancionadosSAGB2025.Shared.Moral
     }
     public class DomicilioMexicoMorales
     {
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("idDomicilioMexico")]
+
         public int? IdDomicilioMexico { set; get; }
 
-        [JsonPropertyName("idTipoVialidadFK")]
         public int? IdTipoVialidadFK { set; get; }
 
-        [JsonPropertyName("tipoVialidad")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public TipoVialidad? TipoVialidad { get; set; }
 
-        [JsonPropertyName("nombreVialidad")]
+
         public string? NombreVialidad { get; set; }
 
-        [JsonPropertyName("numeroExterior")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? NumeroExterior { get; set; }
 
-        [JsonPropertyName("numeroInterior")]
+  
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? NumeroInterior { get; set; }
 
-        [JsonPropertyName("coloniaLocalidad")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? ColoniaLocalidad { get; set; }
 
-        [JsonPropertyName("municipioAlcaldia")]
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? MunicipioAlcaldia { get; set; }
 
-        [JsonPropertyName("codigoPostal")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? CodigoPostal { get; set; }
 
-        [JsonPropertyName("idEntidadFederativaFK")]
+  
         public int? IdEntidadFederativaFK { set; get; }
 
-        [JsonPropertyName("entidadFederativa")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public EntidadFederativa? EntidadFederativa { get; set; }
     }
 

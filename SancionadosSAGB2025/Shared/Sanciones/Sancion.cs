@@ -393,8 +393,8 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		//public DateTime? FechaCreacion { get; set; }
 		//public DateTime? FechaModificacion { get; set; }
 		//public int? Activo { get; set; }
-		public int? idSancionEfectivamenteCobradaFK { get; set; }
-		public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new();
+		//public int? idSancionEfectivamenteCobradaFK { get; set; }
+		//public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new();
     }
 	public class Moneda
 	{
@@ -848,8 +848,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 			[JsonPropertyName("id")]
 			[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 			public int? Id { get; set; }
-
-			[JsonPropertyName("fecha")]
+			
 			public DateTime? Fecha { get; set; }
 
 			[JsonPropertyName("expediente")]
