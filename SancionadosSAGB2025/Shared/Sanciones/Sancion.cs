@@ -384,7 +384,28 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public int? Dia { get; set; }
 	}
 
-	public class Indemnizacion
+	public class IndemnizacionMoral
+	{
+		public int? Id { get; set; }
+		public decimal? Monto { get; set; }
+		public int? IdTipoMonedaFK { get; set; }
+		public Moneda? Moneda { get; set; } = new();
+		//public DateTime? FechaCreacion { get; set; }
+		//public DateTime? FechaModificacion { get; set; }
+		//public int? Activo { get; set; }
+		public int? idSancionEfectivamenteCobradaFK { get; set; }
+		public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new();
+    }
+	public class Moneda
+	{
+		public int? Id { get; set; }
+		public string? Descripcion { get; set; }
+		public DateTime? FechaCreacion { get; set; }
+		public DateTime? FechaModificacion { get; set; }
+		public int? Activo { get; set; }
+    }
+
+    public class Indemnizacion
 	{
 		[JsonPropertyName("id")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -401,7 +422,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public MonedaCat? Moneda { get; set; }
 
 		[JsonPropertyName("plazoPago")]
-		public PlazoPago? PlazoPago { get; set; }
+		public PlazoPago? PlazoPago { get; set; } 
 
 		[JsonPropertyName("anios")]
 		public int? Anio { get; set; }
@@ -462,7 +483,20 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public DateTime? FechaPagoTotal { get; set; }
 	}
 
-	public class PlazoPagos
+    public class SancionEfectivamenteCobradaMoral
+	{
+        public int? Id { get; set; }
+        public decimal? Monto { get; set; }
+		public int? IdMonedaFK { get; set; }
+        public Moneda? Moneda { get; set; } = new();
+        public DateTime? FechaCobro { get; set; }
+		public DateTime? FechaPagoTotal { get; set; }
+		public DateTime? FechaCreacion { get; set; }
+		public DateTime? FechaModificacion { get; set; }
+		public int? Activo { get; set; }
+	}
+
+    public class PlazoPagos
 	{
 		[JsonPropertyName("id")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

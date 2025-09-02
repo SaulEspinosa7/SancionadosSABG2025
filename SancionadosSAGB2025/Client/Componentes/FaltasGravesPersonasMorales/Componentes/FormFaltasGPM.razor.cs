@@ -21,7 +21,25 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         [Parameter] public PersonaMoralEntidad? personaMoralEntidadVistaEdicion { get; set; }
         [Parameter] public bool modoVista { get; set; }
         private int? _activePanel = 0;
-        private PersonaMoralEntidad? _modelo = new();
+        private PersonaMoralEntidad? _modelo = new PersonaMoralEntidad
+        {
+            Indeminizacion = new IndemnizacionMoral
+            {
+                SancionEfectivamenteCobrada = new SancionEfectivamenteCobradaMoral
+                {
+                    Moneda = new Moneda() // Asegúrate de que MonedaCat es el nombre correcto de tu clase
+                }
+            },
+            SancionEconomica = new SancionEconomica
+            {
+                Moneda = new MonedaCat(),
+                PlazoPago = new PlazoPago()
+            },
+            SuspensionActividades = new SuspensionActividades(),
+            DisolucionSociedad = new DisolucionSociedad(),
+            Otro = new Otro(),
+            // Continúa inicializando cualquier otra propiedad anidada que pueda ser nula en tu formulario
+        };
 
         private MudForm? _formFecha;
         private MudForm? _formExpediente;
@@ -71,6 +89,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         private IEnumerable<string> _options { get; set; } = new HashSet<string>();
         private int _currentPanelIndex = 0;
         private int index = -1;
+        private bool loading;
         private bool obsevaciones;
 
         protected override async Task OnInitializedAsync()
@@ -79,6 +98,19 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             {
                 _modelo = personaMoralEntidadVistaEdicion;                
             }
+            //_modelo.SancionEconomica ??= new SancionEconomica();
+            //// Ahora que sabes que SancionEconomica existe, haz lo mismo con sus hijos.
+            //_modelo.SancionEconomica.Moneda ??= new MonedaCat();
+            //_modelo.SancionEconomica.PlazoPago ??= new PlazoPago();
+
+            //// Haz lo mismo para las otras propiedades principales que puedan ser nulas
+            //_modelo.Indeminizacion ??= new IndemnizacionMoral();
+            //_modelo.Indeminizacion.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
+            //_modelo.Indeminizacion.SancionEfectivamenteCobrada.Moneda ??= new Moneda();
+
+            //_modelo.SuspensionActividades ??= new SuspensionActividades();
+            //_modelo.DisolucionSociedad ??= new DisolucionSociedad();
+            _modelo.Otro ??= new Otro();
             await ObtenerCatalogosFormulario();
             await MostrarOpcionCatalogos();
             await InicializarVariables();
@@ -193,197 +225,101 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             }
         }
 
-        private async Task OnNextStepClick(int stepIndex)
-        {
-            bool isFormValid = false;
-            switch (stepIndex)
-            {
-                case 0:
-                    await _formFecha!.Validate();
-                    isFormValid = _isStep1Valid[0];
-                    break;
-                case 1:
-                    await _formExpediente!.Validate();
-                    isFormValid = _isStep1Valid[1];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal(); 
-                    break;
-                case 2:
-                    await _formDatosGenerales!.Validate();
-                    isFormValid = _isStep1Valid[2];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 3:
-                    await _formDatosDirectorGeneral!.Validate();
-                    isFormValid = _isStep1Valid[3];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 4:
-                    await _formDatosEntePublico!.Validate();
-                    isFormValid = _isStep1Valid[4];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 5:
-                    await _formOrigenProcedimiento!.Validate();
-                    isFormValid = _isStep1Valid[5];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 6:
-                    await _formTipoFaltaCometida!.Validate();
-                    isFormValid = _isStep1Valid[6];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 7:
-                    await _formResolucionSancionatoria!.Validate();
-                    isFormValid = _isStep1Valid[7];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-                case 8:
-                    await _formTipoSancionImpuesta!.Validate();
-                    isFormValid = _isStep1Valid[8];
-                    if (isFormValid && !modoVista)
-                        isFormValid = await GuardarTemporal();
-                    break;
-            }
-
-            if (isFormValid)
-            {
-                _isPanelCompleted[stepIndex] = true;
-                _activePanel = stepIndex + 1;
-            }
-
-            StateHasChanged();
-        }
-
-
-        private async Task<bool> OnNextStepClick()
-        {
-            try
-            {
-                var ordenSanciones = new Dictionary<string, int>
-        {
-            { "INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS", 1 },
-            { "INDEMNIZACION", 2 },
-            { "SANCION ECONOMICA", 3 },
-            { "SUSPENSION ACTIVIDADES", 4 },
-            { "DISOLUCION SOCIEDAD", 5 },
-            { "OTRO (Especifique)", 6 }
-        };
-
-                var selectedPanels = _options
-                    .OrderBy(x => ordenSanciones.ContainsKey(x) ? ordenSanciones[x] : 99)
-                    .ToList();
-
-                if (selectedPanels.Count == 0 || _currentPanelIndex >= selectedPanels.Count)
-                {
-                    // Saltar al panel final (observaciones)
-                    _activePanel = 9;
-                    return true;
-                }
-
-                var nextPanel = selectedPanels[_currentPanelIndex];
-
-                // En modo vista, simplemente avanzar sin validar ni guardar
-                bool result = modoVista ? true : await SwitchToPanel(nextPanel);
-
-                if (result)
-                {
-                    _currentPanelIndex++;
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al cambiar de panel: {ex.Message}");
-                return false;
-            }
-        }
-
-
-
         private void Regresar()
         {
             Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
         }
-        private async Task<bool> SwitchToPanel(string panelKey)
+        private async Task<bool> SwitchToPanel()
         {
             try
             {
-                bool isFormValid = false;
-
-                switch (panelKey)
+                // REGLA 1: Si es modo vista, salimos inmediatamente.
+                if (modoVista)
                 {
-                    case "INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS":
-                        await _formInhabilitacionTemporal!.Validate();
-                        isFormValid = _isStep1Valid[10];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    case "INDEMNIZACION":
-                        await _formIndemnizacion!.Validate();
-                        isFormValid = _isStep1Valid[11];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    case "SANCION ECONOMICA":
-                        await _formSancionEconomica!.Validate();
-                        isFormValid = _isStep1Valid[12];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    case "SUSPENSION ACTIVIDADES":
-                        await _formSuspensionActividades!.Validate();
-                        isFormValid = _isStep1Valid[13];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    case "DISOLUCION SOCIEDAD":
-                        await _formDisolucion!.Validate();
-                        isFormValid = _isStep1Valid[14];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    case "OTRO (Especifique)":
-                        await _formOtro!.Validate();
-                        isFormValid = _isStep1Valid[15];
-
-                        if (isFormValid && !modoVista)
-                        {
-                            isFormValid = await GuardarTemporal();
-                        }
-                        return isFormValid;
-
-                    default:
-                        // Si el caso por defecto no requiere validación ni guardado, puedes devolver true
-                        return true;
+                    return true;
                 }
+
+                bool todasLasOpcionesSonValidas = true;
+
+                if (_options.Contains("INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS"))
+                {
+                    await _formInhabilitacionTemporal!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[10];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("INDEMNIZACION"))
+                {
+                    await _formIndemnizacion!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[11];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("SANCION ECONOMICA"))
+                {
+                    await _formSancionEconomica!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[12];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("SUSPENSION ACTIVIDADES"))
+                {
+                    await _formSuspensionActividades!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[13];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("DISOLUCION SOCIEDAD"))
+                {
+                    await _formDisolucion!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[14];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                if (_options.Contains("OTRO (Especifique)"))
+                {
+                    await _formOtro!.Validate();
+                    bool esValidoEstaOpcion = _isStep1Valid[15];
+
+                    if (esValidoEstaOpcion)
+                    {
+                        esValidoEstaOpcion = await GuardarTemporal();
+                    }
+
+                    todasLasOpcionesSonValidas &= esValidoEstaOpcion;
+                }
+
+                return todasLasOpcionesSonValidas;
             }
             catch (Exception ex)
             {
@@ -391,6 +327,85 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                 return false;
             }
         }
+        //private async Task<bool> SwitchToPanel(string panelKey)
+        //{
+        //    try
+        //    {
+        //        bool isFormValid = false;
+
+        //        switch (panelKey)
+        //        {
+        //            case "INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS":
+        //                await _formInhabilitacionTemporal!.Validate();
+        //                isFormValid = _isStep1Valid[10];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            case "INDEMNIZACION":
+        //                await _formIndemnizacion!.Validate();
+        //                isFormValid = _isStep1Valid[11];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            case "SANCION ECONOMICA":
+        //                await _formSancionEconomica!.Validate();
+        //                isFormValid = _isStep1Valid[12];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            case "SUSPENSION ACTIVIDADES":
+        //                await _formSuspensionActividades!.Validate();
+        //                isFormValid = _isStep1Valid[13];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            case "DISOLUCION SOCIEDAD":
+        //                await _formDisolucion!.Validate();
+        //                isFormValid = _isStep1Valid[14];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            case "OTRO (Especifique)":
+        //                await _formOtro!.Validate();
+        //                isFormValid = _isStep1Valid[15];
+
+        //                if (isFormValid && !modoVista)
+        //                {
+        //                    isFormValid = await GuardarTemporal();
+        //                }
+        //                return isFormValid;
+
+        //            default:
+        //                // Si el caso por defecto no requiere validación ni guardado, puedes devolver true
+        //                return true;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return false;
+        //    }
+        //}
 
         private bool EsValido(string? valor)
         {
@@ -427,7 +442,11 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             {
                 var error = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Error en el servidor: {error}");
-                Snackbar.Add($"Error al guardar temporalmente: {error}", Severity.Error);
+                Snackbar.Add($"Error al guardar temporalmente: {error}", Severity.Error, config =>
+                {                    
+                    config.ShowCloseIcon = true;
+                });
+                // Snackbar.Add($"Error al guardar temporalmente: {error}", Severity.Error);
                 return false;
             }
 

@@ -42,7 +42,7 @@ namespace SancionadosSAGB2025.Shared.Moral
         public Inhabilitacion? Inhabilitacion { get; set; } = new Inhabilitacion();
 
         public int? IdIndeminizacionFK { get; set; }
-        public Indemnizacion? Indeminizacion { get; set; } = new Indemnizacion();
+        public IndemnizacionMoral? Indeminizacion { get; set; } = new IndemnizacionMoral();
 
         public int? IdPlazoPagoFK { get; set; }
         public PlazoPago? PlazoPago { get; set; } = new PlazoPago();

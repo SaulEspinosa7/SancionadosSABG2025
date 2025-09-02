@@ -720,13 +720,13 @@
                                             <MudCardActions>
                                                 <MudGrid>
                                                     <MudItem xs="6">
-                                                        <MudTextField @bind-value="_modelo!.Indeminizacion!.EfectivamenteCobrada!.Monto"
+                                                        <MudTextField @bind-value="_modelo!.Indeminizacion!.SancionEfectivamenteCobrada!.Monto"
                                                                       Disabled="modoVista"
                                                                       label="MONTO"
                                                                       helpertext="Indicar el monto efectivamente cobrado" />
                                                     </MudItem>
                                                     <MudItem xs="6">
-                                                        <MudSelect @bind-Value="_modelo!.Indeminizacion!.EfectivamenteCobrada!.Moneda"
+                                                        <MudSelect @bind-Value="_modelo!.Indeminizacion!.SancionEfectivamenteCobrada!.Moneda"
                                                                    Disabled="modoVista"
                                                                    Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
                                                                    HelperText="Elegir el tipo de moneda:">
@@ -738,10 +738,10 @@
                                                     </MudItem>
 
                                                     <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.EfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                                     </MudItem>
                                                     <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.EfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion!.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                                     </MudItem>
                                                 </MudGrid>
                                             </MudCardActions>

@@ -28,9 +28,9 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             faltasDeServidoresPublicosMorales.Resolucion ??= new Resolucion();
             faltasDeServidoresPublicosMorales.Inhabilitacion ??= new Inhabilitacion();
 
-            faltasDeServidoresPublicosMorales.Indeminizacion ??= new Indemnizacion();
-            faltasDeServidoresPublicosMorales.Indeminizacion.EfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
-            faltasDeServidoresPublicosMorales.Indeminizacion.EfectivamenteCobrada.Moneda ??= new MonedaCat();
+            faltasDeServidoresPublicosMorales.Indeminizacion ??= new IndemnizacionMoral();
+            faltasDeServidoresPublicosMorales.Indeminizacion.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
+            faltasDeServidoresPublicosMorales.Indeminizacion.SancionEfectivamenteCobrada.Moneda ??= new Moneda();
 
             faltasDeServidoresPublicosMorales.PlazoPago ??= new PlazoPago();
             faltasDeServidoresPublicosMorales.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
