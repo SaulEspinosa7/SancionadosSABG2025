@@ -142,7 +142,7 @@ namespace SancionadosSAGB2025.Shared.Registros
 	{
 		public bool? Response { get; set; }
 		public string? Mensaje { get; set; }
-		public AddFaltasDeServidoresPublicosG? Data { get; set; }
+		public FaltasDeServidoresPublicosG? Data { get; set; }
 	}
 
 	public class RespuestaRegistroNoGraves

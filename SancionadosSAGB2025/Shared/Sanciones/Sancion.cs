@@ -47,40 +47,32 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("sexo")]
 		[JsonIgnore]
-		public Sexo? Sexo { get; set; }
+		public Sexo? Sexo { get; set; } = new();
 
 		[JsonPropertyName("idDomicilioMexicoFK")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public int? IdDomicilioMexicoFK { set; get; }
 
-		[JsonPropertyName("domicilioMexico")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public DomicilioMexico? DomicilioMexico { get; set; }
+		public DomicilioMexico? DomicilioMexico { get; set; } = new();
 
-		[JsonPropertyName("idDomicilioExtranjeroFK")]
+        [JsonPropertyName("idDomicilioExtranjeroFK")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public int? IdDomicilioExtranjeroFK { set; get; }
 
 		[JsonPropertyName("domicilioExtranjero")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public DomicilioExtranjero? DomicilioExtranjero { get; set; }
+		public DomicilioExtranjero? DomicilioExtranjero { get; set; } = new();
 
-		[JsonPropertyName("objetoSocial")]
+        [JsonPropertyName("objetoSocial")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public string? ObjetoSocial { get; set; }
 	}
 
 	public class DomicilioMexico 
 	{
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		[JsonPropertyName("idDomicilioMexico")]
 		public int? IdDomicilioMexico { set; get; }
 
-		[JsonPropertyName("idTipoVialidadFK")]
 		public int? IdTipoVialidadFK { set; get; }
-
-		[JsonPropertyName("tipoVialidad")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public TipoVialidad? TipoVialidad { get; set; }
 
 		[JsonPropertyName("nombreVialidad")]
@@ -101,13 +93,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		[JsonPropertyName("codigoPostal")]     
         public string? CodigoPostal { get; set; }
 
-		[JsonPropertyName("idEntidadFederativaFK")]
 		public int? IdEntidadFederativaFK { set; get; }
-
-		[JsonPropertyName("entidadFederativa")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public EntidadFederativa? EntidadFederativa { get; set; }
-	}
+		public EntidadFederativa? EntidadFederativa { get; set; } = new();
+    }
 
 	public class DomicilioExtranjero
 	{
@@ -221,7 +209,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public int? IdOrigenProcedimientoCatFK { get; set; }
 
 		[JsonPropertyName("clave")]
-		public OrigenProcedimientoCat? Clave { get; set; }
+		public OrigenProcedimientoCat? Clave { get; set; } = new();
 
 		[JsonPropertyName("valor")]
 		public string? Valor { get; set; }
@@ -389,7 +377,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public int? Id { get; set; }
 		public decimal? Monto { get; set; }
 		public int? IdTipoMonedaFK { get; set; }
-		public Moneda? Moneda { get; set; } = new();
+		//public Moneda? Moneda { get; set; } = new();
 		//public DateTime? FechaCreacion { get; set; }
 		//public DateTime? FechaModificacion { get; set; }
 		//public int? Activo { get; set; }
@@ -801,9 +789,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 			public int? IdTipoAmonestacionFK { get; set; }
 
 			[JsonPropertyName("tipoAmonestacion")]
-			public TipoAmonestacion? TipoAmonestacion { get; set; }
+			public TipoAmonestacion? TipoAmonestacion { get; set; } = new();
 
-			[JsonPropertyName("idSuspension")]
+        [JsonPropertyName("idSuspension")]
 			public int? IdSuspension { get; set; }
 
 			[JsonPropertyName("suspension")]

@@ -40,7 +40,7 @@
     }
 </MudGrid>
 <br />
-<MudStepper Class="pa-0 ma-0" Vertical="true" @bind-ActiveIndex="index" NonLinear="modoVista" OnPreviewInteraction="OnPreviewInteraction">
+<MudStepper Class="pa-0 ma-0" Vertical="true" @bind-ActiveIndex="index" NonLinear="!modoVista" OnPreviewInteraction="OnPreviewInteraction">
     <ChildContent>
         <MudStep Title="1. FECHA* (DD-MM-AAAA)*" CompletedStepColor="Color.Success">
             <MudForm @ref="_formFecha" @bind-IsValid="_isStep1Valid[0]">                                 
@@ -140,15 +140,19 @@
                     {
                         <MudItem xs="12"><MudText Align="Align.Center" Typo="Typo.h6">DOMICILIO EN LA REPÚBLICA MEXICANA</MudText></MudItem>
                         <MudItem xs="4">
-                            <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.TipoVialidad"
+                            <MudSelect T="int?"
+                                       @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdTipoVialidadFK"
                                        Label="TIPO DE VIALIDAD Ejemplo: CALLE"
                                        Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                        HelperText="Colocar el tipo de la vialidad correspondiente con base al catálogo de vialidades del marco Geoestadístico Nacional. ">
                                 @foreach (var vialidad in TiposVialidades)
                                 {
-                                    <MudSelectItem Value="@vialidad">@vialidad.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@vialidad.IdTipoVialidad">
+                                        @vialidad.Descripcion
+                                    </MudSelectItem>
                                 }
                             </MudSelect>
+
                         </MudItem>
                         <MudItem xs="4">
                             <MudTextField @bind-value="FaltasDeServidoresPublicosG!.DatosGenerales!.DomicilioMexico.NombreVialidad"
@@ -196,15 +200,20 @@
                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
                         </MudItem>
                         <MudItem xs="4">
-                            <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.EntidadFederativa"
+                            <MudSelect T="int?"
+                                       @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdEntidadFederativaFK"
                                        Label="ENTIDAD FEDERATIVA"
                                        Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                       HelperText="Seleccionar la entidad federativa donde se ubica el Ente público donde labora o laboraba la persona servidora pública sancionada, al momento de cometer la falta administrativa. ">
+                                       HelperText="Seleccionar la entidad federativa donde se ubica el Ente público donde labora o laboraba la persona servidora pública sancionada, al momento de cometer la falta administrativa.">
                                 @foreach (var entidad in EntidadesFederativas)
                                 {
-                                    <MudSelectItem Value="@entidad">@entidad.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@entidad.IdEntidadFederativa">
+                                        @entidad.Descripcion
+                                    </MudSelectItem>
                                 }
                             </MudSelect>
+
+
                         </MudItem>
 
                     }
@@ -332,20 +341,15 @@
             <MudForm @ref="_formOrigenProcedimiento" @bind-IsValid="_isStep1Valid[4]" Model="FaltasDeServidoresPublicosG">
                 <MudGrid>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.OrigenProcedimiento!.Clave"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.OrigenProcedimiento!.IdOrigenProcedimientoCatFK"
                                    Label="Origen Procedimiento"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    HelperText="Se deberá señalar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave.">
                             @foreach (var origen in ListaOrigenesInvestigacion)
                             {
-                                <MudSelectItem Value="@origen">@origen.Clave</MudSelectItem>
+                                <MudSelectItem Value="@origen.IdOrigenProcedimiento">@origen.Clave</MudSelectItem>
                             }
-                        </MudSelect>
-                        @if (FaltasDeServidoresPublicosG.OrigenProcedimiento!.Clave is null)
-                        {
-                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
-                        }
-
+                        </MudSelect>                        
                     </MudItem>
                     @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Clave?.Contains("OTRO (Especifique)") == true)
                     {

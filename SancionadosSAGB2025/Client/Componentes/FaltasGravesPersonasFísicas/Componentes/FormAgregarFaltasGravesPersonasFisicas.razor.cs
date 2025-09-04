@@ -44,7 +44,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
         private MudForm? _formFecha;
         private MudForm? _formExpediente;
         private MudForm? _formDatosGenerales;
-        private MudForm? _formDatosDirectorGeneral;
         private MudForm? _formDatosEntePublico;
 
         private MudForm? _formOrigenProcedimiento;
@@ -60,10 +59,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
         private MudForm? _formIndemnizacion;
 
         private MudForm? _formSancionEconomica;
-
-        private MudForm? _formSuspensionActividades;
-
-        private MudForm? _formDisolucion;
 
         private MudForm? _formOtro;
 
@@ -82,7 +77,11 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private bool inhabilitacion { get; set; } = false;
         protected override async Task OnInitializedAsync()
 		{
-			await ObtenerCatalogosFormulario();
+            if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico != null)
+                TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
+            else if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero != null)
+                TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
+            await ObtenerCatalogosFormulario();
 			await MostrarOpcionCatalogos();
 			await InicializarVariables();
 		}
@@ -375,8 +374,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
         private async Task InicializarVariables() 
 		{
 			TipoDomicilios = Enum.GetValues(typeof(TipoDomiclio)).Cast<TipoDomiclio>().ToList();
-			FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico = new();
-			FaltasDeServidoresPublicosG.DatosGenerales.DomicilioExtranjero = new();
+			//FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico = new();
+			//FaltasDeServidoresPublicosG.DatosGenerales.DomicilioExtranjero = new();
 			//FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdTipoVialidadFK = 1; // Asignar un valor por defecto
 			//FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdEntidadFederativaFK = 1; // Asignar un valor por defecto
 			//FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.NombreVialidad = ""; // Asignar un valor por defecto
@@ -516,7 +515,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
                         FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
                         Sexos = CatalogosBD.Sexo!;
                         ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 3 || c.Bandera == 1).ToList();
+                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 && c.IdTipoSancionCat != 11 || c.Bandera == 3 || c.Bandera == 1).ToList();
                         TipoMonedas = CatalogosBD.Monedas!;
                         Paises = CatalogosBD.Paises!;
                         TiposVialidades = CatalogosBD.TipoVialidad!;

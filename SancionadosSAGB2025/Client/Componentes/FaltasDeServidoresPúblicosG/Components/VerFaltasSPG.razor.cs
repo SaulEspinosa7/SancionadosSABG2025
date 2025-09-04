@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using SancionadosSAGB2025.Shared.Catalogos;
 using SancionadosSAGB2025.Shared.Sanciones;
 
 namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Components
@@ -12,7 +13,26 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 		protected override async Task OnParametersSetAsync()
 		{
 			_faltasDeServidoresPublicosG = await ConvertToEntity(faltasDeServidoresPublicosG);
-			Console.WriteLine($"FaltasDeServidoresPublicosG: {_faltasDeServidoresPublicosG?.MultipleSancion}");
+            if (_faltasDeServidoresPublicosG is null)
+            {
+                _faltasDeServidoresPublicosG = new FaltasDeServidoresPublicosG();
+            }
+
+            _faltasDeServidoresPublicosG.DatosGenerales ??= new DatosGenerales();
+            _faltasDeServidoresPublicosG.EmpleoCargoComision ??= new EmpleoCargoComision();
+            _faltasDeServidoresPublicosG.NivelJerarquico ??= new NivelJerarquico();
+            _faltasDeServidoresPublicosG.OrigenProcedimiento ??= new OrigenProcedimiento();
+            _faltasDeServidoresPublicosG.FaltaCometida ??= new FaltaCometida();
+            _faltasDeServidoresPublicosG.Resolucion ??= new Resolucion();
+            _faltasDeServidoresPublicosG.TipoSancion ??= new TipoSancion();
+            _faltasDeServidoresPublicosG.Suspension ??= new Suspension();
+            _faltasDeServidoresPublicosG.DestitucionEmpleo ??= new DestitucionEmpleo();
+            _faltasDeServidoresPublicosG.SancionEconomica ??= new SancionEconomica();
+            _faltasDeServidoresPublicosG.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
+            _faltasDeServidoresPublicosG.Inhabilitacion ??= new Inhabilitacion();
+            _faltasDeServidoresPublicosG.Otro ??= new Otro();
+            _faltasDeServidoresPublicosG.Sancion ??= new Sancion();
+            //Console.WriteLine($"_faltasDeServidoresPublicosG: {__faltasDeServidoresPublicosG?.MultipleSancion}");
 		}
 
 		public async Task<FaltasDeServidoresPublicosG> ConvertToEntity(AddFaltasDeServidoresPublicosG input)

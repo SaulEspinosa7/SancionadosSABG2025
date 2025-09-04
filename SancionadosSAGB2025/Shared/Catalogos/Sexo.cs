@@ -8,9 +8,9 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 {
 	public class Sexo
 	{
-		public int IdSexo { set; get; }
-		public string Descripcion { get; set; } = string.Empty;
-		public DateTime FechaCreacion { get; set; }
-		public DateTime FechaModificacion { get; set; }
+		public int? IdSexo { set; get; }
+		public string? Descripcion { get; set; } = string.Empty;
+		public DateTime? FechaCreacion { get; set; }
+		public DateTime? FechaModificacion { get; set; }
 	}
 }

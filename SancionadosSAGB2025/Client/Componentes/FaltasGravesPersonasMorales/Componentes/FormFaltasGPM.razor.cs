@@ -62,7 +62,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         private MudForm? _formOtro;
 
         private bool[] _isStep1Valid = new bool[16];
-        private bool[] _isPanelCompleted = new bool[16];
         private TipoDomiclio TipoDomicilioSeleccionado { get; set; } = new();
         private Catalogos CatalogosBD { get; set; } = new();
         private List<EntidadFederativa> EntidadesFederativas { get; set; } = new();
@@ -96,6 +95,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                 else if (_modelo?.DatosGenerales?.DomicilioExtranjero != null)
                     TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
             }
+            _modelo.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
             _modelo.Otro ??= new Otro();
             await ObtenerCatalogosFormulario();
             await MostrarOpcionCatalogos();

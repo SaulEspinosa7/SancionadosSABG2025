@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Admin\" />
     <Folder Include="Shared\Home\" />
   </ItemGroup>
 

@@ -15,8 +15,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             {
                 faltasDeServidoresPublicosMorales = new PersonaMoralEntidad();
             }
+          
+
+          
 
             faltasDeServidoresPublicosMorales.DatosGenerales ??= new DatosGeneralesMorales();
+            faltasDeServidoresPublicosMorales.DatosGenerales.DomicilioMexico ??= new DomicilioMexicoMorales();
             faltasDeServidoresPublicosMorales.DirectorGeneral ??= new DirectorGeneral();
             faltasDeServidoresPublicosMorales.DirectorGeneral.RepresentanteLegal ??= new RepresentanteLegal();
             faltasDeServidoresPublicosMorales.EmpleoCargoComision ??= new EmpleoCargoComision();

@@ -1,0 +1,78 @@
+﻿@page "/cambiocontraseña"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using SancionadosSAGB2025.Client.Shared.Forms
+@using SancionadosSAGB2025.Client.Shared.Partial.Cards
+<MainForm>
+    <Main>
+        <CardForm>
+            <Header>
+                Cambio de Contraseña
+            </Header>
+            <Content>
+                <MudGrid>
+                    <MudItem xs="12" sm="7">
+                        <MudPaper Class="pa-4">
+                            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                                <MudTextField T="string" AdornmentIcon="@Icons.Material.Filled.Person" Adornment="Adornment.End" Label="Usuario" Required="true" RequiredError="User name is required!" />
+                                <MudTextField T="string" AdornmentIcon="@Icons.Material.Filled.Password" Adornment="Adornment.End" Label="Contraseña" HelperText="Elija una contraseña fuerte" @ref="pwField1"
+                                              InputType="InputType.Password"
+                                              Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                                              RequiredError="Password is required!" />
+                                <MudTextField T="string"
+                                              Label="Contraseña" HelperText="Repita su contraseña" InputType="InputType.Password" AdornmentIcon="@Icons.Material.Filled.Password" Adornment="Adornment.End"
+                                              Validation="@(new Func<string, string>(PasswordMatch))" />
+                            </MudForm>
+                        </MudPaper>
+                        <MudPaper Class="pa-4 mt-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@(() => form.Validate())">Validar</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => form.ResetAsync())" Class="mx-2">Limpiar campos</MudButton>                         
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="5">
+                        <MudPaper Class="pa-4 mud-height-full">
+                            <MudText Typo="Typo.subtitle2">@($"Errores ({errors.Length})")</MudText>
+                            @foreach (var error in errors)
+                            {
+                                <MudText Color="@Color.Error">@error</MudText>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </Content>
+        </CardForm>
+    </Main>
+</MainForm>
+
+
+
+@code {
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "La contraseña es requerida";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "La contraseña debe contener al menos 8 caracteres";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "La contraseña debe contener al menos una mayúscula";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "La contaseña debe contener al menos una minúscula";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "La contraseña debe contener al menos un número";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Las contraseñas con coinciden";
+        return null;
+    }
+}
