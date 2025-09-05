@@ -94,7 +94,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
         public string? CodigoPostal { get; set; }
 
 		public int? IdEntidadFederativaFK { set; get; }
-		public EntidadFederativa? EntidadFederativa { get; set; } = new();
+		public EntidadFederativaEntidad? EntidadFederativa { get; set; } = new();
     }
 
 	public class DomicilioExtranjero
@@ -144,7 +144,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("entidadFederativa")]
 		[JsonIgnore]
-		public EntidadFederativa? EntidadFederativa { get; set; } = new();
+		public EntidadFederativaEntidad? EntidadFederativa { get; set; } = new();
 
         [JsonPropertyName("idNivelOrdenGobiernoFK")]
 		public int? IdNivelOrdenGobiernoFK { set; get; }
@@ -226,7 +226,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("clave")]
 		[JsonIgnore]
-		public FaltaCometidaCat? Clave { get; set; }
+		public FaltaCometidaEntidad? Clave { get; set; }
 
 		[JsonPropertyName("valor")]
 		public string? Valor { get; set; }
@@ -357,12 +357,12 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("moneda")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public MonedaCat? Moneda { get; set; }
+		public MonedaCat? Moneda { get; set; } = new();
 
-		[JsonPropertyName("plazoPago")]
-		public PlazoPago? PlazoPago { get; set; }
+        [JsonPropertyName("plazoPago")]
+		public PlazoPago? PlazoPago { get; set; } = new();
 
-		[JsonPropertyName("anios")]
+        [JsonPropertyName("anios")]
 		public int? Anio { get; set; }
 
 		[JsonPropertyName("meses")]
@@ -371,8 +371,23 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		[JsonPropertyName("dias")]
 		public int? Dia { get; set; }
 	}
+	public class SancionEconomicaMoral
+	{
+		public int? Id { get; set; }
+		public decimal? Monto { get; set; }
+		public int? IdMonedaFK { get; set; }
+		public Moneda? Moneda { get; set; } = new();
+        public PlazoPago? PlazoPago { get; set; } = new();
+        [JsonPropertyName("anios")]
+        public int? Anio { get; set; }
 
-	public class IndemnizacionMoral
+        [JsonPropertyName("meses")]
+        public int? Mes { get; set; }
+
+        [JsonPropertyName("dias")]
+        public int? Dia { get; set; }
+    }
+    public class IndemnizacionMoral
 	{
 		public int? Id { get; set; }
 		public decimal? Monto { get; set; }

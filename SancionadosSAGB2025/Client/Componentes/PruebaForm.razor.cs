@@ -48,12 +48,12 @@ namespace SancionadosSAGB2025.Client.Componentes
         private bool[] _isPanelCompleted = new bool[16];
         private TipoDomiclio TipoDomicilioSeleccionado { get; set; } = new();
         private Catalogos CatalogosBD { get; set; } = new();
-        private List<EntidadFederativa> EntidadesFederativas { get; set; } = new();
+        private List<EntidadFederativaEntidad> EntidadesFederativas { get; set; } = new();
         private List<NivelOrdenGobierno> NivelOrdenGobierno { get; set; } = new();
         private List<AmbitoPublico> AmbitoPublico { get; set; } = new();
         private List<OrdenJurisdiccional> OrdenJurisdiccional { get; set; } = new();
         private List<NivelJerarquicoCat> NivelJerarquico { get; set; } = new();
-        private List<FaltaCometidaCat> FaltasCometidas { get; set; } = new();
+        private List<FaltaCometidaEntidad> FaltasCometidas { get; set; } = new();
         private List<MonedaCat> TipoMonedas { get; set; } = new();
         private List<OrigenProcedimientoCat> ListaOrigenesInvestigacion { get; set; } = new();
         private List<Sexo> Sexos { get; set; } = new();
@@ -153,7 +153,7 @@ namespace SancionadosSAGB2025.Client.Componentes
             _modelo.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == _modelo.EmpleoCargoComision.IdAmbitoPublicoFK);
             _modelo.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == _modelo.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
             _modelo.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == _modelo.Resolucion.IdOrdenJurisdiccionalFK);
-            _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
+          //  _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
           //  _modelo.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEfectivamenteCobrada.IdMonedaFK);
         }    
         private async Task ConsultarIdUsuario()

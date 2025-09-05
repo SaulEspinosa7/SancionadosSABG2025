@@ -14,7 +14,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
             // Inicializamos cada una de las propiedades anidadas una sola vez.
             faltasDeServidoresPublicosFisicas.DatosGenerales ??= new DatosGenerales();
             faltasDeServidoresPublicosFisicas.EmpleoCargoComision ??= new EmpleoCargoComision();
-            faltasDeServidoresPublicosFisicas.EmpleoCargoComision.EntidadFederativa ??= new SancionadosSAGB2025.Shared.Catalogos.EntidadFederativa();
+            faltasDeServidoresPublicosFisicas.EmpleoCargoComision.EntidadFederativa ??= new SancionadosSAGB2025.Shared.Catalogos.EntidadFederativaEntidad();
             faltasDeServidoresPublicosFisicas.EmpleoCargoComision.NivelOrdenGobierno ??= new SancionadosSAGB2025.Shared.Catalogos.NivelOrdenGobierno();
             faltasDeServidoresPublicosFisicas.EmpleoCargoComision.AmbitoPublico ??= new SancionadosSAGB2025.Shared.Catalogos.AmbitoPublico();
             faltasDeServidoresPublicosFisicas.OrigenProcedimiento ??= new OrigenProcedimiento();

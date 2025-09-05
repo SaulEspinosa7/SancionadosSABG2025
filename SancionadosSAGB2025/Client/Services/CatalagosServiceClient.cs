@@ -20,12 +20,12 @@ namespace SancionadosSAGB2025.Client.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<List<EntidadFederativa>> ObtenerEntidadFederativa()
+		public Task<List<EntidadFederativaEntidad>> ObtenerEntidadFederativa()
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<List<FaltaCometidaCat>> ObtenerFaltaCometida()
+		public Task<List<FaltaCometidaEntidad>> ObtenerFaltaCometida()
 		{
 			throw new NotImplementedException();
 		}

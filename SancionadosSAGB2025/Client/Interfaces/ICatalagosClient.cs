@@ -5,8 +5,8 @@ namespace SancionadosSAGB2025.Client.Interfaces
 	public interface ICatalagosClient
 	{
 		Task<Catalogos> ObtenerTodosLosCatalogos();
-		Task<List<EntidadFederativa>> ObtenerEntidadFederativa();
-		Task<List<FaltaCometidaCat>> ObtenerFaltaCometida();
+		Task<List<EntidadFederativaEntidad>> ObtenerEntidadFederativa();
+		Task<List<FaltaCometidaEntidad>> ObtenerFaltaCometida();
 		Task<List<NivelOrdenGobierno>> ObtenerNivelOrdenGobierno();
 		Task<List<OrdenJurisdiccional>> ObtenerOrdenJurisdiccional();
 		Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento();

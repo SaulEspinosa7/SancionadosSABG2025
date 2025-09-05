@@ -8,8 +8,8 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 {
 	public class Catalogos
 	{
-		public List<EntidadFederativa>? EntidadFederativas { get; set; }
-		public List<FaltaCometidaCat>? FaltaCometidas { get; set; }
+		public List<EntidadFederativaEntidad>? EntidadFederativas { get; set; }
+		public List<FaltaCometidaEntidad>? FaltaCometidas { get; set; }
 		public List<NivelOrdenGobierno>? NivelOrdenGobierno { get; set; }
 		public List<OrdenJurisdiccional>? OrdenJurisdiccional { get; set; }
 		public List<OrigenProcedimientoCat>? OrigenProcedimiento { get; set; }

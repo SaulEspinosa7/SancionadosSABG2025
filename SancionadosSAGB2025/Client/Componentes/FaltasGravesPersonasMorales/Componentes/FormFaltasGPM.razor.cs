@@ -24,9 +24,9 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         private PersonaMoralEntidad? _modelo = new PersonaMoralEntidad
         {
             
-            SancionEconomica = new SancionEconomica
+            SancionEconomica = new SancionEconomicaMoral
             {
-                Moneda = new MonedaCat(),
+                Moneda = new Moneda(),
                 PlazoPago = new PlazoPago()
             },
             SuspensionActividades = new SuspensionActividades(),
@@ -64,12 +64,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         private bool[] _isStep1Valid = new bool[16];
         private TipoDomiclio TipoDomicilioSeleccionado { get; set; } = new();
         private Catalogos CatalogosBD { get; set; } = new();
-        private List<EntidadFederativa> EntidadesFederativas { get; set; } = new();
+        private List<EntidadFederativaEntidad> EntidadesFederativas { get; set; } = new();
         private List<NivelOrdenGobierno> NivelOrdenGobierno { get; set; } = new();
         private List<AmbitoPublico> AmbitoPublico { get; set; } = new();
         private List<OrdenJurisdiccional> OrdenJurisdiccional { get; set; } = new();
         private List<NivelJerarquicoCat> NivelJerarquico { get; set; } = new();
-        private List<FaltaCometidaCat> FaltasCometidas { get; set; } = new();
+        private List<FaltaCometidaEntidad> FaltasCometidas { get; set; } = new();
         private List<MonedaCat> TipoMonedas { get; set; } = new();
         private List<OrigenProcedimientoCat> ListaOrigenesInvestigacion { get; set; } = new();
         private List<Sexo> Sexos { get; set; } = new();
@@ -87,25 +87,43 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
 
         protected override async Task OnInitializedAsync()
         {
-            if(personaMoralEntidadVistaEdicion is not null)
+            try
             {
-                _modelo = personaMoralEntidadVistaEdicion;
-                if (_modelo?.DatosGenerales?.DomicilioMexico != null)
-                    TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
-                else if (_modelo?.DatosGenerales?.DomicilioExtranjero != null)
-                    TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
+                if (personaMoralEntidadVistaEdicion is not null)
+                {
+                    _modelo = personaMoralEntidadVistaEdicion;
+                    if (_modelo?.DatosGenerales?.DomicilioMexico != null)
+                        TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
+                    else if (_modelo?.DatosGenerales?.DomicilioExtranjero != null)
+                        TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
+                }
+                _modelo.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
+
+                _modelo.Otro ??= new Otro();
+                await ObtenerCatalogosFormulario();
+                await MostrarOpcionCatalogos();
+                await InicializarVariables();
             }
-            _modelo.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
-            _modelo.Otro ??= new Otro();
-            await ObtenerCatalogosFormulario();
-            await MostrarOpcionCatalogos();
-            await InicializarVariables();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception {ex.Message}");
+            }
+           
         }
         private async Task InicializarVariables()
         {
-            TipoDomicilios = Enum.GetValues(typeof(TipoDomiclio)).Cast<TipoDomiclio>().ToList();
-            //_modelo.DatosGenerales.DomicilioMexico = new();
-            //_modelo.DatosGenerales.DomicilioExtranjero = new();
+            try
+            {
+                TipoDomicilios = Enum.GetValues(typeof(TipoDomiclio)).Cast<TipoDomiclio>().ToList();
+                //_modelo.DatosGenerales.DomicilioMexico = new();
+                //_modelo.DatosGenerales.DomicilioExtranjero = new();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+         
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {            
@@ -161,14 +179,23 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         }
         private async Task MostrarOpcionCatalogos()
         {
-            _modelo.DatosGenerales!.Sexo = Sexos.FirstOrDefault(x => x.IdSexo == _modelo.DatosGenerales.IdSexoFk);
-            _modelo.EmpleoCargoComision!.EntidadFederativa = EntidadesFederativas.FirstOrDefault(x => x.IdEntidadFederativa == _modelo.EmpleoCargoComision.IdEntidadFederativaFK);
-            _modelo.EmpleoCargoComision!.NivelOrdenGobierno = NivelOrdenGobierno.FirstOrDefault(x => x.IdNivelOrdenGobierno == _modelo.EmpleoCargoComision.IdNivelOrdenGobiernoFK);
-            _modelo.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == _modelo.EmpleoCargoComision.IdAmbitoPublicoFK);
-            _modelo.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == _modelo.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
-            _modelo.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == _modelo.Resolucion.IdOrdenJurisdiccionalFK);
-            _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
-            //_modelo.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEfectivamenteCobrada.Moneda.IdMonedaFK);
+            try
+            {
+                _modelo.DatosGenerales!.Sexo = Sexos.FirstOrDefault(x => x.IdSexo == _modelo.DatosGenerales.IdSexoFk);
+                _modelo.EmpleoCargoComision!.EntidadFederativa = EntidadesFederativas.FirstOrDefault(x => x.IdEntidadFederativa == _modelo.EmpleoCargoComision.IdEntidadFederativaFK);
+                _modelo.EmpleoCargoComision!.NivelOrdenGobierno = NivelOrdenGobierno.FirstOrDefault(x => x.IdNivelOrdenGobierno == _modelo.EmpleoCargoComision.IdNivelOrdenGobiernoFK);
+                _modelo.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == _modelo.EmpleoCargoComision.IdAmbitoPublicoFK);
+                _modelo.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == _modelo.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
+                _modelo.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == _modelo.Resolucion.IdOrdenJurisdiccionalFK);
+              //  _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
+                //_modelo.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEfectivamenteCobrada.Moneda.IdMonedaFK);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
         private async Task ConsultarIdUsuario()
         {

@@ -51,7 +51,7 @@ namespace SancionadosSAGB2025.Shared.Moral
         public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new SancionEfectivamenteCobradaMoral();
 
         public int? IdSancionEconomicaFK { get; set; }
-        public  SancionEconomica? SancionEconomica { get; set; } = new SancionEconomica();
+        public  SancionEconomicaMoral? SancionEconomica { get; set; } = new SancionEconomicaMoral();
 
         public int? IdSuspensionActividadesFK { get; set; }
         public SuspensionActividades? SuspensionActividades { get; set; } = new SuspensionActividades();
@@ -199,7 +199,7 @@ namespace SancionadosSAGB2025.Shared.Moral
   
         public int? IdEntidadFederativaFK { set; get; }
 
-        public EntidadFederativa? EntidadFederativa { get; set; }
+        public EntidadFederativaEntidad? EntidadFederativa { get; set; }
     }
 
     public class DomicilioExtranjeroMorales

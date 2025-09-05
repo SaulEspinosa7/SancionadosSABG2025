@@ -1,5 +1,6 @@
 ﻿@using SancionadosSAGB2025.Client.Services
 @using SancionadosSAGB2025.Shared.Sanciones;
+@using SancionadosSAGB2025.Client.Shared.Partial.Cards;
 @inject ISnackbar Snackbar;
 @inject HttpClient _http
 @inject FaltasSPGService FaltasSPGService
@@ -308,7 +309,7 @@
                                    HelperText="Seleccionar del catálogo la (s) falta (s) cometida (s) por la persona servidora pública. Se podrán elegir de las siguientes opciones:">
                             @foreach (var falta in FaltasCometidas)
                             {
-                                <MudSelectItem Value="@falta.Clave">@falta.Clave</MudSelectItem>
+                                <MudSelectItem Value="@falta.Descripcion">@falta.Descripcion</MudSelectItem>
                             }
                         </MudSelect>
                         @if (!(_optionsFaltaComedia ?? Enumerable.Empty<string>()).Any())
@@ -510,146 +511,187 @@
             </MudForm>
             @if ((_options ?? Enumerable.Empty<string>()).Contains("SUSPENSIÓN DEL EMPLEO,CARGO O COMISIÓN"))
             {
-                <MudForm @ref="_formSuspension" @bind-IsValid="_isStep1Valid[8]">
-                    <MudGrid>
-                        <MudItem xs="4">
-                            <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoMeses" label="MES (ES)"
-                                             Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                             Variant="Variant.Text" Min="0" required="!modoVista" RequiredError="El campo Plazo Meses es obligatorio."
-                                             helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoDias" label="DÍA (S)"
-                                             Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                             Variant="Variant.Text" Min="0" required="!modoVista" RequiredError="El campo Plazo Dias es obligatorio."
-                                             helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudDatePicker Label="FECHA INICIAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaInicial" required="!modoVista"
-                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                           helpertext="Indicar la fecha en la que inició la suspensión de la persona servidora pública." />
-                            @if (FaltasDeServidoresPublicosG.Suspension!.FechaInicial is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudDatePicker Label="FECHA FINAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaFinal" required="!modoVista"
-                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                           helpertext="Indicar la fecha en la que se concluye la suspensión de la persona servidora pública." />
-                            @if (FaltasDeServidoresPublicosG.Suspension!.FechaFinal is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
+                <CardForm>
+                    <Header>
+                        A. SUSPENSIÓN DEL EMPLEO, CARGO O COMISIÓN*
+                    </Header>
+                    <Content>
+                        <MudForm @ref="_formSuspension" @bind-IsValid="_isStep1Valid[8]">
+                            <MudGrid>
+                                <MudItem xs="4">
+                                    <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoMeses" label="MES (ES)"
+                                                     Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                     Variant="Variant.Text" Min="0" required="!modoVista" RequiredError="El campo Plazo Meses es obligatorio."
+                                                     helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudNumericField HideSpinButtons="true" @bind-Value="FaltasDeServidoresPublicosG!.Suspension!.PlazoDias" label="DÍA (S)"
+                                                     Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                     Variant="Variant.Text" Min="0" required="!modoVista" RequiredError="El campo Plazo Dias es obligatorio."
+                                                     helpertext="Colocar el plazo de la suspensión de la persona servidora pública sancionada, empezando por mes (es) y/o día (s)." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudDatePicker Label="FECHA INICIAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaInicial" required="!modoVista"
+                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                   helpertext="Indicar la fecha en la que inició la suspensión de la persona servidora pública." />
+                                    @if (FaltasDeServidoresPublicosG.Suspension!.FechaInicial is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudDatePicker Label="FECHA FINAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Suspension!.FechaFinal" required="!modoVista"
+                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                   helpertext="Indicar la fecha en la que se concluye la suspensión de la persona servidora pública." />
+                                    @if (FaltasDeServidoresPublicosG.Suspension!.FechaFinal is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </Content>
+                </CardForm>
+               
             }
             @if ((_options ?? Enumerable.Empty<string>()).Contains("DESTITUCIÓN DEL EMPLEO,CARGO O COMISIÓN"))
             {
-                <MudForm @ref="_formDestitucion" @bind-IsValid="_isStep1Valid[9]">
-                    <MudGrid>
-                        <MudItem xs="6">
-                            <MudDatePicker Label="FECHA DE DESTITUCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.DestitucionEmpleo!.FechaDestitucion" required="!modoVista"
-                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                           helpertext="Indicar la fecha de destitución de la persona servidora pública." />
-                            @if (FaltasDeServidoresPublicosG.DestitucionEmpleo!.FechaDestitucion is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Destitucion es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
+                <CardForm>
+                    <Header>
+                        B. DESTITUCIÓN DEL EMPLEO, CARGO O COMISIÓN*
+                    </Header>
+                    <Content>
+                        <MudForm @ref="_formDestitucion" @bind-IsValid="_isStep1Valid[9]">
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudDatePicker Label="FECHA DE DESTITUCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.DestitucionEmpleo!.FechaDestitucion" required="!modoVista"
+                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                   helpertext="Indicar la fecha de destitución de la persona servidora pública." />
+                                    @if (FaltasDeServidoresPublicosG.DestitucionEmpleo!.FechaDestitucion is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Destitucion es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </Content>
+                </CardForm>
+                
             }
             @if ((_options ?? Enumerable.Empty<string>()).Contains("SANCION ECONOMICA"))
             {
-                <MudForm @ref="_formTipoSancionImpuesta" @bind-IsValid="_isStep1Valid[10]">
-                    <MudGrid>
-                        <MudItem xs="4">
-                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.Monto"
-                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          label="MONTO"
-                                          required="!modoVista"
-                                          RequiredError="El campo Monto es obligatorio."
-                                          helpertext="Colocar el monto total de la sanción económica." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica!.Moneda"
-                                       Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
-                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                       required="!modoVista"
-                                       RequiredError="El campo Moneda es obligatorio."
-                                       HelperText="Elegir el tipo de moneda:">
-                                @foreach (var moneda in TipoMonedas)
-                                {
-                                    <MudSelectItem Value="@moneda">@moneda.Descripcion</MudSelectItem>
-                                }
-                            </MudSelect>
-                            @if (FaltasDeServidoresPublicosG.SancionEconomica!.Moneda is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Moneda es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
+                <CardForm>
+                    <Header>
+                        C. SANCIÓN ECONÓMICA*
+                    </Header>
+                    <Content>
+                        <MudForm @ref="_formTipoSancionImpuesta" @bind-IsValid="_isStep1Valid[10]">
+                            <MudGrid>
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.Monto"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="MONTO"
+                                                  required="!modoVista"
+                                                  RequiredError="El campo Monto es obligatorio."
+                                                  helpertext="Colocar el monto total de la sanción económica." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica!.Moneda"
+                                               Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
+                                               Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                               required="!modoVista"
+                                               RequiredError="El campo Moneda es obligatorio."
+                                               HelperText="Elegir el tipo de moneda:">
+                                        @foreach (var moneda in TipoMonedas)
+                                        {
+                                            <MudSelectItem Value="@moneda">@moneda.Descripcion</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    @if (FaltasDeServidoresPublicosG.SancionEconomica!.Moneda is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Moneda es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </Content>
+                </CardForm>
+                
             }
             @if ((_options ?? Enumerable.Empty<string>()).Contains("INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS, CARGOS O COMISIONES EN EL SERVICIO PÚBLICO Y PARA PARTICIPAR EN ADQUISICIONES, ARRENDAMIENTOS, SERVICIOS U OBRAS PÚBLICAS"))
             {
-                <MudForm @ref="_formInhabilitacion" @bind-IsValid="_isStep1Valid[11]">
-                    <MudGrid Justify="Justify.FlexStart">
-                        <MudItem xs="4">
-                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Anio"
-                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          label="AÑO (S)"
-                                          required="!modoVista"
-                                          RequiredError="El campo Año es obligatario." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Mes"
-                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          label="MES (ES)"
-                                          required="!modoVista"
-                                          RequiredError="El campo Mes es obligatario." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Dia"
-                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          label="DÍA (S)"
-                                          required="!modoVista"
-                                          RequiredError="El campo Dia es obligatario." />
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudDatePicker Label="FECHA INICIAL* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial" required="!modoVista" helpertext="Indicar la fecha en la que inició la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
-                            @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                        <MudItem xs="4">
-                            <MudDatePicker Label="FECHA FINAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal" required="!modoVista" helpertext="Indicar la fecha en la que se concluyó la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
-                            @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal is null)
-                            {
-                                <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
+                <CardForm>
+                    <Header>
+                        D. INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS, CARGOS O COMISIONES EN EL SERVICIO PÚBLICO Y PARA PARTICIPAR EN
+                        ADQUISICIONES, ARRENDAMIENTOS, SERVICIOS U OBRAS PÚBLICAS *
+                    </Header>
+                    <Content>
+                        <MudForm @ref="_formInhabilitacion" @bind-IsValid="_isStep1Valid[11]">
+                            <MudGrid Justify="Justify.FlexStart">
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Anio"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="AÑO (S)"
+                                                  required="!modoVista"
+                                                  RequiredError="El campo Año es obligatario." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Mes"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="MES (ES)"
+                                                  required="!modoVista"
+                                                  RequiredError="El campo Mes es obligatario." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Inhabilitacion!.Dia"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="DÍA (S)"
+                                                  required="!modoVista"
+                                                  RequiredError="El campo Dia es obligatario." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudDatePicker Label="FECHA INICIAL* (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial" required="!modoVista" helpertext="Indicar la fecha en la que inició la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                                    @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaInicial is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudDatePicker Label="FECHA FINAL (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal" required="!modoVista" helpertext="Indicar la fecha en la que se concluyó la inhabilitación." Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                                    @if (FaltasDeServidoresPublicosG.Inhabilitacion!.FechaFinal is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </Content>
+                </CardForm>
+                
             }
             @if ((_options ?? Enumerable.Empty<string>()).Contains("OTRO (Especifique)"))
             {
-                <MudForm @ref="_formOtro" @bind-IsValid="_isStep1Valid[12]">
-                    <MudGrid Justify="Justify.FlexStart">
-                        <MudItem xs="6">
-                            <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Otro!.DenominacionSancion"
-                                          label="DENOMINACIÓN DE LA SANCIÓN"
-                                          Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          required="!modoVista"
-                                          UserAttributes="@(new Dictionary<string, object> { ["id"] = "denominacionSancionInput" })"
-                                          RequiredError="El campo Denominacion Sancion es obligatorio."
-                                          helpertext="Indicar el nombre de la sanción, sin abreviaturas, sin acentos, ni signos especiales." />
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
+                <CardForm>
+                    <Header>
+                        E. OTRO*
+                    </Header>
+                    <Content>
+                        <MudForm @ref="_formOtro" @bind-IsValid="_isStep1Valid[12]">
+                            <MudGrid Justify="Justify.FlexStart">
+                                <MudItem xs="6">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Otro!.DenominacionSancion"
+                                                  label="DENOMINACIÓN DE LA SANCIÓN"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  required="!modoVista"
+                                                  UserAttributes="@(new Dictionary<string, object> { ["id"] = "denominacionSancionInput" })"
+                                                  RequiredError="El campo Denominacion Sancion es obligatorio."
+                                                  helpertext="Indicar el nombre de la sanción, sin abreviaturas, sin acentos, ni signos especiales." />
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </Content>
+                </CardForm>
+                
             }            
             
         </MudStep>

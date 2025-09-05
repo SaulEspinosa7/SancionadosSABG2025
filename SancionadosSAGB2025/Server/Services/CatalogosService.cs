@@ -81,7 +81,7 @@ namespace SancionadosSAGB2025.Server.Services
 			
 		}		
 
-		public async Task<List<EntidadFederativa>> ObtenerEntidadFederativa()
+		public async Task<List<EntidadFederativaEntidad>> ObtenerEntidadFederativa()
 		{
 			try
 			{
@@ -90,7 +90,7 @@ namespace SancionadosSAGB2025.Server.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativa>>();
+				var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativaEntidad>>();
 				return result;
 			}
 			catch (Exception ex)
@@ -100,7 +100,7 @@ namespace SancionadosSAGB2025.Server.Services
 			}		
 		}
 
-		public async Task<List<FaltaCometidaCat>> ObtenerFaltaCometida()
+		public async Task<List<FaltaCometidaEntidad>> ObtenerFaltaCometida()
 		{
 			try
 			{
@@ -109,7 +109,7 @@ namespace SancionadosSAGB2025.Server.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<List<FaltaCometidaCat>>();
+				var result = await response.Content.ReadFromJsonAsync<List<FaltaCometidaEntidad>>();
 				return result.Where(f => f.Activo == 1).ToList();
 			}
 			catch (Exception ex)

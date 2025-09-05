@@ -40,7 +40,7 @@
     }
 </MudGrid>
 <br />
-<MudStepper Class="pa-0 ma-0" Vertical="true" @bind-ActiveIndex="index" NonLinear="!modoVista" OnPreviewInteraction="OnPreviewInteraction">
+<MudStepper Class="pa-0 ma-0" Vertical="true" @bind-ActiveIndex="index" NonLinear="modoVista" OnPreviewInteraction="OnPreviewInteraction">
     <ChildContent>
         <MudStep Title="1. FECHA* (DD-MM-AAAA)*" CompletedStepColor="Color.Success">
             <MudForm @ref="_formFecha" @bind-IsValid="_isStep1Valid[0]">                                 
@@ -377,7 +377,7 @@
                                    HelperText="Seleccionar del catálogo la (s) falta (s) cometida (s) por la persona servidora pública. Se podrán elegir de las siguientes opciones:">
                             @foreach (var falta in FaltasCometidas)
                             {
-                                <MudSelectItem Value="@falta.Clave">@falta.Clave</MudSelectItem>
+                                <MudSelectItem Value="@falta.Descripcion">@falta.Descripcion</MudSelectItem>
                             }
                         </MudSelect>
                         @if (!(_optionsFaltaComedia ?? Enumerable.Empty<string>()).Any())
@@ -621,16 +621,16 @@
                                                       helpertext="Colocar el monto total de la sanción económica." />
                                     </MudItem>
                                     <MudItem xs="4">
-                                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Indeminizacion!.Moneda"
-                                                   Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)
-                "
+                                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Indeminizacion!.IdTipoMonedaFK"
+                                                   Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
+                                                   T="int?"
                                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                    required="!modoVista"
                                                    RequiredError="El campo Moneda es obligatorio."
                                                    HelperText="Elegir el tipo de moneda:">
                                             @foreach (var moneda in TipoMonedas)
                                             {
-                                                <MudSelectItem Value="@moneda">@moneda.Descripcion</MudSelectItem>
+                                                <MudSelectItem Value="@moneda.IdMoneda">@moneda.Descripcion</MudSelectItem>
                                             }
                                         </MudSelect>
                                     </MudItem>

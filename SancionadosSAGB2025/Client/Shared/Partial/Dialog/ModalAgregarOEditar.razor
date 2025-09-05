@@ -1,0 +1,82 @@
+﻿@using SancionadosSAGB2025.Shared.Catalogos
+@using SancionadosSAGB2025.Shared
+@inject ISnackbar Snackbar
+@typeparam TItem where TItem : ICatalogo, new()
+@if (IsEdit)
+{
+    <MudDialog Style="width:800px;">
+        <TitleContent>
+            <MudText Color="Color.Primary" Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.AddCircleOutline" Color="Color.Primary" Class="mb-n1" />
+                @Titulo
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            @if (Entidad.Descripcion.Length > 90)
+            {
+                <MudTextField @bind-Value="@Entidad.Descripcion"                              
+                              Lines="4"
+                              FullWidth="true"                              
+                              Style="resize: none; overflow:hidden; min-height:100px; max-height:none;" />
+            }
+            else
+            {
+                <MudTextField @bind-Value="@Entidad.Descripcion" Lines="2" />
+            }
+
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancelar</MudButton>
+            <MudButton Color="Color.Primary" OnClick="AgregarEntidad">@(BtnAceptar ?? "Editar")</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog Style="width:800px;">
+        <TitleContent>
+            <MudText Color="Color.Primary" Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.AddCircleOutline" Color="Color.Primary" Class="mb-n1" />
+                @Titulo
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTextField @bind-Value="@Entidad.Descripcion" Label="Escriba el nombre" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancelar</MudButton>
+            <MudButton Color="Color.Primary" OnClick="EditarEntidad">@(BtnAceptar ?? "Crear")</MudButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public bool IsEdit { get; set; } = false;
+    [Parameter]
+    public TItem Entidad { get; set; } = new TItem();
+    [Parameter]
+    public string Titulo { get; set; } = string.Empty;
+    [Parameter]
+    public string BtnAceptar { get; set; } = string.Empty;
+    [Parameter]
+    public string MensajeSnackBar { get; set; } = string.Empty;
+
+    private void Cancel() => MudDialog.Cancel();
+    private void EditarEntidad()
+    {
+        
+        Snackbar.Add($"{MensajeSnackBar} Correctamente", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
+    }
+
+    private void AgregarEntidad()
+    {
+        //In a real world scenario this bool would probably be a service to delete the item from api/database
+        Snackbar.Add($"{MensajeSnackBar ?? "Se creó"} Correctamente", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
+    }
+}

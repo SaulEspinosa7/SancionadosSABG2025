@@ -25,12 +25,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private List<int> BloqueoSesiones { get; set; } = new();
 		private RespuestaRegistroFaltasGravesPersonasFisicas RespuestaRegistro { set; get; } = new();
 		private Catalogos CatalogosBD { get; set; } = new();
-		private List<EntidadFederativa> EntidadesFederativas { get; set; } = new();
+		private List<EntidadFederativaEntidad> EntidadesFederativas { get; set; } = new();
 		private List<NivelOrdenGobierno> NivelOrdenGobierno { get; set; } = new();
 		private List<AmbitoPublico> AmbitoPublico { get; set; } = new();
 		private List<OrdenJurisdiccional> OrdenJurisdiccional { get; set; } = new();
 		private List<NivelJerarquicoCat> NivelJerarquico { get; set; } = new();
-		private List<FaltaCometidaCat> FaltasCometidas { get; set; } = new();
+		private List<FaltaCometidaEntidad> FaltasCometidas { get; set; } = new();
 		private List<MonedaCat> TipoMonedas { get; set; } = new();
 		private List<OrigenProcedimientoCat> ListaOrigenesInvestigacion { get; set; } = new();
 		private List<Sexo> Sexos { get; set; } = new();
