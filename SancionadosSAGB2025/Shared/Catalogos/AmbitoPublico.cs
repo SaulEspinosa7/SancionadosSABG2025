@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SancionadosSAGB2025.Shared.Catalogos
 {
-	public class AmbitoPublico
-	{
+	public class AmbitoPublico : ICatalogo
+    {
 		public int? IdAmbitoPublico { set; get; }
 		public string? Descripcion { get; set; } = string.Empty;
 		public DateTime FechaCreacion { get; set; }

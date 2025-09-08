@@ -119,7 +119,7 @@ namespace SancionadosSAGB2025.Server.Services
 			}		
 		}
 
-		public async Task<List<NivelJerarquicoCat>> ObtenerNivelJerarquico()
+		public async Task<List<NivelJerarquicoEntidad>> ObtenerNivelJerarquico()
 		{
 			try
 			{
@@ -128,7 +128,7 @@ namespace SancionadosSAGB2025.Server.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquicoCat>>();
+				var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquicoEntidad>>();
 				return result;
 			}
 			catch (Exception ex)
@@ -178,7 +178,7 @@ namespace SancionadosSAGB2025.Server.Services
 			
 		}
 
-		public async Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento()
+		public async Task<List<OrigenProcedimientoEntidad>> ObtenerOrigenProcedimiento()
 		{
 			try
 			{
@@ -187,7 +187,7 @@ namespace SancionadosSAGB2025.Server.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimientoCat>>();
+				var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimientoEntidad>>();
 				return result;
 			}
 			catch (Exception ex)

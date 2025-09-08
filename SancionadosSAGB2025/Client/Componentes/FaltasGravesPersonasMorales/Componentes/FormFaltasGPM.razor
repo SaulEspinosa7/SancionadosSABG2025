@@ -422,13 +422,13 @@
                                                        HelperText="Se deberá señalar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave.">
                                                 @foreach (var origen in ListaOrigenesInvestigacion)
                                                 {
-                                                    <MudSelectItem Value="@origen.IdOrigenProcedimiento">@origen.Clave</MudSelectItem>
+                                                    <MudSelectItem Value="@origen.IdOrigenProcedimiento">@origen.Descripcion</MudSelectItem>
                                                 }
                                             </MudSelect>
 
 
                                         </MudItem>
-                                        @if (_modelo!.OrigenProcedimiento?.Clave?.Clave?.Contains("OTRO (Especifique)") == true)
+                                        @if (_modelo!.OrigenProcedimiento?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
                                         {
                                             <MudItem xs="4">
                                                 <MudTextField @bind-value="_modelo!.OrigenProcedimiento!.Valor"
@@ -622,7 +622,7 @@
                                                        MultiSelection="true">
                                                 @foreach (var clave in TipoSancionClaves)
                                                 {
-                                                    <MudSelectItem Value="@clave.Clave">@clave.Clave</MudSelectItem>
+                                                    <MudSelectItem Value="@clave.Descripcion">@clave.Descripcion</MudSelectItem>
                                                 }
                                             </MudSelect>
                                         </MudItem>

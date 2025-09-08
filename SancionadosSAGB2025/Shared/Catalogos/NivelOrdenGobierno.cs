@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SancionadosSAGB2025.Shared.Catalogos
 {
-	public class NivelOrdenGobierno
+	public class NivelOrdenGobierno : ICatalogo
 	{
 		public int? IdNivelOrdenGobierno { set; get; }
 		public string? Descripcion { get; set; } = string.Empty;

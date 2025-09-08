@@ -3,16 +3,42 @@
 
 @foreach (var modulo in Modulos)
 {
-    <MudMenu FullWidth="false" ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudMenu FullWidth="false"
+             ActivationEvent="@MouseEvent.MouseOver"
+             AnchorOrigin="Origin.BottomCenter"
+             TransformOrigin="Origin.TopCenter"
+             PaperClass="rounded-lg"
+             Elevation="4">
         <ActivatorContent>
-            <MudChip T="string" Icon="@GetIcon(modulo.IconModulo)" Style="background-color:var(--main-color-general); color:white;">@modulo.NombreModulo</MudChip>
+            <MudChip T="string"
+                     Icon="@GetIcon(modulo.IconModulo)"
+                     Class="menu-activator">
+                @modulo.NombreModulo
+            </MudChip>
         </ActivatorContent>
         <ChildContent>
             @foreach (var subModulo in modulo.SubModulos)
             {
-                <MudMenuItem OnClick="@(() => Dirreccionar(@subModulo.UrlSubModulo))">@subModulo.NombreSubModulo </MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.ArrowRight"
+                             OnClick="@(() => Dirreccionar(@subModulo.UrlSubModulo))">
+                    @subModulo.NombreSubModulo
+                </MudMenuItem>
             }
-         
         </ChildContent>
     </MudMenu>
+
+    <style>
+        .menu-activator {
+            background-color: var(--main-color-general);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .menu-activator:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+    </style>
+
 }

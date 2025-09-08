@@ -11,6 +11,16 @@
     <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="SancionadosSAGB2025.Client.styles.css" rel="stylesheet" /> -->
+    <script>
+        window.BlazorDownloadFile = (fileName, contentType, content) => {
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = URL.createObjectURL(new Blob([content], { type: contentType }));
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+    </script>
 </head>
 
 <body>
@@ -26,14 +36,14 @@
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="JS/JavaScript.js"></script>
 
-    <script>    
+    <script>
         window.registerBeforeUnload = function (dotNetHelper) {
             window.addEventListener("keydown", function (event) {
                 if (event.key === "F5" || (event.ctrlKey && event.key === "r")) {
                     event.preventDefault(); // Evita recarga
                     dotNetHelper.invokeMethodAsync("OnBeforeUnload");
                 }
-            });           
+            });
         };
         window.registerGeneralBeforeUnload = function (dotNetHelper) {
             window.addEventListener('beforeunload', function (e) {
@@ -42,6 +52,8 @@
             });
         };
     </script>
+
+
 
 </body>
 

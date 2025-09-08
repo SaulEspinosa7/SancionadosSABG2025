@@ -1,4 +1,4 @@
-﻿@page "/FaltaCometida"
+﻿@page "/TipoSancion"
 @using System.Net.Http.Json
 @inject HttpClient httpClient
 @using SancionadosSAGB2025.Shared.Catalogos
@@ -15,18 +15,16 @@
             <CardForm>
                 <Header>
                     <div class="d-flex justify-end mb-3">
-                        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="AgregarEntidad">
-                            Agregar Nueva Falta Cometida
+                        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="AgregarNivel">
+                            Agregar Nueva Sanción
                         </MudButton>
                     </div>
 
                 </Header>
                 <Content>
-                    <MudDataGrid T="FaltaCometidaEntidad" Items="@Elements" MultiSelection="true" ReadOnly="@_readOnly" QuickFilter="@_quickFilter" EditMode="@(_isCellEditMode? DataGridEditMode.Cell: DataGridEditMode.Form)"
-                                 StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
-                                 EditTrigger="@(_editTriggerRowClick ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)">
+                    <MudDataGrid T="TipoSancion" Items="@Elements" MultiSelection="true" ReadOnly="@_readOnly" QuickFilter="@_quickFilter">
                         <ToolBarContent>
-                            <MudText Color="Color.Primary" Typo="Typo.h6"><b>Catalogo de Faltas Cometidas</b></MudText>
+                            <MudText Color="Color.Primary" Typo="Typo.h6"><b>Catalogo de Tipo Sanciones</b></MudText>
                             <MudSpacer />
                             <MudTextField @bind-Value="_searchString" Placeholder="Buscar" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -39,7 +37,7 @@
                                         <MudButton Variant="Variant.Filled"
                                                    StartIcon="@Icons.Material.Filled.Edit"
                                                    Color="Color.Info"
-                                                   OnClick="(() => EditarNombreEntidad(context.Item))">
+                                                   OnClick="(() => EditarNombreNivel(context.Item))">
                                             Editar Nombre
                                         </MudButton>
                                     </MudStack>
@@ -49,7 +47,7 @@
                         </Columns>
 
                         <PagerContent>
-                            <MudDataGridPager T="FaltaCometidaEntidad" />
+                            <MudDataGridPager T="TipoSancion" />
                         </PagerContent>
                     </MudDataGrid>
                 </Content>
@@ -72,25 +70,24 @@
 
 
 @code {
-    private List<FaltaCometidaEntidad> Elements = new List<FaltaCometidaEntidad>();
+    private List<TipoSancion> Elements = new();
     private bool _readOnly;
     private bool _isCellEditMode;
     private List<string> _events = new();
     private bool _editTriggerRowClick;
     private string _searchString;
-    private FaltaCometidaEntidad entidadFederativaEntidad = new FaltaCometidaEntidad();
+    private TipoSancion entidadFederativaEntidad = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var result = await CatalagosService.ObtenerTodosLosCatalogos();
+            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
+            var response = await httpClient.GetFromJsonAsync<List<TipoSancion>>("api/Catalogos/ObtenerTipoSancion");
 
-            if (result is not null)
+            if (response is not null)
             {
-
-                Elements = result.FaltaCometidas!.OrderBy(x => x.Descripcion)!.ToList();
-
+                Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
             }
         }
         catch (Exception ex)
@@ -99,16 +96,16 @@
         }
 
     }
-    private async Task AgregarEntidad()
+    private async Task AgregarNivel()
     {
 
-        var parameters = new DialogParameters<ModalAgregarOEditar<FaltaCometidaEntidad>>
+        var parameters = new DialogParameters<ModalAgregarOEditar<TipoSancion>>
         {
-            { z => z.Titulo, "Crear Falta Cometida" },
-            {z => z.MensajeSnackBar, "Falta Creada"},
+            { z => z.Titulo, "Crear Nueva Sanción" },
+            {z => z.MensajeSnackBar, "Sanción Creada"},
             { z => z.BtnAceptar, "Aceptar" }
         };
-        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<FaltaCometidaEntidad>>("Agregar Falta", parameters);
+        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<TipoSancion>>("Agregar Orden", parameters);
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -117,25 +114,25 @@
 
             if (!string.IsNullOrEmpty(descripcion))
             {
-                Elements.Add(new FaltaCometidaEntidad { Descripcion = descripcion });
+                Elements.Add(new TipoSancion { Descripcion = descripcion });
                 Elements = Elements.OrderBy(e => e.Descripcion).ToList();
                 StateHasChanged();
             }
         }
 
     }
-    private async Task EditarNombreEntidad(FaltaCometidaEntidad entidad)
+    private async Task EditarNombreNivel(TipoSancion entidad)
     {
-        var parameters = new DialogParameters<ModalAgregarOEditar<FaltaCometidaEntidad>>
+        var parameters = new DialogParameters<ModalAgregarOEditar<TipoSancion>>
         {
             { x => x.Entidad, entidad },
             { z => z.IsEdit, true },
-            { z => z.Titulo, "Editar Falta" },
-            {z => z.MensajeSnackBar, "Falta Editada"},
+            { z => z.Titulo, "Editar Sanción" },
+            {z => z.MensajeSnackBar, "Sanción Editada"},
             { z => z.BtnAceptar, "Guardar Cambios" }
         };
-        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth= false };
-        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<FaltaCometidaEntidad>>("Agregar Entidad", parameters, options);
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth = false };
+        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<TipoSancion>>("Agregar Orden", parameters, options);
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -156,21 +153,21 @@
     }
 
     // events
-    void StartedEditingItem(FaltaCometidaEntidad item)
+    void StartedEditingItem(TipoSancion item)
     {
         _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CanceledEditingItem(FaltaCometidaEntidad item)
+    void CanceledEditingItem(TipoSancion item)
     {
         _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    void CommittedItemChanges(FaltaCometidaEntidad item)
+    void CommittedItemChanges(TipoSancion item)
     {
         _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
-    private Func<FaltaCometidaEntidad, bool> _quickFilter => x =>
+    private Func<TipoSancion, bool> _quickFilter => x =>
        {
            if (string.IsNullOrWhiteSpace(_searchString))
                return true;

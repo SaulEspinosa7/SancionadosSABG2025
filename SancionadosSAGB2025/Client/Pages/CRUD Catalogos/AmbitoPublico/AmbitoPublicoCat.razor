@@ -1,0 +1,184 @@
+﻿@page "/AmbitoPublico"
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@using SancionadosSAGB2025.Shared.Catalogos
+@using SancionadosSAGB2025.Client.Shared.Partial.Cards;
+@using SancionadosSAGB2025.Client.Shared.Forms;
+@using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
+@using SancionadosSAGB2025.Client.Services
+@inject IDialogService DialogService
+@inject CatalagosServiceClient CatalagosService
+<MainForm>
+    <Main>
+        @if (Elements.Count() > 0)
+        {
+            <CardForm>
+                <Header>
+                    <div class="d-flex justify-end mb-3">
+                        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="AgregarAmbito">
+                            Agregar Nuevo Ambito Público
+                        </MudButton>
+                    </div>
+
+                </Header>
+                <Content>
+                    <MudDataGrid T="AmbitoPublico" Items="@Elements" MultiSelection="true" ReadOnly="@_readOnly" QuickFilter="@_quickFilter" EditMode="@(_isCellEditMode? DataGridEditMode.Cell: DataGridEditMode.Form)"
+                                 StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+                                 EditTrigger="@(_editTriggerRowClick ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)">
+                        <ToolBarContent>
+                            <MudText Color="Color.Primary" Typo="Typo.h6"><b>Catalogo de Ambito Público</b></MudText>
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchString" Placeholder="Buscar" Adornment="Adornment.Start" Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
+                        <Columns>
+                            <PropertyColumn Property="x => x.Descripcion" />
+                            <TemplateColumn>
+                                <CellTemplate>
+                                    <MudStack Row Justify="Justify.FlexEnd">
+                                        <MudButton Variant="Variant.Filled"
+                                                   StartIcon="@Icons.Material.Filled.Edit"
+                                                   Color="Color.Info"
+                                                   OnClick="(() => EditarNombreAmbito(context.Item))">
+                                            Editar Nombre
+                                        </MudButton>
+                                    </MudStack>
+                                </CellTemplate>
+                            </TemplateColumn>
+
+                        </Columns>
+
+                        <PagerContent>
+                            <MudDataGridPager T="AmbitoPublico" />
+                        </PagerContent>
+                    </MudDataGrid>
+                </Content>
+            </CardForm>
+
+        }
+        else
+        {
+
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+            <MudText Typo="Typo.h6" Align="Align.Center">Cargando información...</MudText>
+        }
+
+
+
+    </Main>
+</MainForm>
+
+
+
+@code {
+    private List<AmbitoPublico> Elements = new();
+    private bool _readOnly;
+    private bool _isCellEditMode;
+    private List<string> _events = new();
+    private bool _editTriggerRowClick;
+    private string _searchString;
+    private AmbitoPublico entidadFederativaEntidad = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
+            var response = await httpClient.GetFromJsonAsync<List<AmbitoPublico>>("api/Catalogos/ObtenerAmbitoPublico");
+
+            if (response is not null)
+            {
+
+                Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+    private async Task AgregarAmbito()
+    {
+
+        var parameters = new DialogParameters<ModalAgregarOEditar<AmbitoPublico>>
+        {
+            { z => z.Titulo, "Crear Ambito Público" },
+            {z => z.MensajeSnackBar, "Ambito Creado"},
+            { z => z.BtnAceptar, "Aceptar" }
+        };
+        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<AmbitoPublico>>("Agregar Ambito", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var descripcion = result.Data?.ToString();
+
+            if (!string.IsNullOrEmpty(descripcion))
+            {
+                Elements.Add(new AmbitoPublico { Descripcion = descripcion });
+                Elements = Elements.OrderBy(e => e.Descripcion).ToList();
+                StateHasChanged();
+            }
+        }
+
+    }
+    private async Task EditarNombreAmbito(AmbitoPublico entidad)
+    {
+        var parameters = new DialogParameters<ModalAgregarOEditar<AmbitoPublico>>
+        {
+            { x => x.Entidad, entidad },
+            { z => z.IsEdit, true },
+            { z => z.Titulo, "Editar Ambito" },
+            {z => z.MensajeSnackBar, "Ambito Editado"},
+            { z => z.BtnAceptar, "Guardar Cambios" }
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth = false };
+        var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<AmbitoPublico>>("Agregar Ambito", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var descripcion = result.Data?.ToString();
+
+            if (!string.IsNullOrEmpty(descripcion))
+            {
+                // 👉 Editar en lugar de agregar
+                entidad.Descripcion = descripcion;
+
+                // Reordenamos la lista
+                Elements = Elements.OrderBy(e => e.Descripcion).ToList();
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    // events
+    void StartedEditingItem(AmbitoPublico item)
+    {
+        _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(AmbitoPublico item)
+    {
+        _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CommittedItemChanges(AmbitoPublico item)
+    {
+        _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+    private Func<AmbitoPublico, bool> _quickFilter => x =>
+       {
+           if (string.IsNullOrWhiteSpace(_searchString))
+               return true;
+
+           if (x.Descripcion?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+               return true;
+
+           return false;
+       };
+}

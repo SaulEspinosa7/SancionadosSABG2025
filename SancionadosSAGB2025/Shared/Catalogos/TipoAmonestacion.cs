@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SancionadosSAGB2025.Shared.Catalogos
 {
-	public class TipoAmonestacion
+	public class TipoAmonestacion : ICatalogo
 	{
 		public int? IdTipoAmonestacion { set; get; }
 		public string Descripcion { get; set; } = string.Empty;

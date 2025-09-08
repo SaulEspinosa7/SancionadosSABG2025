@@ -30,7 +30,7 @@ namespace SancionadosSAGB2025.Client.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<List<NivelJerarquicoCat>> ObtenerNivelJerarquico()
+		public Task<List<NivelJerarquicoEntidad>> ObtenerNivelJerarquico()
 		{
 			throw new NotImplementedException();
 		}
@@ -45,7 +45,7 @@ namespace SancionadosSAGB2025.Client.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<List<OrigenProcedimientoCat>> ObtenerOrigenProcedimiento()
+		public Task<List<OrigenProcedimientoEntidad>> ObtenerOrigenProcedimiento()
 		{
 			throw new NotImplementedException();
 		}

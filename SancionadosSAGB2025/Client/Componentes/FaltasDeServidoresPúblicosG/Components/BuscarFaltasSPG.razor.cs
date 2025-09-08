@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using SancionadosSAGB2025.Client.Services;
 using SancionadosSAGB2025.Shared.Login;
@@ -11,13 +13,14 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 	partial class BuscarFaltasSPG
 	{
 		[Inject] private NavigationManager Navigation { get; set; }
-		private SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG { get; set; } = new();
+        [Inject] private IJSRuntime JS { get; set; }
+        private SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG { get; set; } = new();
 		private List<AddFaltasDeServidoresPublicosG> faltasDeServidoresPublicosGs { get; set; } = new();
 		private AddFaltasDeServidoresPublicosG faltasDeServidoresPublicosGsSeleccionadas { get; set; } = new();
 		private TipoEvento TiposEventos { get; set; } = TipoEvento.Principal;
 		private int IdUsuario { get; set; } = 0;
 
-		private IEnumerable<AddFaltasDeServidoresPublicosG> Elements = new List<AddFaltasDeServidoresPublicosG>();
+		private List<AddFaltasDeServidoresPublicosG> Elements = new List<AddFaltasDeServidoresPublicosG>();
 		private string _searchString;
 		private bool _sortNameByLength;
 		private List<string> _events = new();
@@ -147,29 +150,83 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 			_events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
 		}
 
-		private Func<AddFaltasDeServidoresPublicosG, string> _cellStyleFunc => x =>
-		{
-			string style = "";
+        private async Task GenerarExcel()
+        {
+            try
+            {
+                if (Elements == null || !Elements.Any())
+                    return; // No hay datos para procesar
 
-			if (x.Expediente == "Expediente")
-				style += "background-color:#8CED8C";
+                using var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("Faltas Graves");
 
-			//else if (x.DatosGenerales == 2)
-			//	style += "background-color:#E5BDE5";
+                var headerRow = worksheet.Row(1);
+                headerRow.Style.Font.Bold = true;
+                headerRow.Style.Fill.BackgroundColor = XLColor.FromArgb(0x2C3E50);
+                headerRow.Style.Font.FontColor = XLColor.White;
+                headerRow.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                headerRow.Height = 20; // Aumentamos un poco la altura de la fila del encabezado
 
-			//else if (x.Number == 3)
-			//	style += "background-color:#EACE5D";
 
-			//else if (x.Number == 4)
-			//	style += "background-color:#F1F165";
+                worksheet.Cell(1, 1).Value = "Fecha";
+                worksheet.Cell(1, 2).Value = "Expediente";
+                worksheet.Cell(1, 3).Value = "Nombre Completo";
+                worksheet.Cell(1, 4).Value = "RFC";
+                worksheet.Cell(1, 5).Value = "Falta (s) Cometidas";
+                worksheet.Column(1).Style.DateFormat.Format = "dd/MM/yyyy";
+                worksheet.Column(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-			//if (x.Molar > 5)
-			//	style += ";font-weight:bold";
 
-			return style;
-		};
 
-		public enum TipoEvento
+                for (int i = 0; i < Elements.Count; i++)
+                {
+                    var row = i + 2;
+
+
+                    worksheet.Cell(row, 1).Value = Elements[i].Fecha;
+                    worksheet.Cell(row, 2).Value = Elements[i].Expediente ?? "";
+                    var partesDelNombre = new[]
+                     {
+                        Elements[i].DatosGenerales?.Nombres,
+                        Elements[i].DatosGenerales?.PrimerApellido,
+                        Elements[i].DatosGenerales?.SegundoApellido // Asumo que también tienes un segundo apellido
+                    };
+
+                    // 2. Usamos string.Join para unir solo las partes que NO son nulas o vacías.
+                    //    Automáticamente pone un espacio entre cada parte válida.
+                    var nombreCompleto = string.Join(" ", partesDelNombre.Where(p => !string.IsNullOrWhiteSpace(p)));
+
+                    // 3. Asignamos el resultado a la celda.
+                    worksheet.Cell(row, 3).Value = nombreCompleto;
+
+                    worksheet.Cell(row, 4).Value = Elements[i].DatosGenerales?.Rfc ?? "";
+                    worksheet.Cell(row, 5).Value = Elements[i].MultipleSancion ?? ""; // Dejo tu línea original para que la corrijas.
+                }
+
+
+                worksheet.Columns().AdjustToContents();
+
+                worksheet.SheetView.FreezeRows(1);
+
+
+
+                using var stream = new MemoryStream();
+                workbook.SaveAs(stream);
+                var content = stream.ToArray();
+
+                await JS.InvokeVoidAsync("BlazorDownloadFile",
+                    "Reporte_Faltas_Graves.xlsx", // Nombre de archivo mejorado
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    content);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        public enum TipoEvento
 		{
 			Principal = 0,
 			Ver = 1,

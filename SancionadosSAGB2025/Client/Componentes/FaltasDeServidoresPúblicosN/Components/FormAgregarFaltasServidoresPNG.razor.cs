@@ -30,10 +30,10 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 		private List<NivelOrdenGobierno> NivelOrdenGobierno { get; set; } = new();
 		private List<AmbitoPublico> AmbitoPublico { get; set; } = new();
 		private List<OrdenJurisdiccional> OrdenJurisdiccional { get; set; } = new();
-		private List<NivelJerarquicoCat> NivelJerarquico { get; set; } = new();
+		private List<NivelJerarquicoEntidad> NivelJerarquico { get; set; } = new();
 		private List<FaltaCometidaEntidad> FaltasCometidas { get; set; } = new();
 		private List<MonedaCat> TipoMonedas { get; set; } = new();
-		private List<OrigenProcedimientoCat> ListaOrigenesInvestigacion { get; set; } = new();
+		private List<OrigenProcedimientoEntidad> ListaOrigenesInvestigacion { get; set; } = new();
 		private List<Sexo> Sexos { get; set; } = new();
 		private List<TipoSancion> TipoSancionClaves { get; set; } = new();
 		private List<TipoAmonestacion> TiposAmonestacion { get; set; } = new();
@@ -514,7 +514,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 				!string.IsNullOrWhiteSpace(nivel.Denominacion) &&
 				!string.IsNullOrWhiteSpace(nivel.AreaAdscripcion);
 
-			bool esOtro = nivel?.Clave?.Clave?.Contains("OTRO") == true;
+			bool esOtro = nivel?.Clave?.Descripcion?.Contains("OTRO") == true;
 			bool valorOtroValido = !string.IsNullOrWhiteSpace(nivel?.Valor);
 
 			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico] =
@@ -525,7 +525,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 		{
 			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
 			var origen = FaltasDeServidoresPublicosG?.OrigenProcedimiento;
-			var clave = origen?.Clave?.Clave;
+			var clave = origen?.Clave?.Descripcion;
 			var esOtro = clave?.Contains("OTRO") == true;
 			var valorValido = !string.IsNullOrWhiteSpace(origen?.Valor);
 

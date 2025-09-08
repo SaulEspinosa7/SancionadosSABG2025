@@ -187,7 +187,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public int? IdNivelJerarquicoFK { get; set; }
 
 		[JsonPropertyName("clave")]
-		public NivelJerarquicoCat? Clave { get; set; }
+		public NivelJerarquicoEntidad? Clave { get; set; }
 
 		[JsonPropertyName("valor")]
 		public string? Valor { get; set; }
@@ -209,7 +209,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public int? IdOrigenProcedimientoCatFK { get; set; }
 
 		[JsonPropertyName("clave")]
-		public OrigenProcedimientoCat? Clave { get; set; } = new();
+		public OrigenProcedimientoEntidad? Clave { get; set; } = new();
 
 		[JsonPropertyName("valor")]
 		public string? Valor { get; set; }

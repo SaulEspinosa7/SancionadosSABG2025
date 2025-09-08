@@ -60,30 +60,88 @@ namespace SancionadosSAGB2025.Client.Shared.Forms
 						},
 						new SubModulos
 						{
-							NombreSubModulo = "Roles",
-							UrlSubModulo = "/roles",
+							NombreSubModulo = "Cambio de Contraseña",
+							UrlSubModulo = "/cambiocontraseña",
 						}
 					}
+				//},
+				//new Modulos
+				//{
+				//	NombreModulo = "Reportes",
+				//	IconModulo = "fas fa-tools",
+				//	SubModulos = new List<SubModulos>
+				//	{
+				//		new SubModulos
+				//		{
+				//			NombreSubModulo = "Estadísticas",
+				//			UrlSubModulo = "/estadisticas",
+				//		},
+				//		new SubModulos
+				//		{
+				//			NombreSubModulo = "Historial",
+				//			UrlSubModulo = "/historial",
+				//		}
+				//	}
 				},
-				new Modulos
-				{
-					NombreModulo = "Reportes",
-					IconModulo = "fas fa-tools",
-					SubModulos = new List<SubModulos>
-					{
-						new SubModulos
-						{
-							NombreSubModulo = "Estadísticas",
-							UrlSubModulo = "/estadisticas",
-						},
-						new SubModulos
-						{
-							NombreSubModulo = "Historial",
-							UrlSubModulo = "/historial",
-						}
-					}
-				}
-			};
+                new Modulos
+                {
+                    NombreModulo = "Catalogos",
+                    IconModulo = "fas fa-book",
+                    SubModulos = new List<SubModulos>
+                    {
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Ambito Público",
+                            UrlSubModulo = "/AmbitoPublico",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Entidad Federativa",
+                            UrlSubModulo = "/EntidadFederativa",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Falta Cometida",
+                            UrlSubModulo = "/FaltaCometida",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Nivel Jerarquico",
+                            UrlSubModulo = "/NivelJerarquico",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Nivel Orden Gobierno",
+                            UrlSubModulo = "/NivelOrdenGobierno",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Orden Jurisdiccional",
+                            UrlSubModulo = "/OrdenJurisdiccional",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Origen Procedimiento",
+                            UrlSubModulo = "/OrigenProcedimiento",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Tipo Amonestacion",
+                            UrlSubModulo = "/TipoAmonestacion",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Tipo Sanción",
+                            UrlSubModulo = "/TipoSancion",
+                        },
+                        new SubModulos
+                        {
+                            NombreSubModulo = "Tipo Vialidad",
+                            UrlSubModulo = "/TipoVialidad",
+                        }
+                    }
+                }
+            };
 		}
 
 
@@ -97,7 +155,7 @@ namespace SancionadosSAGB2025.Client.Shared.Forms
 			{ "fas fa-calculator", Icons.Material.Filled.WarningAmber },
 			{ "far fa-clone", Icons.Material.Filled.SettingsApplications},
 			{ "fas fa-tools", Icons.Material.Filled.Build },
-			// Agrega más según tus necesidades
+			{ "fas fa-book", Icons.Material.Filled.LibraryBooks }
 		};
 
 		private string GetIcon(string? icono)
