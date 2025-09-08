@@ -52,7 +52,7 @@ namespace SancionadosSAGB2025.Server.Services
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Ha ocurrio un error al momento de realizar la actualización del Expediente {faltasDeServidoresPublicosG.Sancion!.Expediente} - {ex.Message}");
+				Console.WriteLine($"Ha ocurrio un error al momento de realizar la actualización del Expediente {faltasDeServidoresPublicosG!.Expediente} - {ex.Message}");
 				return null;
 			}
 		}
@@ -88,8 +88,8 @@ namespace SancionadosSAGB2025.Server.Services
 		{
 			AddFaltasDeServidoresPublicosG registroAdd = new();
 
-			registroAdd.Fecha = faltas?.Sancion?.Fecha;
-			registroAdd.Expediente = faltas?.Sancion?.Expediente;
+		//	registroAdd.Fecha = faltas?.Sancion?.Fecha;
+		//	registroAdd.Expediente = faltas?.Sancion?.Expediente;
 
 			registroAdd.DatosGenerales = new DatosGenerales
 			{
@@ -113,8 +113,8 @@ namespace SancionadosSAGB2025.Server.Services
 
 			registroAdd.Id = faltas.Id;
 
-			registroAdd.Fecha = faltas?.Sancion?.Fecha;
-			registroAdd.Expediente = faltas?.Sancion?.Expediente;
+			//registroAdd.Fecha = faltas?.Sancion?.Fecha;
+			//registroAdd.Expediente = faltas?.Sancion?.Expediente;
 
 			//Datos generales
 			registroAdd.IdDatosGeneralesFK = faltas?.DatosGenerales?.IdDatosGenerales;

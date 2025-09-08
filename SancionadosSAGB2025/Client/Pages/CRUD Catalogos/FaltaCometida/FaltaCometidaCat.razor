@@ -7,6 +7,7 @@
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
 @inject IDialogService DialogService
+@inject NavigationManager nav
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
     <Main>
@@ -133,7 +134,8 @@
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Falta" },
             {z => z.MensajeSnackBar, "Falta Editada"},
-            { z => z.BtnAceptar, "Guardar Cambios" }
+            { z => z.BtnAceptar, "Guardar Cambios" },
+            {z => z.nombreApi, "ActulizarFaltaCometida"}
         };
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth= false };
         var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<FaltaCometidaEntidad>>("Agregar Falta", parameters, options);
@@ -152,6 +154,10 @@
                 Elements = Elements.OrderBy(e => e.Descripcion).ToList();
 
                 StateHasChanged();
+            }
+            else
+            {
+                nav.NavigateTo(nav.Uri, forceLoad: true);
             }
         }
     }

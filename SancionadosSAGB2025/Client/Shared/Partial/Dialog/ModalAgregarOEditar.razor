@@ -1,6 +1,7 @@
 ﻿@using SancionadosSAGB2025.Shared.Catalogos
 @using SancionadosSAGB2025.Shared
 @inject ISnackbar Snackbar
+@inject HttpClient httpClient
 @typeparam TItem where TItem : ICatalogo, new()
 @if (IsEdit)
 {
@@ -21,13 +22,13 @@
             }
             else
             {
-                <MudTextField @bind-Value="@Entidad.Descripcion" Lines="2" />
+                <MudTextField @bind-Value="@Descripcion" Lines="2" />
             }
 
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancelar</MudButton>
-            <MudButton Color="Color.Primary" OnClick="AgregarEntidad">@(BtnAceptar ?? "Editar")</MudButton>
+            <MudButton Color="Color.Primary" OnClick="EditarEntidad">@(BtnAceptar ?? "Editar")</MudButton>
         </DialogActions>
     </MudDialog>
 }
@@ -41,11 +42,11 @@ else
             </MudText>
         </TitleContent>
         <DialogContent>
-            <MudTextField @bind-Value="@Entidad.Descripcion" Label="Escriba el nombre" />
+            <MudTextField @bind-Value="@Descripcion" Label="Escriba el nombre" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancelar</MudButton>
-            <MudButton Color="Color.Primary" OnClick="EditarEntidad">@(BtnAceptar ?? "Crear")</MudButton>
+            <MudButton Color="Color.Primary" OnClick="AgregarEntidad">@(BtnAceptar ?? "Crear")</MudButton>
         </DialogActions>
     </MudDialog>
 }
@@ -64,18 +65,49 @@ else
     public string BtnAceptar { get; set; } = string.Empty;
     [Parameter]
     public string MensajeSnackBar { get; set; } = string.Empty;
-
+    [Parameter]
+    public string nombreApi { get; set; } = string.Empty;
+    public string Descripcion { get; set; } = string.Empty;
     private void Cancel() => MudDialog.Cancel();
-    private void EditarEntidad()
+    protected override void OnParametersSet()
     {
+        if (IsEdit && Entidad is not null)
+            Descripcion = Entidad.Descripcion; // copiar valor original al abrir
+    }
+    private async Task EditarEntidad()
+    {
+        Entidad.Descripcion = Descripcion;
+        var res = await httpClient.PostAsJsonAsync($"api/Catalogos/{nombreApi}", Entidad);
+
+        if (res.IsSuccessStatusCode)
+        {
+            var respu = await res.Content.ReadFromJsonAsync<RespuestaApiActualizar>();
+            if (respu.estatus == true || respu.mensaje.Contains("REGISTRO ACTUALIZADO CORRECTAMENTE"))
+            {
+                MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
+                Snackbar.Add($"{MensajeSnackBar} Correctamente", Severity.Success);
+            }
+            else
+            {
+                Entidad.Descripcion = string.Empty;
+                MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
+                Snackbar.Add("No se pudo actualizar correctamente el dato", Severity.Error);
+                Console.WriteLine($"Error: {res.StatusCode}");
+            }
+        }
+        else
+        {
+            Entidad.Descripcion = string.Empty; 
+            MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
+            Snackbar.Add("Algo Pudo Salir Mal", Severity.Error);
+            Console.WriteLine($"Error: {res.StatusCode}");
+        }        
         
-        Snackbar.Add($"{MensajeSnackBar} Correctamente", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
     }
 
     private void AgregarEntidad()
     {
-        //In a real world scenario this bool would probably be a service to delete the item from api/database
+        Entidad.Descripcion = Descripcion;
         Snackbar.Add($"{MensajeSnackBar ?? "Se creó"} Correctamente", Severity.Success);
         MudDialog.Close(DialogResult.Ok(Entidad.Descripcion));
     }

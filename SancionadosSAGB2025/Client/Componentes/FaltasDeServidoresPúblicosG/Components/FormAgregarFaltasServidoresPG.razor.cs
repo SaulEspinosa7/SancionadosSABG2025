@@ -407,17 +407,17 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
         {
             expediente = true;
         }
-        private async Task ValidarInformacionFecha()
-        {
-            if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+        //private async Task ValidarInformacionFecha()
+        //{
+        //    if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
 
-            if (FaltasDeServidoresPublicosG.Sancion.Fecha is not null)
+        //    if (FaltasDeServidoresPublicosG.Fecha is not null)
 
-            {
-                BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Fecha] = true;
-            }
-            else BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Fecha] = false;
-        }
+        //    {
+        //        BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Fecha] = true;
+        //    }
+        //    else BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Fecha] = false;
+        //}
         [JSInvokable]
 		public async Task OnBeforeUnload()
 		{
@@ -441,210 +441,210 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 			FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.Moneda= TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.IdMonedaFK);
 		}
 
-		private async Task ValidarCampos() 
-		{
-			await JS.InvokeVoidAsync("formatAndValidateClave", "curpInput", "CURP");
-			await JS.InvokeVoidAsync("formatAndValidateClave", "rfcInput", "RFC");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombresInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "primerApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "segundoApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreEnteInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "siglasEntePublicoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "valorInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "areaAdscripcionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorOrigenInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorFaltaCometidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "normatividadInfringidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreNormatividadInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "articuloInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "descripcionHechosInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "tituloDocumentoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadResolutoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadInvestigadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadSubstanciadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionSancionInput", "");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionInput", "url");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionFirmeInput", "url");			
-		}
+		//private async Task ValidarCampos() 
+		//{
+		//	await JS.InvokeVoidAsync("formatAndValidateClave", "curpInput", "CURP");
+		//	await JS.InvokeVoidAsync("formatAndValidateClave", "rfcInput", "RFC");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombresInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "primerApellidoInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "segundoApellidoInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreEnteInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "siglasEntePublicoInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "valorInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "areaAdscripcionInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorOrigenInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorFaltaCometidaInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "normatividadInfringidaInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreNormatividadInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "articuloInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "descripcionHechosInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "tituloDocumentoInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadResolutoraInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadInvestigadoraInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadSubstanciadoraInput", "");
+		//	await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionSancionInput", "");
+		//	//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionInput", "url");
+		//	//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionFirmeInput", "url");			
+		//}
 
-		private async Task ValidarInformacionSancion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//private async Task ValidarInformacionSancion()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
 
-			if ( FaltasDeServidoresPublicosG!.Sancion!.Expediente != string.Empty && FaltasDeServidoresPublicosG!.Sancion!.Expediente is not null)
+		//	if ( FaltasDeServidoresPublicosG!.Sancion!.Expediente != string.Empty && FaltasDeServidoresPublicosG!.Sancion!.Expediente is not null)
 
-			{
-				BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Sancion] = true;
-			}else BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Sancion] = false;
-	    }
+		//	{
+		//		BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Sancion] = true;
+		//	}else BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Sancion] = false;
+	 //   }
 
-		private async Task ValidarInformacionDatosPersonales() 
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var datos = FaltasDeServidoresPublicosG!.DatosGenerales;
+		//private async Task ValidarInformacionDatosPersonales() 
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var datos = FaltasDeServidoresPublicosG!.DatosGenerales;
 
-			bool esValido =
-				!string.IsNullOrWhiteSpace(datos!.Nombres) &&
-				!string.IsNullOrWhiteSpace(datos.PrimerApellido) &&
-				!string.IsNullOrWhiteSpace(datos.Curp) && datos.Curp.Length == 18 &&
-				!string.IsNullOrWhiteSpace(datos.Rfc) && datos.Rfc.Length == 13 &&
-				datos.Sexo is not null;
+		//	bool esValido =
+		//		!string.IsNullOrWhiteSpace(datos!.Nombres) &&
+		//		!string.IsNullOrWhiteSpace(datos.PrimerApellido) &&
+		//		!string.IsNullOrWhiteSpace(datos.Curp) && datos.Curp.Length == 18 &&
+		//		!string.IsNullOrWhiteSpace(datos.Rfc) && datos.Rfc.Length == 13 &&
+		//		datos.Sexo is not null;
 			
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.DatosGenerales] = esValido;
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.DatosGenerales] = esValido;
 
-		}
+		//}
 
-		private async Task ValidarInformacionEmpleoCargoComision()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver)
-				return;
+		//private async Task ValidarInformacionEmpleoCargoComision()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver)
+		//		return;
 
-			var empleo = FaltasDeServidoresPublicosG?.EmpleoCargoComision;
-			var nivel = FaltasDeServidoresPublicosG?.NivelJerarquico;
+		//	var empleo = FaltasDeServidoresPublicosG?.EmpleoCargoComision;
+		//	var nivel = FaltasDeServidoresPublicosG?.NivelJerarquico;
 
-			bool datosCompletos =
-				empleo is not null &&
-				empleo.EntidadFederativa is not null &&
-				empleo.AmbitoPublico is not null &&
-				empleo.NivelOrdenGobierno is not null &&
-				!string.IsNullOrWhiteSpace(empleo.NombreEnte) &&
-				nivel?.Clave is not null &&
-				!string.IsNullOrWhiteSpace(nivel.Denominacion) &&
-				!string.IsNullOrWhiteSpace(nivel.AreaAdscripcion);
+		//	bool datosCompletos =
+		//		empleo is not null &&
+		//		empleo.EntidadFederativa is not null &&
+		//		empleo.AmbitoPublico is not null &&
+		//		empleo.NivelOrdenGobierno is not null &&
+		//		!string.IsNullOrWhiteSpace(empleo.NombreEnte) &&
+		//		nivel?.Clave is not null &&
+		//		!string.IsNullOrWhiteSpace(nivel.Denominacion) &&
+		//		!string.IsNullOrWhiteSpace(nivel.AreaAdscripcion);
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.EmpleoCargoComision] = datosCompletos;
-		}		
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.EmpleoCargoComision] = datosCompletos;
+		//}		
 
-		private async Task ValidarInformacionOrigenProcedimiento()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var origen = FaltasDeServidoresPublicosG?.OrigenProcedimiento;
-			var clave = origen?.Clave?.Descripcion;
-			var esOtro = clave?.Contains("OTRO") == true;
-			var valorValido = !string.IsNullOrWhiteSpace(origen?.Valor);
+		//private async Task ValidarInformacionOrigenProcedimiento()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var origen = FaltasDeServidoresPublicosG?.OrigenProcedimiento;
+		//	var clave = origen?.Clave?.Descripcion;
+		//	var esOtro = clave?.Contains("OTRO") == true;
+		//	var valorValido = !string.IsNullOrWhiteSpace(origen?.Valor);
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.OrigenProcedimiento] =
-				origen?.Clave is not null && (!esOtro || valorValido);
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.OrigenProcedimiento] =
+		//		origen?.Clave is not null && (!esOtro || valorValido);
+		//}
 
-		private async Task ValidarInformacionFaltaCometida()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var falta = FaltasDeServidoresPublicosG!.FaltaCometida;
+		//private async Task ValidarInformacionFaltaCometida()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var falta = FaltasDeServidoresPublicosG!.FaltaCometida;
 
-			bool datosCompletos =
-				_optionsFaltaComedia.Any()  &&
-				!string.IsNullOrWhiteSpace(falta?.NombreNormatividad) &&
-				!string.IsNullOrWhiteSpace(falta?.Articulo) &&
-				!string.IsNullOrWhiteSpace(falta?.DescripcionHechos);
+		//	bool datosCompletos =
+		//		_optionsFaltaComedia.Any()  &&
+		//		!string.IsNullOrWhiteSpace(falta?.NombreNormatividad) &&
+		//		!string.IsNullOrWhiteSpace(falta?.Articulo) &&
+		//		!string.IsNullOrWhiteSpace(falta?.DescripcionHechos);
 
-			bool requiereValor = _optionsFaltaComedia.Contains("OTRO");
+		//	bool requiereValor = _optionsFaltaComedia.Contains("OTRO");
 
-			bool valorLleno = !string.IsNullOrWhiteSpace(falta?.Valor);
+		//	bool valorLleno = !string.IsNullOrWhiteSpace(falta?.Valor);
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.FaltaCometida] =
-				datosCompletos && (!requiereValor || valorLleno);
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.FaltaCometida] =
+		//		datosCompletos && (!requiereValor || valorLleno);
+		//}
 
-		private async Task ValidarInformacionResolucion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var resolucion = FaltasDeServidoresPublicosG!.Resolucion;
+		//private async Task ValidarInformacionResolucion()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var resolucion = FaltasDeServidoresPublicosG!.Resolucion;
 
-			bool datosCompletos =
-				!string.IsNullOrWhiteSpace(resolucion?.TituloDocumento) &&
-				resolucion?.FechaResolucion != null &&
-				resolucion?.FechaNotificacion != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.UrlResolucion) &&
-				resolucion?.FechaResolucionFirme != null &&
-				resolucion?.FechaNotificacionFirme != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.UrlResolucionFirme) &&
-				resolucion?.OrdenJurisdiccional != null &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadResolutora) &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadInvestigadora) &&
-				!string.IsNullOrWhiteSpace(resolucion?.AutoridadSubstanciadora);
+		//	bool datosCompletos =
+		//		!string.IsNullOrWhiteSpace(resolucion?.TituloDocumento) &&
+		//		resolucion?.FechaResolucion != null &&
+		//		resolucion?.FechaNotificacion != null &&
+		//		!string.IsNullOrWhiteSpace(resolucion?.UrlResolucion) &&
+		//		resolucion?.FechaResolucionFirme != null &&
+		//		resolucion?.FechaNotificacionFirme != null &&
+		//		!string.IsNullOrWhiteSpace(resolucion?.UrlResolucionFirme) &&
+		//		resolucion?.OrdenJurisdiccional != null &&
+		//		!string.IsNullOrWhiteSpace(resolucion?.AutoridadResolutora) &&
+		//		!string.IsNullOrWhiteSpace(resolucion?.AutoridadInvestigadora) &&
+		//		!string.IsNullOrWhiteSpace(resolucion?.AutoridadSubstanciadora);
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Resolucion] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Resolucion] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionTipoSancion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			bool datosCompletos = false;
-			if (_options.Count() > 0) datosCompletos = true;
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.TipoSancion] = datosCompletos;
-		}
+		//private async Task ValidarInformacionTipoSancion()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	bool datosCompletos = false;
+		//	if (_options.Count() > 0) datosCompletos = true;
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.TipoSancion] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionSuspencion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var suspension = FaltasDeServidoresPublicosG.Suspension;
+		//private async Task ValidarInformacionSuspencion()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var suspension = FaltasDeServidoresPublicosG.Suspension;
 
-			bool datosCompletos =
-				suspension!.PlazoMeses != null &&
-				suspension!.PlazoDias != null &&
-				suspension!.FechaInicial != null &&
-				suspension!.FechaFinal != null;
+		//	bool datosCompletos =
+		//		suspension!.PlazoMeses != null &&
+		//		suspension!.PlazoDias != null &&
+		//		suspension!.FechaInicial != null &&
+		//		suspension!.FechaFinal != null;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Suspension] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Suspension] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionDestitucionEmpleo()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var suspension = FaltasDeServidoresPublicosG.DestitucionEmpleo;
+		//private async Task ValidarInformacionDestitucionEmpleo()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var suspension = FaltasDeServidoresPublicosG.DestitucionEmpleo;
 
-			bool datosCompletos =
-				suspension!.FechaDestitucion != null;
+		//	bool datosCompletos =
+		//		suspension!.FechaDestitucion != null;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.DestitucionEmpleo] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.DestitucionEmpleo] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionSancionEconomica()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var suspension = FaltasDeServidoresPublicosG.SancionEconomica;
+		//private async Task ValidarInformacionSancionEconomica()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var suspension = FaltasDeServidoresPublicosG.SancionEconomica;
 
-			bool datosCompletos =
-				suspension!.Moneda != null && suspension.Monto != null;
+		//	bool datosCompletos =
+		//		suspension!.Moneda != null && suspension.Monto != null;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.SancionEconomica] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.SancionEconomica] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionInhabilitacion()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var inhabilitacion = FaltasDeServidoresPublicosG.Inhabilitacion;
+		//private async Task ValidarInformacionInhabilitacion()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var inhabilitacion = FaltasDeServidoresPublicosG.Inhabilitacion;
 
-			bool datosCompletos =
-				inhabilitacion!.Anio != null && inhabilitacion.Anio != string.Empty &&
-				inhabilitacion!.Mes != null && inhabilitacion.Mes != string.Empty &&
-				inhabilitacion!.Dia != null && inhabilitacion.Dia != string.Empty &&
-				inhabilitacion!.FechaInicial != null &&	inhabilitacion!.FechaFinal != null;
+		//	bool datosCompletos =
+		//		inhabilitacion!.Anio != null && inhabilitacion.Anio != string.Empty &&
+		//		inhabilitacion!.Mes != null && inhabilitacion.Mes != string.Empty &&
+		//		inhabilitacion!.Dia != null && inhabilitacion.Dia != string.Empty &&
+		//		inhabilitacion!.FechaInicial != null &&	inhabilitacion!.FechaFinal != null;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Inhabilitacion] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Inhabilitacion] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionOtro()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-			var inhabilitacion = FaltasDeServidoresPublicosG.Otro;
+		//private async Task ValidarInformacionOtro()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//	var inhabilitacion = FaltasDeServidoresPublicosG.Otro;
 
-			bool datosCompletos =
-				inhabilitacion!.DenominacionSancion != null && inhabilitacion.DenominacionSancion != string.Empty;
+		//	bool datosCompletos =
+		//		inhabilitacion!.DenominacionSancion != null && inhabilitacion.DenominacionSancion != string.Empty;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Otro] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Otro] = datosCompletos;
+		//}
 
-		private async Task ValidarInformacionObservaciones()
-		{
-			if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
+		//private async Task ValidarInformacionObservaciones()
+		//{
+		//	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
 
-			bool datosCompletos =true;
+		//	bool datosCompletos =true;
 
-			BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Observaciones] = datosCompletos;
-		}
+		//	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosG.Observaciones] = datosCompletos;
+		//}
 
 		private async Task ObtenerCatalogosFormulario()
 		{

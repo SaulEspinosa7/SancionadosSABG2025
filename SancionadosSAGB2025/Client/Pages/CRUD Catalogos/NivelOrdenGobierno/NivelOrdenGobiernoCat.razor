@@ -6,6 +6,7 @@
 @using SancionadosSAGB2025.Client.Shared.Forms;
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
+@inject NavigationManager nav
 @inject IDialogService DialogService
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
@@ -129,7 +130,8 @@
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Nivel Orden Gobierno" },
             {z => z.MensajeSnackBar, "Nivel Editado"},
-            { z => z.BtnAceptar, "Guardar Cambios" }
+            { z => z.BtnAceptar, "Guardar Cambios" },
+            {z => z.nombreApi, "ActualizarOrdenGobierno"}
         };
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth = false };
         var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<NivelOrdenGobierno>>("Agregar Nivel", parameters, options);
@@ -148,6 +150,10 @@
                 Elements = Elements.OrderBy(e => e.Descripcion).ToList();
 
                 StateHasChanged();
+            }
+            else
+            {
+                nav.NavigateTo(nav.Uri, forceLoad: true);
             }
         }
     }

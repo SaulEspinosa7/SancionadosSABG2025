@@ -1,17 +1,21 @@
 ﻿using SancionadosSAGB2025.Server.Interfaces;
+using SancionadosSAGB2025.Shared;
 using SancionadosSAGB2025.Shared.Catalogos;
 using SancionadosSAGB2025.Shared.Registros;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 namespace SancionadosSAGB2025.Server.Services
 {
-	public class CatalogosService : ICatalogos
+	public class CatalogosService(HttpClient _http, IConfiguration configuration) : ICatalogos
 	{
-		private readonly HttpClient _http;
+		//private readonly HttpClient _http;
 
-		public CatalogosService(HttpClient http)
-		{
-			_http = http;
-		}
+		//public CatalogosService(HttpClient http)
+		//{
+		//	_http = http;
+		//}
 
 		public async Task<Catalogos> ObtenerTodosLosCatalogos()
 		{
@@ -290,6 +294,126 @@ namespace SancionadosSAGB2025.Server.Services
 				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Tipo Vialidad {ex.Message}");
 				return null;
 			}		
+		}
+		public async Task<RespuestaApiActualizar> ActualizarAmbitoPublico(AmbitoPublico ambitoPublico)
+		{
+			try
+			{
+                var data = new AmbitoPublico { IdAmbitoPublico = ambitoPublico.IdAmbitoPublico, Descripcion = ambitoPublico.Descripcion};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarAmbito"];
+
+                var response = await _http.PostAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+				return null;
+			}
+		}
+		public async Task<RespuestaApiActualizar> ActualizarEntidadFederativa(EntidadFederativaEntidad entidadFederativaEntidad)
+		{
+			try
+			{
+                var data = new EntidadFederativaEntidad { IdEntidadFederativa = entidadFederativaEntidad.IdEntidadFederativa, Descripcion = entidadFederativaEntidad.Descripcion};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarEntidad"];
+
+                var response = await _http.PostAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+                return null;
+			}
+		}
+		public async Task<RespuestaApiActualizar> ActualizarFaltaCometida(FaltaCometidaEntidad faltaCometidaEntidad)
+		{
+			try
+			{
+                var data = new FaltaCometidaEntidad { IdFaltaCometida = faltaCometidaEntidad.IdFaltaCometida, Descripcion = faltaCometidaEntidad.Descripcion, Activo= faltaCometidaEntidad.Activo};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarFaltaCometida"];
+
+                var response = await _http.PutAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+                return null;
+			}
+		}
+		public async Task<RespuestaApiActualizar> ActualizarNivelJerarquico(NivelJerarquicoEntidad nivelJerarquicoEntidad)
+		{
+			try
+			{
+                var data = new  { Id = nivelJerarquicoEntidad.IdNivelJerarquicoCat, Clave = nivelJerarquicoEntidad.Descripcion, Activo = nivelJerarquicoEntidad.Activo};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarNivelJerarquico"];
+
+                var response = await _http.PostAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+                return null;
+			}
+		}
+		public async Task<RespuestaApiActualizar> ActualizarOrdenGobierno(NivelOrdenGobierno nivelOrdenGobierno)
+		{
+			try
+			{
+                var data = new NivelOrdenGobierno { IdNivelOrdenGobierno = nivelOrdenGobierno.IdNivelOrdenGobierno, Descripcion = nivelOrdenGobierno.Descripcion};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarOrdenGobierno"];
+
+                var response = await _http.PostAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+                return null;
+			}
+		}
+		public async Task<RespuestaApiActualizar> ActualizaOrdenJurisdiccional(OrdenJurisdiccional ordenJurisdiccional)
+		{
+			try
+			{
+                var data = new OrdenJurisdiccional { Id = ordenJurisdiccional.Id, Descripcion = ordenJurisdiccional.Descripcion};
+                var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                var url = configuration["UrlApi:ActualizarOrdenGobierno"];
+
+                var response = await _http.PostAsync(url, dataContent);
+                var responsestring = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<RespuestaApiActualizar>(responsestring);
+                return res!;
+			}
+			catch (Exception ex)
+			{
+                Console.WriteLine($"Hubo un error al intentar actualizar {ex.Message}");
+                return null;
+			}
 		}
 	}
 }

@@ -125,15 +125,16 @@
                     </MudItem>
                     <MudItem xs="4">
 
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.Sexo"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.IdSexoFk"
                                    Label="SEXO"
+                                   T="int?"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    HelperText="Selecciona la opción que corresponda: HOMBRE, MUJER"
                                    required="!modoVista"
                                    RequiredError="El campo Sexo obligatorio.">
                             @foreach (var sexo in Sexos)
                             {
-                                <MudSelectItem Value="@sexo">@sexo.Descripcion</MudSelectItem>
+                                <MudSelectItem Value="@sexo.IdSexo">@sexo.Descripcion</MudSelectItem>
                             }
                         </MudSelect>
                         @if (FaltasDeServidoresPublicosG.DatosGenerales.Sexo is null)
@@ -148,7 +149,7 @@
             <MudForm @ref="_formDatosEmpleo" @bind-IsValid="_isStep1Valid[3]">
                 <MudGrid>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.EntidadFederativa"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.IdEntidadFederativaFK"
                                    Label="ENTIDAD FEDERATIVA"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    required="!modoVista"
@@ -156,7 +157,7 @@
                                    HelperText="Seleccionar la entidad federativa donde se ubica el Ente público donde labora o laboraba la persona servidora pública sancionada, al momento de cometer la falta administrativa. ">
                             @foreach (var entidad in EntidadesFederativas)
                             {
-                                <MudSelectItem Value="@entidad">@entidad.Descripcion</MudSelectItem>
+                                <MudSelectItem Value="@entidad.IdEntidadFederativa">@entidad.Descripcion</MudSelectItem>
                             }
                         </MudSelect>
                         @if (FaltasDeServidoresPublicosG.EmpleoCargoComision!.EntidadFederativa is null)
@@ -165,7 +166,7 @@
                         }
                     </MudItem>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.NivelOrdenGobierno"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.IdNivelOrdenGobiernoFK"
                                    Label="NIVEL/ORDEN DE GOBIERNO"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    required="!modoVista"
@@ -175,7 +176,7 @@
                             {
                                 @foreach (var nivel in NivelOrdenGobierno)
                                 {
-                                    <MudSelectItem Value="@nivel">@nivel.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@nivel.IdNivelOrdenGobierno">@nivel.Descripcion</MudSelectItem>
                                 }
                             }
                         </MudSelect>
@@ -185,7 +186,7 @@
                         }
                     </MudItem>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.AmbitoPublico"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.EmpleoCargoComision.IdAmbitoPublicoFK"
                                    Label="ÁMBITO PÚBLICO"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    required="!modoVista"
@@ -193,7 +194,7 @@
                                    HelperText="Seleccionar el ámbito público">
                             @foreach (var ambito in AmbitoPublico)
                             {
-                                <MudSelectItem Value="@ambito">@ambito.Descripcion</MudSelectItem>
+                                <MudSelectItem Value="@ambito.IdAmbitoPublico">@ambito.Descripcion</MudSelectItem>
                             }
                         </MudSelect>
                         @if (FaltasDeServidoresPublicosG.EmpleoCargoComision!.AmbitoPublico is null)
@@ -218,7 +219,8 @@
                                       UserAttributes="@(new Dictionary<string, object> { ["id"] = "siglasEntePublicoInput" })" />
                     </MudItem>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.NivelJerarquico.Clave"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG.NivelJerarquico.IdNivelJerarquicoFK"
+                                   T="int?"
                                    Label="NIVEL JERÁRQUICO DEL EMPLEO, CARGO O COMISIÓN"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    HelperText="Señalar el nivel jerárquico del empleo, cargo o comisión:">
@@ -226,14 +228,10 @@
                             {
                                 @foreach (var nivel in NivelJerarquico)
                                 {
-                                    <MudSelectItem Value="@nivel">@nivel.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@nivel.IdNivelJerarquicoCat">@nivel.Descripcion</MudSelectItem>
                                 }
                             }
-                        </MudSelect>
-                        @if (FaltasDeServidoresPublicosG.NivelJerarquico!.Clave is null)
-                        {
-                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Clave es obligatorio.</MudText>
-                        }
+                        </MudSelect>                   
                     </MudItem>
                     @if (FaltasDeServidoresPublicosG!.NivelJerarquico?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
                     {
@@ -287,7 +285,7 @@
 
                  
                     </MudItem>
-                    @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
+                    @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.IdOrigenProcedimientoCatFK == 5)
                     {
                         <MudItem xs="4">
                             <MudTextField @bind-value="FaltasDeServidoresPublicosG!.OrigenProcedimiento!.Valor"
@@ -482,7 +480,7 @@
                 </MudGrid>
             </MudForm>
             
-            @if ((_options ?? Enumerable.Empty<string>()).Contains("AMONESTACION"))
+            @if ((_options ?? Enumerable.Empty<string>()).Contains("AMONESTACIÓN PÚBLICA O PRIVADA"))
                 {
                     <CardForm>
                         <Header>
@@ -492,7 +490,7 @@
                         <MudForm @ref="_formAmonestacion" @bind-IsValid="_isStep1Valid[8]">
                             <MudGrid>
                                 <MudItem xs="6">
-                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.TipoAmonestacion"
+                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.IdTipoAmonestacionFK"
                                                Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                Label="TIPO DE AMONESTACIÓN"
                                                required="!modoVista"
@@ -500,7 +498,7 @@
                                                HelperText="Seleccionar el tipo de amonestación">
                                         @foreach (var clave in TiposAmonestacion)
                                         {
-                                            <MudSelectItem Value="@clave">@clave.Descripcion</MudSelectItem>
+                                            <MudSelectItem Value="@clave.IdTipoAmonestacion">@clave.Descripcion</MudSelectItem>
                                         }
                                     </MudSelect>
                                     @if (FaltasDeServidoresPublicosG!.TipoAmonestacion is null)

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SancionadosSAGB2025.Server.Services;
+using SancionadosSAGB2025.Shared;
+using SancionadosSAGB2025.Shared.Catalogos;
 using SancionadosSAGB2025.Shared.Login;
+using SancionadosSAGB2025.Shared.Sanciones;
 
 namespace SancionadosSAGB2025.Server.Controllers
 {
@@ -147,5 +150,54 @@ namespace SancionadosSAGB2025.Server.Controllers
 
 			return Ok(tipoVialidads);
 		}
-	}
+		[HttpPost("ActulizarAmbito")]
+		public async Task<RespuestaApiActualizar> ActulizarAmbito(AmbitoPublico ambitoPublico)
+		{
+			var ambitoActualizado = await _catalogosService.ActualizarAmbitoPublico(ambitoPublico);
+			if (ambitoActualizado == null)
+				return new();
+			return ambitoActualizado;
+        }
+
+        [HttpPost("ActulizarEntidadFederativa")]
+        public async Task<RespuestaApiActualizar> ActulizarEntidadFederativa(EntidadFederativaEntidad entidadFederativaEntidad)
+        {
+            var ambitoActualizado = await _catalogosService.ActualizarEntidadFederativa(entidadFederativaEntidad);
+            if (ambitoActualizado == null)
+                return new();
+            return ambitoActualizado;
+        }
+        [HttpPost("ActulizarFaltaCometida")]
+        public async Task<RespuestaApiActualizar> ActulizarFaltaCometida(FaltaCometidaEntidad faltaCometidaEntidad)
+        {
+            var ambitoActualizado = await _catalogosService.ActualizarFaltaCometida(faltaCometidaEntidad);
+            if (ambitoActualizado == null)
+                return new();
+            return ambitoActualizado;
+        }
+        [HttpPost("ActualizarNivelJerarquico")]
+        public async Task<RespuestaApiActualizar> ActualizarNivelJerarquico(NivelJerarquicoEntidad nivelJerarquico)
+        {
+            var ambitoActualizado = await _catalogosService.ActualizarNivelJerarquico(nivelJerarquico);
+            if (ambitoActualizado == null)
+                return new();
+            return ambitoActualizado;
+        }
+        [HttpPost("ActualizarOrdenGobierno")]
+        public async Task<RespuestaApiActualizar> ActualizarOrdenGobierno(NivelOrdenGobierno nivelOrdenGobierno)
+        {
+            var ambitoActualizado = await _catalogosService.ActualizarOrdenGobierno(nivelOrdenGobierno);
+            if (ambitoActualizado == null)
+                return new();
+            return ambitoActualizado;
+        }
+        [HttpPost("ActualizaOrdenJurisdiccional")]
+        public async Task<RespuestaApiActualizar> ActualizaOrdenJurisdiccional(OrdenJurisdiccional ordenJurisdiccional)
+        {
+            var ambitoActualizado = await _catalogosService.ActualizaOrdenJurisdiccional(ordenJurisdiccional);
+            if (ambitoActualizado == null)
+                return new();
+            return ambitoActualizado;
+        }
+    }
 }

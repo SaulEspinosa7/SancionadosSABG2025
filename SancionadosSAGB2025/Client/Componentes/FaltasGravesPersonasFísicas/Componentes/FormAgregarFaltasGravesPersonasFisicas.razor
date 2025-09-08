@@ -351,7 +351,7 @@
                             }
                         </MudSelect>                        
                     </MudItem>
-                    @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
+                    @if (FaltasDeServidoresPublicosG!.OrigenProcedimiento?.IdOrigenProcedimientoCatFK == 5)
                     {
                         <MudItem xs="4">
                             <MudTextField @bind-value="FaltasDeServidoresPublicosG!.OrigenProcedimiento!.Valor"
@@ -613,9 +613,10 @@
                             <MudForm @ref="_formIndemnizacion" @bind-IsValid="_isStep1Valid[9]">
                                 <MudGrid>
                                     <MudItem xs="4">
-                                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Indeminizacion!.Monto"
+                                        <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.Indeminizacion!.Monto"
                                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                       label="MONTO"
+                                                     HideSpinButtons="false"
                                                       required="!modoVista"
                                                       RequiredError="El campo Monto es obligatorio."
                                                       helpertext="Colocar el monto total de la sanción económica." />
@@ -634,6 +635,26 @@
                                             }
                                         </MudSelect>
                                     </MudItem>
+                                    <MudItem xs="12">
+                                        <MudText>
+                                            <b>PLAZO DE PAGO</b>
+                                        </MudText>
+                                    </MudItem>
+                                    <MudItem xs="4">
+                                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.PlazoPago.Anios"
+                                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                      label="AÑO (S)" />
+                                    </MudItem>
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.PlazoPago.Meses"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="MES (ES) " />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTextField @bind-value="FaltasDeServidoresPublicosG!.PlazoPago.Dias"
+                                                  Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                  label="DÍA (S)" />
+                                </MudItem>
                                 </MudGrid>
                             </MudForm>
                         </Content>
@@ -650,15 +671,16 @@
                             <MudForm @ref="_formSancionEconomica" @bind-IsValid="_isStep1Valid[10]">
                                 <MudGrid>
                                     <MudItem xs="4">
-                                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.Monto"
+                                        <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.Monto"
                                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                       label="MONTO"
+                                                     HideSpinButtons="true"
                                                       required="!modoVista"
                                                       RequiredError="El campo Monto es obligatorio."
                                                       helpertext="Colocar el monto total de la sanción económica." />
                                     </MudItem>
                                     <MudItem xs="4">
-                                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica!.Moneda"
+                                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica!.IdMonedaFK"
                                                    Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
                                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                    required="!modoVista"
@@ -666,7 +688,7 @@
                                                    HelperText="Elegir el tipo de moneda:">
                                             @foreach (var moneda in TipoMonedas)
                                             {
-                                                <MudSelectItem Value="@moneda">@moneda.Descripcion</MudSelectItem>
+                                                <MudSelectItem Value="@moneda.IdMoneda">@moneda.Descripcion</MudSelectItem>
                                             }
                                         </MudSelect>
                                     </MudItem>
@@ -681,6 +703,11 @@
                                 }
                             </MudSelect>
                         </MudItem> *@
+                                <MudItem xs="12">
+                                    <MudText>
+                                        <b>PLAZO DE PAGO</b>
+                                    </MudText>
+                                </MudItem>
 
                                     <MudItem xs="4">
                                         <MudTextField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.Anio"
@@ -702,6 +729,45 @@
                                     </MudItem>
 
                                 </MudGrid>
+                                <br />
+                                <MudGrid>
+                                <MudItem xs="12">
+                                    <MudText>
+                                        <b>SANCIÓN ECONÓMICA EFECTIVAMENTE COBRADA </b>
+                                    </MudText>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.SancionEfectivamenteCobrada!.Monto"
+                                                     Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                     label="MONTO"
+                                                     HideSpinButtons="true"
+                                                     RequiredError="El campo Monto es obligatorio."
+                                                     helpertext="Colocar el monto total de la sanción económica." />
+
+
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEfectivamenteCobrada!.IdMonedaFK"
+                                               Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
+                                               Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                               RequiredError="El campo Moneda es obligatorio."
+                                               HelperText="Elegir el tipo de moneda:">
+                                        @foreach (var moneda in TipoMonedas)
+                                        {
+                                            <MudSelectItem Value="@moneda.IdMoneda">@moneda.Descripcion</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+
+                                <MudItem xs="6">
+                                    <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                </MudItem>
+                                </MudGrid>
+                           
+
                             </MudForm>
                         </Content>
                     </CardForm>

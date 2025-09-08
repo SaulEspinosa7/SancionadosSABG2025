@@ -6,7 +6,9 @@
 @using SancionadosSAGB2025.Client.Shared.Forms;
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
+@using SancionadosSAGB2025.Shared
 @inject IDialogService DialogService
+@inject NavigationManager nav
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
     <Main>
@@ -133,7 +135,8 @@
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Ambito" },
             {z => z.MensajeSnackBar, "Ambito Editado"},
-            { z => z.BtnAceptar, "Guardar Cambios" }
+            { z => z.BtnAceptar, "Guardar Cambios" },
+            { z => z.nombreApi, "ActulizarAmbito" }
         };
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth = false };
         var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<AmbitoPublico>>("Agregar Ambito", parameters, options);
@@ -145,13 +148,16 @@
 
             if (!string.IsNullOrEmpty(descripcion))
             {
-                // 👉 Editar en lugar de agregar
-                entidad.Descripcion = descripcion;
-
-                // Reordenamos la lista
+             
+                entidad.Descripcion = descripcion;             
+               
                 Elements = Elements.OrderBy(e => e.Descripcion).ToList();
 
                 StateHasChanged();
+            }
+            else
+            {
+                nav.NavigateTo(nav.Uri, forceLoad: true);
             }
         }
     }

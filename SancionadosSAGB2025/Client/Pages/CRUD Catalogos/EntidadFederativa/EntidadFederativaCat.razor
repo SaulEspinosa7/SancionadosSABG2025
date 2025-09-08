@@ -8,6 +8,7 @@
 @using SancionadosSAGB2025.Client.Services
 @inject IDialogService DialogService
 @inject CatalagosServiceClient CatalagosService
+@inject NavigationManager nav
 <MainForm>
     <Main>
         @if (Elements.Count() > 0)
@@ -132,7 +133,8 @@
             { z => z.IsEdit, true },
             {z => z.MensajeSnackBar, "Entidad Editada" },
             { z => z.Titulo, "Editar Entidad" },
-            { z => z.BtnAceptar, "Guardar Cambios" }
+            { z => z.BtnAceptar, "Guardar Cambios" },
+            { z => z.nombreApi, "ActulizarEntidadFederativa" }
         };
         var dialog = await DialogService.ShowAsync<ModalAgregarOEditar<EntidadFederativaEntidad>>("Agregar Entidad", parameters);
         var result = await dialog.Result;
@@ -142,14 +144,14 @@
             var descripcion = result.Data?.ToString();
 
             if (!string.IsNullOrEmpty(descripcion))
-            {
-                // 👉 Editar en lugar de agregar
-                entidad.Descripcion = descripcion;
-
-                // Reordenamos la lista
+            {               
+                entidad.Descripcion = descripcion;                
                 Elements = Elements.OrderBy(e => e.Descripcion).ToList();
-
                 StateHasChanged();
+            }
+            else
+            {
+                nav.NavigateTo(nav.Uri, forceLoad: true);
             }
         }
     }

@@ -53,11 +53,11 @@ namespace SancionadosSAGB2025.Client.Shared.Forms
 					IconModulo = "far fa-clone",
 					SubModulos = new List<SubModulos>
 					{
-						new SubModulos
-						{
-							NombreSubModulo = "Usuarios",
-							UrlSubModulo = "/usuarios",
-						},
+						//new SubModulos
+						//{
+						//	NombreSubModulo = "Usuarios",
+						//	UrlSubModulo = "/usuarios",
+						//},
 						new SubModulos
 						{
 							NombreSubModulo = "Cambio de Contraseña",

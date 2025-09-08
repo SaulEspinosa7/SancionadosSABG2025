@@ -218,7 +218,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 
                 bool todasLasOpcionesSonValidas = true;
 
-                if (_options.Contains("AMONESTACION"))
+                if (_options.Contains("AMONESTACIÓN PÚBLICA O PRIVADA"))
                 {
                     await _formAmonestacion!.Validate();
                     bool esValidoEstaOpcion = _isStep1Valid[8];

@@ -146,20 +146,18 @@ namespace SancionadosSAGB2025.Shared.Moral
         public Sexo? Sexo { get; set; }
 
         [JsonPropertyName("idDomicilioMexicoFK")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? IdDomicilioMexicoFK { set; get; }
 
         [JsonPropertyName("domicilioMexico")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public DomicilioMexicoMorales? DomicilioMexico { get; set; }
+        public DomicilioMexicoMorales? DomicilioMexico { get; set; } = new();
 
         [JsonPropertyName("idDomicilioExtranjeroFK")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? IdDomicilioExtranjeroFK { set; get; }
 
         [JsonPropertyName("domicilioExtranjero")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public DomicilioExtranjeroMorales? DomicilioExtranjero { get; set; }
+        public DomicilioExtranjeroMorales? DomicilioExtranjero { get; set; } = new();
 
         [JsonPropertyName("objetoSocial")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -204,29 +202,26 @@ namespace SancionadosSAGB2025.Shared.Moral
 
     public class DomicilioExtranjeroMorales
     {
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [JsonPropertyName("idDomicilioExtranjero")]
+      
         public int? IdDomicilioExtranjero { set; get; }
 
-        [JsonPropertyName("ciudad")]
         public string? Ciudad { get; set; }
 
-        [JsonPropertyName("provincia")]
+
         public string? Provincia { get; set; }
 
-        [JsonPropertyName("calle")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? Calle { get; set; }
 
-        [JsonPropertyName("numeroExterior")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? NumeroExterior { get; set; }
 
-        [JsonPropertyName("numeroInterior")]
+
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public string? NumeroInterior { get; set; }
 
-        [JsonPropertyName("codigoPostal")]
         [LetrasNumerosEspacios(ErrorMessage = "Número exterior contiene caracteres inválidos")]
         public int? CodigoPostal { get; set; }
 

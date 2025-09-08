@@ -31,7 +31,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
             _faltasDeServidoresPublicosG.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
             _faltasDeServidoresPublicosG.Inhabilitacion ??= new Inhabilitacion();
             _faltasDeServidoresPublicosG.Otro ??= new Otro();
-            _faltasDeServidoresPublicosG.Sancion ??= new Sancion();
+            //_faltasDeServidoresPublicosG.Sancion ??= new Sancion();
             //Console.WriteLine($"_faltasDeServidoresPublicosG: {__faltasDeServidoresPublicosG?.MultipleSancion}");
 		}
 
@@ -69,12 +69,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 				MultipleSancion = input.MultipleSancion,
 
 				// Mapeo especial: se crea Sancion con Fecha y Expediente desde input
-				Sancion = new Sancion
-				{
-					Fecha = input.Fecha,
-					Expediente = input.Expediente
-					// puedes completar con otros campos si los necesitas
-				}
+				//Sancion = new Sancion
+				//{
+				//	Fecha = input.Fecha,
+				//	Expediente = input.Expediente
+				//	// puedes completar con otros campos si los necesitas
+				//}
 
 			};
 		}

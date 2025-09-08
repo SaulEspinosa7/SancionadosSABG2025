@@ -13,8 +13,8 @@
         <Main>
             <SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm BorderActive="true">
                 <Content>
-                    <MudText Typo="Typo.h5" Style="color:var(--main-color-general);">
-                        Busqueda Faltas de <b>Servidores Públicos Graves</b>
+                    <MudText Typo="Typo.h5" Color="Color.Primary">
+                        Busqueda Faltas de <b>Servidores Públicos No Graves</b>
                     </MudText>
                 </Content>
             </SancionadosSAGB2025.Client.Shared.Partial.Cards.CardForm>
@@ -48,7 +48,7 @@
                                             </MudButton>
                                         </MudItem>
                                         <MudSpacer />
-                                        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                        <MudTextField @bind-Value="_searchString" Placeholder="Buscar" Adornment="Adornment.Start" Immediate="true"
                                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                                     </ToolBarContent>
                                     <Columns>
@@ -73,7 +73,7 @@
                                         </TemplateColumn>
                                     </Columns>
                                     <PagerContent>
-                                        <MudDataGridPager T="AddFaltasDeServidoresPublicosG" />
+                                        <MudDataGridPager T="AddFaltasDeServidoresPublicosG" RowsPerPageString="Filas por pagina" InfoFormat="{first_item}-{last_item} de {all_items}" />
                                     </PagerContent>
                                 </MudDataGrid>
                             }else

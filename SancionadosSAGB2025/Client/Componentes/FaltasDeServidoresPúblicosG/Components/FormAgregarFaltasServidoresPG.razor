@@ -44,14 +44,14 @@
     <ChildContent>
         <MudStep Title="1. FECHA* (DD-MM-AAAA)*" CompletedStepColor="Color.Success">
             <MudForm @ref="_formFecha" @bind-IsValid="_isStep1Valid[0]">
-                <MudDatePicker Label="FECHA" @bind-Date="FaltasDeServidoresPublicosG.Sancion!.Fecha" required="!modoVista" helpertext="Indicar la fecha en la que se registra la información" Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
+                <MudDatePicker Label="FECHA" @bind-Date="FaltasDeServidoresPublicosG!.Fecha" required="!modoVista" helpertext="Indicar la fecha en la que se registra la información" Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
             </MudForm>
         </MudStep>
         <MudStep Title="2. EXPEDIENTE*" CompletedStepColor="Color.Success">
             <MudForm @ref="_formExpediente" @bind-IsValid="_isStep1Valid[1]">
                 <MudGrid>
                     <MudItem xs="6">
-                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Sancion!.Expediente"
+                        <MudTextField @bind-value="FaltasDeServidoresPublicosG!.Expediente"
                                       label="EXPEDIENTE"
                                       required="!modoVista"
                                       RequiredError="El campo de expediente es obligatorio"

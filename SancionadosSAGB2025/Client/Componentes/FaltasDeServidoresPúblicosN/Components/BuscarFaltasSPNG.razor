@@ -49,7 +49,7 @@
                                             </MudButton>
                                         </MudItem>
                                         <MudSpacer />
-                                        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                        <MudTextField @bind-Value="_searchString" Placeholder="Buscar" Adornment="Adornment.Start" Immediate="true"
                                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                                     </ToolBarContent>
                                     <Columns>
@@ -74,7 +74,7 @@
                                         </TemplateColumn>
                                     </Columns>
                                     <PagerContent>
-                                        <MudDataGridPager T="AddFaltasDeServidoresPublicosNoGraves" />
+                                        <MudDataGridPager T="AddFaltasDeServidoresPublicosNoGraves" RowsPerPageString="Filas por pagina" InfoFormat="{first_item}-{last_item} de {all_items}" />
                                     </PagerContent>
                                 </MudDataGrid>
                             }
