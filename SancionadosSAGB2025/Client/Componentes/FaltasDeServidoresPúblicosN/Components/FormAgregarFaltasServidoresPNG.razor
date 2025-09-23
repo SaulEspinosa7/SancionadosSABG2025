@@ -31,7 +31,7 @@
         else
         {
             <MudItem xs="12" class="d-flex justify-end pb-5">
-                <MudButton StartIcon="@Icons.Material.Filled.KeyboardBackspace" Class="mt-3 w-25" Variant="Variant.Filled" Color="Color.Primary" Href="FaltasGravesPersonasMorales">
+                <MudButton StartIcon="@Icons.Material.Filled.KeyboardBackspace" Class="mt-3 w-25" Variant="Variant.Filled" Color="Color.Primary" Href="ServidoresPúblicosN">
                     Volver a Buscar Servidores
                 </MudButton>
             </MudItem>
@@ -461,7 +461,7 @@
                                    @bind-SelectedValues="_options"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    T="string"
-                                   Label="TIPO DE AMONESTACIÓN"
+                                   Label="TIPO DE SANCIÓN"
                                    required="!modoVista"
                                    RequiredError="El campo Clave es obligatorio."
                                    HelperText="Elegir una o varias sanciones, según corresponda, conforme al catálogo y que fueron dictaminadas en la resolución definitiva. Se podrán elegir de las siguientes opciones:"
@@ -578,7 +578,8 @@
                 </CardForm>
               
             }
-            @if ((_options ?? Enumerable.Empty<string>()).Contains("INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS, CARGOS O COMISIONES EN EL SERVICIO PÚBLICO Y PARA PARTICIPAR EN ADQUISICIONES, ARRENDAMIENTOS, SERVICIOS U OBRAS PÚBLICAS"))
+            @if ((_options ?? Enumerable.Empty<string>()).Contains("INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS, CARGOS O COMISIONES EN EL SERVICIO PÚBLICO Y PARA PARTICIPAR EN ADQUISICIONES, ARRENDAMIENTOS, SERVICIOS U OBRAS PÚBLICAS")
+                        || (_options ?? Enumerable.Empty<string>()).Contains("INHABILITACIÓN TEMPORAL PARA DESEMPEÑAR EMPLEOS"))
             {
                 <CardForm>
                     <Header>

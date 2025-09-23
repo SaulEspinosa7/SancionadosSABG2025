@@ -18,8 +18,35 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		[JsonPropertyName("expediente")]
 		public string? Expediente { get; set; }
 	}
+	public class DatosGeneralesGraves 
+	{
+        [JsonPropertyName("idDatosGenerales")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? IdDatosGenerales { get; set; }
 
-	public class DatosGenerales
+        [JsonPropertyName("nombres")]
+        public string? Nombres { get; set; }
+
+        [JsonPropertyName("primerApellido")]
+        public string? PrimerApellido { get; set; }
+
+        [JsonPropertyName("segundoApellido")]
+        public string? SegundoApellido { get; set; }
+
+        [CurpValidation(ErrorMessage = "La CURP debe contener 18 caracteres")]
+        public string? Curp { get; set; }
+
+        [JsonPropertyName("rfc")]
+        public string? Rfc { get; set; }
+
+        [JsonPropertyName("idSexoFk")]
+        public int? IdSexoFk { set; get; }
+
+        [JsonPropertyName("sexo")]
+        public Sexo? Sexo { get; set; } = new();
+    }
+
+    public class DatosGenerales
 	{
 		[JsonPropertyName("idDatosGenerales")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -34,9 +61,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		[JsonPropertyName("segundoApellido")]
 		public string? SegundoApellido { get; set; }
 
-		[JsonPropertyName("curp")]
         [CurpValidation(ErrorMessage = "La CURP debe contener 18 caracteres")]
-      //  [RegularExpression(@"\b[A-Z][A,E,I,O,U,X][A-Z]{2}[0-9]{2}[0-1][0-9][0-3][0-9][M,H][A-Z]{2}[B,C,D,F,G,H,J,K,L,M,N,Ñ,P,Q,R,S,T,V,W,X,Y,Z]{3}[0-9,A-Z][0-9]$", ErrorMessage = "CURP no valido")]
         public string? Curp { get; set; }
 
 		[JsonPropertyName("rfc")]
@@ -345,8 +370,6 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 	public class SancionEconomica
 	{
-		[JsonPropertyName("id")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public int? Id { get; set; }
 
 		[JsonPropertyName("monto")]
@@ -370,13 +393,26 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("dias")]
 		public int? Dia { get; set; }
-	}
-	public class SancionEconomicaMoral
+		public int? IdSancionECobradaFK { get; set; }
+		public SancionEconomicaEfectivamenteCobrada? SancionEfectivamenteCobrada { get; set; } = new();
+
+    }
+	public class SancionEconomicaEfectivamenteCobrada
 	{
 		public int? Id { get; set; }
 		public decimal? Monto { get; set; }
 		public int? IdMonedaFK { get; set; }
-		public Moneda? Moneda { get; set; } = new();
+		public MonedaCat? Moneda { get; set; } = new();
+		public DateTime? FechaCobro { get; set; }
+		public DateTime? FechaPagoTotal { get; set; }
+    }
+
+    public class SancionEconomicaMoral
+	{
+		public int? Id { get; set; }
+		public decimal? Monto { get; set; }
+		public int? IdMonedaFK { get; set; }
+		public MonedaCat? Moneda { get; set; } = new();
         public PlazoPago? PlazoPago { get; set; } = new();
         [JsonPropertyName("anios")]
         public int? Anio { get; set; }
@@ -386,18 +422,16 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
         [JsonPropertyName("dias")]
         public int? Dia { get; set; }
+        public int? IdSancionECobradaFK { get; set; }
+        public SancionEconomicaEfectivamenteCobrada? SancionEfectivamenteCobrada { get; set; } = new();
     }
     public class IndemnizacionMoral
 	{
 		public int? Id { get; set; }
 		public decimal? Monto { get; set; }
 		public int? IdTipoMonedaFK { get; set; }
-		//public Moneda? Moneda { get; set; } = new();
-		//public DateTime? FechaCreacion { get; set; }
-		//public DateTime? FechaModificacion { get; set; }
-		//public int? Activo { get; set; }
-		//public int? idSancionEfectivamenteCobradaFK { get; set; }
-		//public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new();
+        public int? idIndeminizacionECobradaFK { get; set; }
+        public IndeminizacionECobrada? IndeminizacionECobrada { get; set; } = new();
     }
 	public class Moneda
 	{
@@ -422,9 +456,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("moneda")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public MonedaCat? Moneda { get; set; }
+		public MonedaCat? Moneda { get; set; } = new();
 
-		[JsonPropertyName("plazoPago")]
+        [JsonPropertyName("plazoPago")]
 		public PlazoPago? PlazoPago { get; set; } 
 
 		[JsonPropertyName("anios")]
@@ -436,13 +470,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		[JsonPropertyName("dias")]
 		public int? Dia { get; set; }
 
-		[JsonPropertyName("idSancionEfectivamenteCobradaFK")]
-		public int? IdSancionEfectivamenteCobradaFK { get; set; }
-
-		[JsonPropertyName("efectivamenteCobrada")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public SancionEfectivamenteCobrada? EfectivamenteCobrada { get; set; } = new();
-	}
+        public int? IdIndeminizacionECobradaFK { get; set; }
+        public IndeminizacionECobrada? IndeminizacionECobrada { get; set; } = new();
+    }
 
 	public class PlazoPago
 	{
@@ -501,8 +531,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
     public class PlazoPagos
 	{
-		[JsonPropertyName("id")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+		[JsonPropertyName("id")]	
 		public int? Id { get; set; }
 
 		[JsonPropertyName("anios")]
@@ -586,14 +615,14 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public SancionEconomica? SancionEconomica { get; set; } = new();
 		public int? IdSancionEfectivamenteCobradaFK { get; set; }
 		public SancionEfectivamenteCobrada? SancionEfectivamenteCobrada { get; set; } = new();
-		public int? IdInhabilitacionFK { get; set; }
+        public int? IdInhabilitacionFK { get; set; }
 		public Inhabilitacion? Inhabilitacion { get; set; } = new();
 		public int? IdOtro { get; set; }
 		public Otro? Otro { get; set; } = new();
 		public int? Activo { get; set; } = 1;
-		public string? MultipleSancion { get; set; }
-		public int? IdUsuarioFK { get; set; }
-	}
+		public string? MultipleSancion { get; set; } = string.Empty;
+        public int? IdUsuarioFK { get; set; }
+    }
 
 	public class AddFaltasDeServidoresPublicosG
 	{
@@ -896,9 +925,8 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 			public int? IdIndeminizacionFK { get; set; }
 
 			[JsonPropertyName("indeminizacion")]
-			public Indemnizacion? Indeminizacion { get; set; } = new();
+			public Indemnizacion? Indeminizacion { get; set; } = new();			
 
-			[JsonPropertyName("idPlazoPagoFK")]
 			public int? IdPlazoPagoFK { get; set; }
 
 			[JsonPropertyName("plazoPago")]
@@ -943,8 +971,21 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 			[JsonPropertyName("idUsuarioFK")]
 			public int? IdUsuarioFK { get; set; }
 		}
+		
+	public class IndeminizacionECobrada
+	{
+		public int? Id { get; set; }
 
-	public class SearchFaltasDeServidoresPublicosG
+		public decimal? Monto { get; set; }
+
+		public int? IdMonedaFK { get; set; }
+        public DateTime? FechaCobroSancion { get; set; }
+
+        public DateTime? FechaPagoTotalS { get; set; }	
+	
+    }
+
+    public class SearchFaltasDeServidoresPublicosG
 	{
 		[JsonPropertyName("fecha")]
 		public DateTime? Fecha { get; set; }

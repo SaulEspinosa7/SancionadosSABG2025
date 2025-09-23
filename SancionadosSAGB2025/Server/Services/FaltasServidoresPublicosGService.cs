@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using SancionadosSAGB2025.Server.Interfaces;
 using SancionadosSAGB2025.Shared.Catalogos;
+using SancionadosSAGB2025.Shared.Grave;
 using SancionadosSAGB2025.Shared.Registros;
 using SancionadosSAGB2025.Shared.Sanciones;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Text.Json;
 
 namespace SancionadosSAGB2025.Server.Services
 {
-	public class FaltasServidoresPublicosGService : IFaltasServidoresPublicosG
+	public class FaltasServidoresPublicosGService
 	{
 		private readonly HttpClient _http;
 
@@ -57,39 +58,53 @@ namespace SancionadosSAGB2025.Server.Services
 			}
 		}
 
-		public async Task<RespuestaRegistro> AgregarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
+		public async Task<RespuestaRegistro> AgregarFaltasSPG(FaltasGravesEntidad faltasDeServidoresPublicosG)
 		{
-
-			var registroFalta = await FromFaltasDeServidoresPublicosG(faltasDeServidoresPublicosG);
-			var json = JsonSerializer.Serialize(registroFalta, new JsonSerializerOptions
-			{
-				WriteIndented = true // Opcional: para que sea más legible
-			});
-
-			Console.WriteLine(json); // o usa tu logger
-
-			// Luego lo mandas tú mismo
-			var content = new StringContent(json, Encoding.UTF8, "application/json");
-			//var registroFalta = new RegistroFaltasSPG();
-			var response = await _http.PostAsJsonAsync($"FALTASSPG/AddAsync", registroFalta);
+			var response = await _http.PostAsJsonAsync($"FALTASSPG/AddAsync", faltasDeServidoresPublicosG);
 
 			if (!response.IsSuccessStatusCode)
 			{
 				var errorContent = await response.Content.ReadAsStringAsync();
 				Console.WriteLine(errorContent);
 			}
-			//return await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
 
 			var result = await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
 			return result;
-		}		
+		}	
+		
+		//public async Task<RespuestaRegistro> AgregarFaltasSPG(FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
+		//{
+
+		//	var registroFalta = await FromFaltasDeServidoresPublicosG(faltasDeServidoresPublicosG);
+		//	var json = JsonSerializer.Serialize(registroFalta, new JsonSerializerOptions
+		//	{
+		//		WriteIndented = true // Opcional: para que sea más legible
+		//	});
+
+		//	Console.WriteLine(json); // o usa tu logger
+
+		//	// Luego lo mandas tú mismo
+		//	var content = new StringContent(json, Encoding.UTF8, "application/json");
+		//	//var registroFalta = new RegistroFaltasSPG();
+		//	var response = await _http.PostAsJsonAsync($"FALTASSPG/AddAsync", registroFalta);
+
+		//	if (!response.IsSuccessStatusCode)
+		//	{
+		//		var errorContent = await response.Content.ReadAsStringAsync();
+		//		Console.WriteLine(errorContent);
+		//	}
+		//	//return await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
+
+		//	var result = await response.Content.ReadFromJsonAsync<RespuestaRegistro>();
+		//	return result;
+		//}		
 
 		public async Task<AddFaltasDeServidoresPublicosG> FromFaltasDeServidoresPublicosG(FaltasDeServidoresPublicosG faltas)
 		{
 			AddFaltasDeServidoresPublicosG registroAdd = new();
 
-		//	registroAdd.Fecha = faltas?.Sancion?.Fecha;
-		//	registroAdd.Expediente = faltas?.Sancion?.Expediente;
+			registroAdd.Fecha = faltas?.Fecha;
+			registroAdd.Expediente = faltas?.Expediente;
 
 			registroAdd.DatosGenerales = new DatosGenerales
 			{
@@ -113,8 +128,8 @@ namespace SancionadosSAGB2025.Server.Services
 
 			registroAdd.Id = faltas.Id;
 
-			//registroAdd.Fecha = faltas?.Sancion?.Fecha;
-			//registroAdd.Expediente = faltas?.Sancion?.Expediente;
+			registroAdd.Fecha = faltas?.Fecha;
+			registroAdd.Expediente = faltas?.Expediente;
 
 			//Datos generales
 			registroAdd.IdDatosGeneralesFK = faltas?.DatosGenerales?.IdDatosGenerales;
@@ -144,7 +159,7 @@ namespace SancionadosSAGB2025.Server.Services
 			// Tipo de sanción
 			registroAdd.IdTipoSancionFK = faltas?.TipoSancion?.IdTipoSancionCat == 0 ? null : faltas?.TipoSancion?.IdTipoSancionCat;
 			registroAdd.MultipleSancion = faltas?.MultipleSancion;
-			//registroAdd.IdTipoSancionFK = faltas?.TipoSancion?.IdTipoSancion;
+			registroAdd.IdTipoSancionFK = faltas?.TipoSancion?.IdTipoSancionCat;
 
 			//Suspensión
 			registroAdd.IdSuspension = faltas?.Suspension?.Id;
@@ -180,7 +195,7 @@ namespace SancionadosSAGB2025.Server.Services
 
 		}
 
-		public async Task<List<AddFaltasDeServidoresPublicosG>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
+		public async Task<List<FaltasGravesEntidad>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
 		{
 			try
 			{
@@ -189,7 +204,7 @@ namespace SancionadosSAGB2025.Server.Services
 				if (!response.IsSuccessStatusCode)
 					return null;
 
-				var result = await response.Content.ReadFromJsonAsync<List<AddFaltasDeServidoresPublicosG>>();
+				var result = await response.Content.ReadFromJsonAsync<List<FaltasGravesEntidad>>();
 				return result.Where(falta => falta.Activo == 1).ToList();
 				//return result;
 			}

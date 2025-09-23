@@ -19,10 +19,10 @@ namespace SancionadosSAGB2025.Server.Controllers
 			_catalogosService = catalogosService;
 		}
 
-		[HttpGet("ObtenerTodosLosCatalogos")]
-		public async Task<IActionResult> ObtenerTodosLosCatalogos()
+		[HttpPost("ObtenerTodosLosCatalogos")]
+		public async Task<IActionResult> ObtenerTodosLosCatalogos(string token)
 		{
-			var catalogos = await _catalogosService.ObtenerTodosLosCatalogos();
+			var catalogos = await _catalogosService.ObtenerTodosLosCatalogos(token);
 
 			if (catalogos == null)
 				return Unauthorized(new { message = "Error al obtener los catalogos." });
@@ -31,9 +31,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerEntidadFederativa")]
-		public async Task<IActionResult> ObtenerEntidadFederativa()
+		public async Task<IActionResult> ObtenerEntidadFederativa(string token)
 		{
-			var entidades = await _catalogosService.ObtenerEntidadFederativa();
+			var entidades = await _catalogosService.ObtenerEntidadFederativa(token);
 
 			if (entidades == null)
 				return Unauthorized(new { message = "Error al obtener entidades." });
@@ -42,9 +42,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerAmbitoPublico")]
-		public async Task<IActionResult> ObtenerAmbitoPublico()
+		public async Task<IActionResult> ObtenerAmbitoPublico(string token)
 		{
-			var ambitoPublicos = await _catalogosService.ObtenerAmbitoPublico();
+			var ambitoPublicos = await _catalogosService.ObtenerAmbitoPublico(token);
 
 			if (ambitoPublicos == null)
 				return Unauthorized(new { message = "Error al obtener  ambito Publicos." });
@@ -53,9 +53,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerFaltaCometida")]
-		public async Task<IActionResult> ObtenerFaltaCometida()
+		public async Task<IActionResult> ObtenerFaltaCometida(string token)
 		{
-			var faltaCometidas = await _catalogosService.ObtenerFaltaCometida();
+			var faltaCometidas = await _catalogosService.ObtenerFaltaCometida(token);
 
 			if (faltaCometidas == null)
 				return Unauthorized(new { message = "Error al obtener falta cometidas." });
@@ -64,9 +64,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerNivelJerarquico")]
-		public async Task<IActionResult> ObtenerNivelJerarquico()
+		public async Task<IActionResult> ObtenerNivelJerarquico(string token)
 		{
-			var nivelJerarquicos = await _catalogosService.ObtenerNivelJerarquico();
+			var nivelJerarquicos = await _catalogosService.ObtenerNivelJerarquico(token);
 
 			if (nivelJerarquicos == null)
 				return Unauthorized(new { message = "Error al obtener nivel Jerarquicos." });
@@ -75,9 +75,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerNivelOrdenGobierno")]
-		public async Task<IActionResult> ObtenerNivelOrdenGobierno()
+		public async Task<IActionResult> ObtenerNivelOrdenGobierno(string token)
 		{
-			var nivelOrdenGobiernos = await _catalogosService.ObtenerNivelOrdenGobierno();
+			var nivelOrdenGobiernos = await _catalogosService.ObtenerNivelOrdenGobierno(token);
 
 			if (nivelOrdenGobiernos == null)
 				return Unauthorized(new { message = "Error al obtener nivel Orden Gobiernos." });
@@ -86,9 +86,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerOrdenJurisdiccional")]
-		public async Task<IActionResult> ObtenerOrdenJurisdiccional()
+		public async Task<IActionResult> ObtenerOrdenJurisdiccional(string token)
 		{
-			var ordenJurisdiccionals = await _catalogosService.ObtenerOrdenJurisdiccional();
+			var ordenJurisdiccionals = await _catalogosService.ObtenerOrdenJurisdiccional(token);
 
 			if (ordenJurisdiccionals == null)
 				return Unauthorized(new { message = "Error al obtener orden Jurisdiccionals." });
@@ -97,9 +97,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerOrigenProcedimiento")]
-		public async Task<IActionResult> ObtenerOrigenProcedimiento()
+		public async Task<IActionResult> ObtenerOrigenProcedimiento(string token)
 		{
-			var origenProcedimientos = await _catalogosService.ObtenerOrigenProcedimiento();
+			var origenProcedimientos = await _catalogosService.ObtenerOrigenProcedimiento(token);
 
 			if (origenProcedimientos == null)
 				return Unauthorized(new { message = "Error al obtener origen Procedimientos." });
@@ -108,9 +108,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerSexo")]
-		public async Task<IActionResult> ObtenerSexo()
+		public async Task<IActionResult> ObtenerSexo(string token)
 		{
-			var sexos = await _catalogosService.ObtenerSexo();
+			var sexos = await _catalogosService.ObtenerSexo(token);
 
 			if (sexos == null)
 				return Unauthorized(new { message = "Error al obtener sexos." });
@@ -119,9 +119,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerTipoAmonestacion")]
-		public async Task<IActionResult> ObtenerTipoAmonestacion()
+		public async Task<IActionResult> ObtenerTipoAmonestacion(string token)
 		{
-			var tipoAmonestacions = await _catalogosService.ObtenerTipoAmonestacion();
+			var tipoAmonestacions = await _catalogosService.ObtenerTipoAmonestacion(token);
 
 			if (tipoAmonestacions == null)
 				return Unauthorized(new { message = "Error al obtener tipo Amonestacions." });
@@ -130,9 +130,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerTipoSancion")]
-		public async Task<IActionResult> ObtenerTipoSancion()
+		public async Task<IActionResult> ObtenerTipoSancion(string token)
 		{
-			var tipoSancions = await _catalogosService.ObtenerTipoSancion();
+			var tipoSancions = await _catalogosService.ObtenerTipoSancion(token);
 
 			if (tipoSancions == null)
 				return Unauthorized(new { message = "Error al obtener tipo Sancions." });
@@ -141,9 +141,9 @@ namespace SancionadosSAGB2025.Server.Controllers
 		}
 
 		[HttpGet("ObtenerTipoVialidad")]
-		public async Task<IActionResult> ObtenerTipoVialidad()
+		public async Task<IActionResult> ObtenerTipoVialidad(string token)
 		{
-			var tipoVialidads = await _catalogosService.ObtenerTipoVialidad();
+			var tipoVialidads = await _catalogosService.ObtenerTipoVialidad(token);
 
 			if (tipoVialidads == null)
 				return Unauthorized(new { message = "Error al obtener tipo Vialidads." });

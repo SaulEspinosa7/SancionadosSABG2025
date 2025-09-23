@@ -31,7 +31,7 @@
         else
         {
             <MudItem xs="12" class="d-flex justify-end pb-5">
-                <MudButton StartIcon="@Icons.Material.Filled.KeyboardBackspace" Class="mt-3 w-25" Variant="Variant.Filled" Color="Color.Primary" Href="FaltasGravesPersonasMorales">
+                <MudButton StartIcon="@Icons.Material.Filled.KeyboardBackspace" Class="mt-3 w-25" Variant="Variant.Filled" Color="Color.Primary" Href="FaltasGravesPersonasFísicas">
                     Volver a Buscar Servidores
                 </MudButton>
             </MudItem>
@@ -337,7 +337,7 @@
                 </MudGrid>
             </MudForm>
         </MudStep>
-        <MudStep Title="5. ORIGEN DEL PROCEDIMIENTO*">
+        <MudStep Title="5. ORIGEN DEL PROCEDIMIENTO*" CompletedStepColor="Color.Success">
             <MudForm @ref="_formOrigenProcedimiento" @bind-IsValid="_isStep1Valid[4]" Model="FaltasDeServidoresPublicosG">
                 <MudGrid>
                     <MudItem xs="4">
@@ -491,7 +491,7 @@
                                             Si al momento de registrar la información la autoridad no cuenta con el dato señalado en el presente numeral, esta podrá registrarse posteriormente mediante una actualización de su registro." />
                     </MudItem>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Resolucion!.OrdenJurisdiccional"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Resolucion!.IdOrdenJurisdiccionalFK"
                                    Label="ORDEN JURISDICCIONAL"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    required="!modoVista"
@@ -501,7 +501,7 @@
                             {
                                 @foreach (var orden in OrdenJurisdiccional)
                                 {
-                                    <MudSelectItem Value="@orden">@orden.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@orden.Id">@orden.Descripcion</MudSelectItem>
                                 }
                             }
 
@@ -655,6 +655,40 @@
                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                   label="DÍA (S)" />
                                 </MudItem>
+                                <MudItem xs="12">
+                                    <MudText Color="Color.Primary">
+                                        <b>
+                                            INDEMNIZACIÓN EFECTIVAMENTE COBRADA
+                                        </b>
+                                    </MudText>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.Indeminizacion.IndeminizacionECobrada!.Monto"
+                                                     Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
+                                                     label="MONTO"
+                                                     HideSpinButtons="false"                                                    
+                                                     RequiredError="El campo Monto es obligatorio."
+                                                     helpertext="Colocar el monto total de la sanción económica." />
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Indeminizacion.IndeminizacionECobrada!.IdMonedaFK"
+                                               Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
+                                               T="int?"
+                                               Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"                                              
+                                               RequiredError="El campo Moneda es obligatorio."
+                                               HelperText="Elegir el tipo de moneda:">
+                                        @foreach (var moneda in TipoMonedas)
+                                        {
+                                            <MudSelectItem Value="@moneda.IdMoneda">@moneda.Descripcion</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Indeminizacion.IndeminizacionECobrada!.FechaCobroSancion" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Indeminizacion.IndeminizacionECobrada!.FechaPagoTotalS" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                </MudItem>
                                 </MudGrid>
                             </MudForm>
                         </Content>
@@ -737,7 +771,7 @@
                                     </MudText>
                                 </MudItem>
                                 <MudItem xs="4">
-                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.SancionEfectivamenteCobrada!.Monto"
+                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica.SancionEfectivamenteCobrada!.Monto"
                                                      Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                      label="MONTO"
                                                      HideSpinButtons="true"
@@ -747,7 +781,7 @@
 
                                 </MudItem>
                                 <MudItem xs="4">
-                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEfectivamenteCobrada!.IdMonedaFK"
+                                    <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica.SancionEfectivamenteCobrada!.IdMonedaFK"
                                                Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
                                                Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                RequiredError="El campo Moneda es obligatorio."
@@ -760,10 +794,10 @@
                                 </MudItem>
 
                                 <MudItem xs="6">
-                                    <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                    <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                 </MudItem>
                                 <MudItem xs="6">
-                                    <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                    <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                 </MudItem>
                                 </MudGrid>
                            

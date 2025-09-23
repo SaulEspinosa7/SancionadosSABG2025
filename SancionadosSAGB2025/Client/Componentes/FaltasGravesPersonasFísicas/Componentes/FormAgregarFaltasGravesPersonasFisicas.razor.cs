@@ -500,37 +500,40 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
         {
             try
             {
-                var result = await CatalagosService.ObtenerTodosLosCatalogos();
+                var token = await AuthService.GetTokenAsync();
+                var response = await _http.PostAsync($"api/Catalogos/ObtenerTodosLosCatalogos?token={token}", null);
 
-                if (result is not null)
+                if (response.IsSuccessStatusCode)
                 {
-                    CatalogosBD = result;
-                    if (CatalogosBD is not null)
+                    var result = await response.Content.ReadFromJsonAsync<Catalogos>();
+                    if (result is not null)
                     {
-                        EntidadesFederativas = CatalogosBD.EntidadFederativas!;
-                        NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
-                        AmbitoPublico = CatalogosBD.AmbitoPublico!;
-                        OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
-                        NivelJerarquico = CatalogosBD.NivelJerarquico!;
-                        FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
-                        Sexos = CatalogosBD.Sexo!;
-                        ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 && c.IdTipoSancionCat != 11 || c.Bandera == 3 || c.Bandera == 1).ToList();
-                        TipoMonedas = CatalogosBD.Monedas!;
-                        Paises = CatalogosBD.Paises!;
-                        TiposVialidades = CatalogosBD.TipoVialidad!;
+                        CatalogosBD = result;
+                        if (CatalogosBD is not null)
+                        {
+                            EntidadesFederativas = CatalogosBD.EntidadFederativas!;
+                            NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
+                            AmbitoPublico = CatalogosBD.AmbitoPublico!;
+                            OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
+                            NivelJerarquico = CatalogosBD.NivelJerarquico!;
+                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
+                            Sexos = CatalogosBD.Sexo!;
+                            ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
+                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 1).ToList();
+                            TipoMonedas = CatalogosBD.Monedas!;
+                        }
+                        Console.WriteLine($" CatalogosBD {CatalogosBD.TipoVialidad}");
+                    }
+                    else
+                    {
+                        Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
                     }
                 }
-                else
-                {
-                    Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
-                }
+
             }
             catch (Exception ex)
             {
                 Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
-                //Snackbar.Add("Se guardó la información previa.", Severity.Success);
-                //RespuestaRegistro = result!;
             }
         }
         private async Task ConsultarIdUsuario()

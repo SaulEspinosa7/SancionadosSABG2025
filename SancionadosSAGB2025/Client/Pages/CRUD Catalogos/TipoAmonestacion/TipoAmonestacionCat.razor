@@ -7,6 +7,7 @@
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
 @inject IDialogService DialogService
+@inject AuthService AuthService
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
     <Main>
@@ -77,18 +78,21 @@
     private bool _editTriggerRowClick;
     private string _searchString;
     private TipoAmonestacion entidadFederativaEntidad = new();
+    private string token = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
-            var response = await httpClient.GetFromJsonAsync<List<TipoAmonestacion>>("api/Catalogos/ObtenerTipoAmonestacion");
+            token = await AuthService.GetTokenAsync();
+            var response = await httpClient.GetFromJsonAsync<List<TipoAmonestacion>>($"api/Catalogos/ObtenerTipoAmonestacion?token={token}");
 
             if (response is not null)
             {
+
                 Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
-            }
+
+            }          
         }
         catch (Exception ex)
         {
@@ -128,6 +132,7 @@
             { x => x.Entidad, entidad },
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Amonestación" },
+             {z => z.token, token},
             {z => z.MensajeSnackBar, "Amonestación Editada"},
             { z => z.BtnAceptar, "Guardar Cambios" }
         };

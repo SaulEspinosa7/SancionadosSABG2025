@@ -8,6 +8,7 @@
 @using SancionadosSAGB2025.Client.Services
 @using SancionadosSAGB2025.Shared
 @inject IDialogService DialogService
+@inject AuthService AuthService
 @inject NavigationManager nav
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
@@ -81,13 +82,14 @@
     private bool _editTriggerRowClick;
     private string _searchString;
     private AmbitoPublico entidadFederativaEntidad = new();
+    private string token;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
-            var response = await httpClient.GetFromJsonAsync<List<AmbitoPublico>>("api/Catalogos/ObtenerAmbitoPublico");
+            token = await AuthService.GetTokenAsync();
+            var response = await httpClient.GetFromJsonAsync<List<AmbitoPublico>>($"api/Catalogos/ObtenerAmbitoPublico?token={token}");
 
             if (response is not null)
             {
@@ -135,6 +137,7 @@
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Ambito" },
             {z => z.MensajeSnackBar, "Ambito Editado"},
+              {z => z.token, token},
             { z => z.BtnAceptar, "Guardar Cambios" },
             { z => z.nombreApi, "ActulizarAmbito" }
         };

@@ -41,7 +41,7 @@
             }
 
         }
-        <MudStepper NonLinear="!modoVista" @bind-ActiveIndex="index" ShowResetButton OnPreviewInteraction="OnPreviewInteraction" Vertical="true">
+        <MudStepper NonLinear="modoVista" @bind-ActiveIndex="index" ShowResetButton OnPreviewInteraction="OnPreviewInteraction" Vertical="true">
                         <ChildContent>
                         <MudStep Title="1. FECHA* (DD-MM-AAAA)*" CompletedStepColor="Color.Success">
 
@@ -414,7 +414,7 @@
                             <MudForm @ref="_formOrigenProcedimiento" Model="_modelo" @bind-IsValid="_isStep1Valid[5]">
                                 <MudPaper Class="pa-4">
                                     <MudGrid>
-                                        <MudItem xs="12">
+                                        <MudItem xs="6">
                                             <MudSelect @bind-Value="_modelo!.OrigenProcedimiento!.IdOrigenProcedimientoCatFK"
                                                        Label="Origen Procedimiento"
                                                        Disabled="modoVista"
@@ -428,9 +428,9 @@
 
 
                                         </MudItem>
-                                        @if (_modelo!.OrigenProcedimiento?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
+                                        @if (_modelo!.OrigenProcedimiento?.IdOrigenProcedimientoCatFK == 5)
                                         {
-                                            <MudItem xs="4">
+                                            <MudItem xs="6">
                                                 <MudTextField @bind-value="_modelo!.OrigenProcedimiento!.Valor"
                                                               Disabled="modoVista"
                                                               label="Valor"
@@ -663,17 +663,11 @@
                                                     </MudItem>
                                                     <MudItem xs="4">
                                                         <MudDatePicker Label="FECHA INICIAL (DD-MM-AAAA)" @bind-Date="_modelo.Inhabilitacion!.FechaInicial" required="!modoVista" helpertext="Indicar la fecha en la que inició la inhabilitación." Disabled="modoVista" />
-                                                        @if (_modelo.Inhabilitacion!.FechaInicial is null)
-                                                        {
-                                                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Inicial es obligatorio.</MudText>
-                                                        }
+                                                       
                                                     </MudItem>
                                                     <MudItem xs="4">
                                                         <MudDatePicker Label="FECHA FINAL (DD-MM-AAAA)" @bind-Date="_modelo.Inhabilitacion!.FechaFinal" required="!modoVista" helpertext="Indicar la fecha en la que se concluyó la inhabilitación." Disabled="modoVista" />
-                                                        @if (_modelo.Inhabilitacion!.FechaFinal is null)
-                                                        {
-                                                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Fecha Final es obligatorio.</MudText>
-                                                        }
+                                                       
                                                     </MudItem>
                                                 </MudGrid>
                                             </MudPaper>
@@ -757,16 +751,14 @@
                                                     <MudCardActions>
                                                         <MudGrid>
                                                             <MudItem xs="6">
-                                                                <MudNumericField @bind-value="_modelo!.SancionEfectivamenteCobrada!.Monto"
+                                                                <MudNumericField @bind-value="_modelo!.Indeminizacion.IndeminizacionECobrada!.Monto"
                                                                              HideSpinButtons="true"
                                                                              Disabled="modoVista"
                                                                               label="MONTO"
                                                                               helpertext="Indicar el monto efectivamente cobrado" />
                                                             </MudItem>
-                                                            <MudItem xs="6">
-                                                        @if (_modelo.SancionEfectivamenteCobrada!.IdMonedaFK is not null)
-                                                        {
-                                                            <MudSelect @bind-Value="_modelo!.SancionEfectivamenteCobrada!.IdMonedaFK"
+                                                            <MudItem xs="6">                                                       
+                                                            <MudSelect @bind-Value="_modelo!.Indeminizacion.IndeminizacionECobrada!.IdMonedaFK"
                                                                        Disabled="modoVista"
                                                                        T="int?"
                                                                        Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
@@ -776,15 +768,15 @@
                                                                     <MudSelectItem Value="@moneda.IdMoneda">@moneda.Descripcion</MudSelectItem>
                                                                 }
                                                             </MudSelect>
-                                                        }
+                                                  
                                                        
                                                             </MudItem>
 
                                                             <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion.IndeminizacionECobrada!.FechaCobroSancion" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                                             </MudItem>
                                                             <MudItem xs="6">
-                                                                <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                                                <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="_modelo.Indeminizacion.IndeminizacionECobrada!.FechaPagoTotalS" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                                             </MudItem>
                                                         </MudGrid>
                                                     </MudCardActions>
@@ -796,7 +788,7 @@
                                
 
                             }
-                    @if ((_options ?? Enumerable.Empty<string>()).Contains("SANCION ECONOMICA"))
+                            @if ((_options ?? Enumerable.Empty<string>()).Contains("SANCION ECONOMICA"))
                     {
                         <CardForm>
                             <Header>
@@ -862,13 +854,13 @@
                                             <MudCardActions>
                                                 <MudGrid>
                                                     <MudItem xs="6">
-                                                        <MudNumericField @bind-value="_modelo!.SancionEfectivamenteCobrada!.Monto"
+                                                        <MudNumericField @bind-value="_modelo!.SancionEconomica.SancionEfectivamenteCobrada!.Monto"
                                                                          Disabled="modoVista"
                                                                          label="MONTO"
                                                                          helpertext="Indicar el monto efectivamente cobrado" />
                                                     </MudItem>
                                                     <MudItem xs="6">
-                                                        <MudSelect @bind-Value="_modelo!.SancionEfectivamenteCobrada!.IdMonedaFK"
+                                                        <MudSelect @bind-Value="_modelo!.SancionEconomica.SancionEfectivamenteCobrada!.IdMonedaFK"
                                                                    Disabled="modoVista"
                                                                    T="int?"
                                                                    Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
@@ -881,10 +873,10 @@
                                                     </MudItem>
 
                                                     <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEconomica.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                                     </MudItem>
                                                     <MudItem xs="6">
-                                                        <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" Required="!modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                                        <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="_modelo.SancionEconomica.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                                     </MudItem>
                                                 </MudGrid>
                                             </MudCardActions>

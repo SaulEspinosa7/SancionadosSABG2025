@@ -1,36 +1,37 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SancionadosSAGB2025.Shared.Catalogos;
+using SancionadosSAGB2025.Shared.Grave;
 using SancionadosSAGB2025.Shared.Sanciones;
 
 namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Components
 {
 	partial class EditarFaltasSPG
 	{
-		[Parameter] public AddFaltasDeServidoresPublicosG faltasDeServidoresPublicosG { get; set; } = new AddFaltasDeServidoresPublicosG();
+		[Parameter] public FaltasGravesEntidad faltasDeServidoresPublicosG { get; set; } = new();
 
-		private FaltasDeServidoresPublicosG? _faltasDeServidoresPublicosG { set; get; } = new();
+		//private FaltasDeServidoresPublicosG? _faltasDeServidoresPublicosG { set; get; } = new();
 
 		protected override async Task OnParametersSetAsync()
 		{
-			_faltasDeServidoresPublicosG = await ConvertToEntity(faltasDeServidoresPublicosG);
-            if (_faltasDeServidoresPublicosG is null)
+			//_faltasDeServidoresPublicosG = await ConvertToEntity(faltasDeServidoresPublicosG);
+            if (faltasDeServidoresPublicosG is null)
             {
-                _faltasDeServidoresPublicosG = new FaltasDeServidoresPublicosG();
+                faltasDeServidoresPublicosG = new();
             }
 
-            _faltasDeServidoresPublicosG.DatosGenerales ??= new DatosGenerales();
-            _faltasDeServidoresPublicosG.EmpleoCargoComision ??= new EmpleoCargoComision();
-            _faltasDeServidoresPublicosG.NivelJerarquico ??= new NivelJerarquico();
-            _faltasDeServidoresPublicosG.OrigenProcedimiento ??= new OrigenProcedimiento();
-            _faltasDeServidoresPublicosG.FaltaCometida ??= new FaltaCometida();
-            _faltasDeServidoresPublicosG.Resolucion ??= new Resolucion();
-            _faltasDeServidoresPublicosG.TipoSancion ??= new TipoSancion();
-            _faltasDeServidoresPublicosG.Suspension ??= new Suspension();
-            _faltasDeServidoresPublicosG.DestitucionEmpleo ??= new DestitucionEmpleo();
-            _faltasDeServidoresPublicosG.SancionEconomica ??= new SancionEconomica();
-            _faltasDeServidoresPublicosG.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
-            _faltasDeServidoresPublicosG.Inhabilitacion ??= new Inhabilitacion();
-            _faltasDeServidoresPublicosG.Otro ??= new Otro();
+            faltasDeServidoresPublicosG.DatosGenerales ??= new();
+            faltasDeServidoresPublicosG.EmpleoCargoComision ??= new EmpleoCargoComision();
+            faltasDeServidoresPublicosG.NivelJerarquico ??= new NivelJerarquico();
+            faltasDeServidoresPublicosG.OrigenProcedimiento ??= new OrigenProcedimiento();
+            faltasDeServidoresPublicosG.FaltaCometida ??= new FaltaCometida();
+            faltasDeServidoresPublicosG.Resolucion ??= new Resolucion();
+            faltasDeServidoresPublicosG.Suspension ??= new Suspension();
+            faltasDeServidoresPublicosG.DestitucionEmpleo ??= new DestitucionEmpleo();
+            faltasDeServidoresPublicosG.SancionEconomica ??= new SancionEconomica();
+            faltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada ??= new();
+            faltasDeServidoresPublicosG.Inhabilitacion ??= new Inhabilitacion();
+			faltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada ??= new();
+            faltasDeServidoresPublicosG.Otro ??= new Otro();
          //   _faltasDeServidoresPublicosG.Sancion ??= new Sancion();
         }
 
@@ -39,7 +40,9 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 			return new FaltasDeServidoresPublicosG
 			{
 				Id = input.Id,
-				IdDatosGeneralesFK = input.IdDatosGeneralesFK,
+				Fecha = input.Fecha,
+				Expediente = input.Expediente,
+                IdDatosGeneralesFK = input.IdDatosGeneralesFK,
 				DatosGenerales = input.DatosGenerales,
 				IdEmpleoCargoComisionFK = input.IdEmpleoCargoComisionFK,
 				EmpleoCargoComision = input.EmpleoCargoComision,

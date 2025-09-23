@@ -8,6 +8,7 @@
 @using SancionadosSAGB2025.Client.Services
 @inject IDialogService DialogService
 @inject NavigationManager nav
+@inject AuthService AuthService
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
     <Main>
@@ -80,20 +81,21 @@
     private bool _editTriggerRowClick;
     private string _searchString;
     private FaltaCometidaEntidad entidadFederativaEntidad = new FaltaCometidaEntidad();
+    private string token;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-           // var result = await CatalagosService.ObtenerTodosLosCatalogos();
-            var response = await httpClient.GetFromJsonAsync<List<FaltaCometidaEntidad>>("api/Catalogos/ObtenerFaltaCometida");
+            token = await AuthService.GetTokenAsync();
+            var response = await httpClient.GetFromJsonAsync<List<FaltaCometidaEntidad>>($"api/Catalogos/ObtenerFaltaCometida?token={token}");
 
             if (response is not null)
             {
 
                 Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
 
-            }
+            }           
         }
         catch (Exception ex)
         {
@@ -134,6 +136,7 @@
             { z => z.IsEdit, true },
             { z => z.Titulo, "Editar Falta" },
             {z => z.MensajeSnackBar, "Falta Editada"},
+            {z => z.token, token},
             { z => z.BtnAceptar, "Guardar Cambios" },
             {z => z.nombreApi, "ActulizarFaltaCometida"}
         };

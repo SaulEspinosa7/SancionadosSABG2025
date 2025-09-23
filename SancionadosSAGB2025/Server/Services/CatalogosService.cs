@@ -1,4 +1,5 @@
-﻿using SancionadosSAGB2025.Server.Interfaces;
+﻿using SancionadosSAGB2025.Client.Services;
+using SancionadosSAGB2025.Server.Interfaces;
 using SancionadosSAGB2025.Shared;
 using SancionadosSAGB2025.Shared.Catalogos;
 using SancionadosSAGB2025.Shared.Registros;
@@ -17,25 +18,25 @@ namespace SancionadosSAGB2025.Server.Services
 		//	_http = http;
 		//}
 
-		public async Task<Catalogos> ObtenerTodosLosCatalogos()
+		public async Task<Catalogos> ObtenerTodosLosCatalogos( string token)
 		{
 			try
 			{
 				Catalogos catalogos = new();
 
-				catalogos.Sexo = await ObtenerSexo();
-				catalogos.EntidadFederativas = await ObtenerEntidadFederativa();
-				catalogos.NivelOrdenGobierno = await ObtenerNivelOrdenGobierno();
-				catalogos.AmbitoPublico = await ObtenerAmbitoPublico();
-				catalogos.FaltaCometidas = await ObtenerFaltaCometida();
-				catalogos.NivelJerarquico = await ObtenerNivelJerarquico();
-				catalogos.OrdenJurisdiccional = await ObtenerOrdenJurisdiccional();
-				catalogos.OrigenProcedimiento = await ObtenerOrigenProcedimiento();
-				catalogos.TipoAmonestacion = await ObtenerTipoAmonestacion();
-				catalogos.TipoSancion = await ObtenerTipoSancion();
-				catalogos.TipoVialidad = await ObtenerTipoVialidad();
-				catalogos.Monedas = await ObtenerMonedas();
-				catalogos.Paises = await ObtenerPaises();
+				catalogos.Sexo = await ObtenerSexo(token);
+				catalogos.EntidadFederativas = await ObtenerEntidadFederativa(token);
+				catalogos.NivelOrdenGobierno = await ObtenerNivelOrdenGobierno(token);
+				catalogos.AmbitoPublico = await ObtenerAmbitoPublico(token);
+				catalogos.FaltaCometidas = await ObtenerFaltaCometida(token);
+				catalogos.NivelJerarquico = await ObtenerNivelJerarquico(token);
+				catalogos.OrdenJurisdiccional = await ObtenerOrdenJurisdiccional(token);
+				catalogos.OrigenProcedimiento = await ObtenerOrigenProcedimiento(token);
+				catalogos.TipoAmonestacion = await ObtenerTipoAmonestacion(token);
+				catalogos.TipoSancion = await ObtenerTipoSancion(token);
+				catalogos.TipoVialidad = await ObtenerTipoVialidad(token);
+				catalogos.Monedas = await ObtenerMonedas(token);
+				catalogos.Paises = await ObtenerPaises(token);
                 return catalogos;
 			}
 			catch (Exception ex)
@@ -45,17 +46,21 @@ namespace SancionadosSAGB2025.Server.Services
 			}
 		}
 
-		public async Task<List<MonedaCat>> ObtenerMonedas()
+		public async Task<List<MonedaCat>> ObtenerMonedas(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"Moneda");
+                var request = new HttpRequestMessage(HttpMethod.Get, "Moneda");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<MonedaCat>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<MonedaCat>>();
+                return result;
+               
 			}
 			catch (Exception ex)
 			{
@@ -65,37 +70,44 @@ namespace SancionadosSAGB2025.Server.Services
 
 		}
 
-		public async Task<List<AmbitoPublico>> ObtenerAmbitoPublico()
+        public async Task<List<AmbitoPublico>> ObtenerAmbitoPublico(string token)
+        {
+            try
+            {                            
+
+                var request = new HttpRequestMessage(HttpMethod.Get, "AmbitoPublico");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<AmbitoPublico>>();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Hubo un error al momento de realizar la consulta del catálogo Ambito Publico. {ex.Message}");
+                return null;
+            }
+        }
+
+
+        public async Task<List<EntidadFederativaEntidad>> ObtenerEntidadFederativa(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"AmbitoPublico");
+                var request = new HttpRequestMessage(HttpMethod.Get, "EntidadFederativaCat");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<AmbitoPublico>>();
-				return result;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Hubo un error al momento de realizar la consulta del catalago Ambito Publico. {ex.Message}");
-				return null;
-			}
-			
-		}		
+                if (!response.IsSuccessStatusCode)
+                    return null;
 
-		public async Task<List<EntidadFederativaEntidad>> ObtenerEntidadFederativa()
-		{
-			try
-			{
-				var response = await _http.GetAsync($"EntidadFederativaCat");
-
-				if (!response.IsSuccessStatusCode)
-					return null;
-
-				var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativaEntidad>>();
-				return result;
+                var result = await response.Content.ReadFromJsonAsync<List<EntidadFederativaEntidad>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -104,17 +116,21 @@ namespace SancionadosSAGB2025.Server.Services
 			}		
 		}
 
-		public async Task<List<FaltaCometidaEntidad>> ObtenerFaltaCometida()
+		public async Task<List<FaltaCometidaEntidad>> ObtenerFaltaCometida(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"FaltaCometida");
+                var request = new HttpRequestMessage(HttpMethod.Get, "FaltaCometida");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<FaltaCometidaEntidad>>();
-				return result.Where(f => f.Activo == 1).ToList();
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<FaltaCometidaEntidad>>();
+                return result;
+               
 			}
 			catch (Exception ex)
 			{
@@ -123,17 +139,20 @@ namespace SancionadosSAGB2025.Server.Services
 			}		
 		}
 
-		public async Task<List<NivelJerarquicoEntidad>> ObtenerNivelJerarquico()
+		public async Task<List<NivelJerarquicoEntidad>> ObtenerNivelJerarquico(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"NivelJerarquico");
+                var request = new HttpRequestMessage(HttpMethod.Get, "NivelJerarquico");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquicoEntidad>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<NivelJerarquicoEntidad>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -143,17 +162,21 @@ namespace SancionadosSAGB2025.Server.Services
 		
 		}
 
-		public async Task<List<NivelOrdenGobierno>> ObtenerNivelOrdenGobierno()
+		public async Task<List<NivelOrdenGobierno>> ObtenerNivelOrdenGobierno(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"NivelOrdenGobierno");
+                var request = new HttpRequestMessage(HttpMethod.Get, "NivelOrdenGobierno");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<NivelOrdenGobierno>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<NivelOrdenGobierno>>();
+                return result;
+          
 			}
 			catch (Exception ex)
 			{
@@ -162,17 +185,21 @@ namespace SancionadosSAGB2025.Server.Services
 			}		
 		}
 
-		public async Task<List<OrdenJurisdiccional>> ObtenerOrdenJurisdiccional()
+		public async Task<List<OrdenJurisdiccional>> ObtenerOrdenJurisdiccional(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"OrdenJurisdiccionalCat");
+                var request = new HttpRequestMessage(HttpMethod.Get, "OrdenJurisdiccionalCat");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<OrdenJurisdiccional>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<OrdenJurisdiccional>>();
+                return result;
+           
 			}
 			catch (Exception ex)
 			{
@@ -182,17 +209,21 @@ namespace SancionadosSAGB2025.Server.Services
 			
 		}
 
-		public async Task<List<OrigenProcedimientoEntidad>> ObtenerOrigenProcedimiento()
+		public async Task<List<OrigenProcedimientoEntidad>> ObtenerOrigenProcedimiento(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"OrigenProcedimientoCat");
+                var request = new HttpRequestMessage(HttpMethod.Get, "OrigenProcedimientoCat");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimientoEntidad>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<OrigenProcedimientoEntidad>>();
+                return result;
+               
 			}
 			catch (Exception ex)
 			{
@@ -202,17 +233,20 @@ namespace SancionadosSAGB2025.Server.Services
 		
 		}
 
-		public async Task<List<Sexo>> ObtenerSexo()
+		public async Task<List<Sexo>> ObtenerSexo(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"Sexo");
+                var request = new HttpRequestMessage(HttpMethod.Get, "Sexo");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<Sexo>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<Sexo>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -220,14 +254,19 @@ namespace SancionadosSAGB2025.Server.Services
 				return null;
 			}			
 		}
-		public async Task<List<PaisCat>> ObtenerPaises()
+		public async Task<List<PaisCat>> ObtenerPaises(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"Paises");
-				if (!response.IsSuccessStatusCode)
-					return null;
-				var result = await response.Content.ReadFromJsonAsync<List<PaisCat>>();
+                var request = new HttpRequestMessage(HttpMethod.Get, "Paises");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<PaisCat>>();
 				return result;
 			}
 			catch (Exception ex)
@@ -237,17 +276,20 @@ namespace SancionadosSAGB2025.Server.Services
 			}
         }
 
-        public async Task<List<TipoAmonestacion>> ObtenerTipoAmonestacion()
+        public async Task<List<TipoAmonestacion>> ObtenerTipoAmonestacion(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"TipoAmonestacion");
+                var request = new HttpRequestMessage(HttpMethod.Get, "TipoAmonestacion");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<TipoAmonestacion>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<TipoAmonestacion>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -257,17 +299,20 @@ namespace SancionadosSAGB2025.Server.Services
 			
 		}
 
-		public async Task<List<TipoSancion>> ObtenerTipoSancion()
+		public async Task<List<TipoSancion>> ObtenerTipoSancion(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"TipoSancionCat");
+                var request = new HttpRequestMessage(HttpMethod.Get, "TipoSancionCat");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<TipoSancion>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<TipoSancion>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -277,17 +322,20 @@ namespace SancionadosSAGB2025.Server.Services
 			
 		}
 
-		public async Task<List<TipoVialidad>> ObtenerTipoVialidad()
+		public async Task<List<TipoVialidad>> ObtenerTipoVialidad(string token)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"TipoVialidad");
+                var request = new HttpRequestMessage(HttpMethod.Get, "TipoVialidad");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var result = await response.Content.ReadFromJsonAsync<List<TipoVialidad>>();
-				return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<List<TipoVialidad>>();
+                return result;
 			}
 			catch (Exception ex)
 			{
@@ -301,7 +349,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new AmbitoPublico { IdAmbitoPublico = ambitoPublico.IdAmbitoPublico, Descripcion = ambitoPublico.Descripcion};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {ambitoPublico.Token}");
                 var url = configuration["UrlApi:ActualizarAmbito"];
 
                 var response = await _http.PostAsync(url, dataContent);
@@ -321,7 +370,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new EntidadFederativaEntidad { IdEntidadFederativa = entidadFederativaEntidad.IdEntidadFederativa, Descripcion = entidadFederativaEntidad.Descripcion};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {entidadFederativaEntidad.Token}");
                 var url = configuration["UrlApi:ActualizarEntidad"];
 
                 var response = await _http.PostAsync(url, dataContent);
@@ -341,7 +391,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new FaltaCometidaEntidad { IdFaltaCometida = faltaCometidaEntidad.IdFaltaCometida, Descripcion = faltaCometidaEntidad.Descripcion, Activo= faltaCometidaEntidad.Activo};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {faltaCometidaEntidad.Token}");
                 var url = configuration["UrlApi:ActualizarFaltaCometida"];
 
                 var response = await _http.PutAsync(url, dataContent);
@@ -361,7 +412,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new  { Id = nivelJerarquicoEntidad.IdNivelJerarquicoCat, Clave = nivelJerarquicoEntidad.Descripcion, Activo = nivelJerarquicoEntidad.Activo};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {nivelJerarquicoEntidad.Token}");
                 var url = configuration["UrlApi:ActualizarNivelJerarquico"];
 
                 var response = await _http.PostAsync(url, dataContent);
@@ -381,7 +433,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new NivelOrdenGobierno { IdNivelOrdenGobierno = nivelOrdenGobierno.IdNivelOrdenGobierno, Descripcion = nivelOrdenGobierno.Descripcion};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {nivelOrdenGobierno.Token}");
                 var url = configuration["UrlApi:ActualizarOrdenGobierno"];
 
                 var response = await _http.PostAsync(url, dataContent);
@@ -401,7 +454,8 @@ namespace SancionadosSAGB2025.Server.Services
 			{
                 var data = new OrdenJurisdiccional { Id = ordenJurisdiccional.Id, Descripcion = ordenJurisdiccional.Descripcion};
                 var dataJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");              
+                HttpContent dataContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+                _http.DefaultRequestHeaders.Add("Authorization", $"Bearer {ordenJurisdiccional.Token}");
                 var url = configuration["UrlApi:ActualizarOrdenGobierno"];
 
                 var response = await _http.PostAsync(url, dataContent);

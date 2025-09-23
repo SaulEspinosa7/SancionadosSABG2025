@@ -26,7 +26,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             
             SancionEconomica = new SancionEconomicaMoral
             {
-                Moneda = new Moneda(),
+                Moneda = new MonedaCat(),
                 PlazoPago = new PlazoPago()
             },
             SuspensionActividades = new SuspensionActividades(),
@@ -96,8 +96,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                         TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
                     else if (_modelo?.DatosGenerales?.DomicilioExtranjero != null)
                         TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
-                }
-                _modelo.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobradaMoral();
+                }             
 
                 _modelo.Otro ??= new Otro();
                 await ObtenerCatalogosFormulario();
@@ -138,43 +137,46 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                         .Select(s => s.Trim()) // elimina espacios antes/después
                         .ToHashSet()!; // crea un HashSet<string>
         }
-      
+
 
         private async Task ObtenerCatalogosFormulario()
         {
             try
             {
-                var result = await CatalagosService.ObtenerTodosLosCatalogos();
+                var token = await AuthService.GetTokenAsync();
+                var response = await _http.PostAsync($"api/Catalogos/ObtenerTodosLosCatalogos?token={token}", null);
 
-                if (result is not null)
+                if (response.IsSuccessStatusCode)
                 {
-                    CatalogosBD = result;
-                    if (CatalogosBD is not null)
+                    var result = await response.Content.ReadFromJsonAsync<Catalogos>();
+                    if (result is not null)
                     {
-                        EntidadesFederativas = CatalogosBD.EntidadFederativas!;
-                        NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
-                        AmbitoPublico = CatalogosBD.AmbitoPublico!;
-                        OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
-                        NivelJerarquico = CatalogosBD.NivelJerarquico!;
-                        FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
-                        Sexos = CatalogosBD.Sexo!;
-                        ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                        TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 && c.IdTipoSancionCat != 11 || c.Bandera == 3 || c.Bandera == 1 || c.Bandera == 4).ToList();
-                        TipoMonedas = CatalogosBD.Monedas!;
-                        Paises = CatalogosBD.Paises!;
-                        TiposVialidades = CatalogosBD.TipoVialidad!;
+                        CatalogosBD = result;
+                        if (CatalogosBD is not null)
+                        {
+                            EntidadesFederativas = CatalogosBD.EntidadFederativas!;
+                            NivelOrdenGobierno = CatalogosBD.NivelOrdenGobierno!;
+                            AmbitoPublico = CatalogosBD.AmbitoPublico!;
+                            OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
+                            NivelJerarquico = CatalogosBD.NivelJerarquico!;
+                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
+                            Sexos = CatalogosBD.Sexo!;
+                            ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
+                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 1).ToList();
+                            TipoMonedas = CatalogosBD.Monedas!;
+                        }
+                        Console.WriteLine($" CatalogosBD {CatalogosBD.TipoVialidad}");
+                    }
+                    else
+                    {
+                        Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
                     }
                 }
-                else
-                {
-                    //Snackbar.Add($"Error al consultar los catalogos", Severity.Error);
-                }
+
             }
             catch (Exception ex)
             {
-              //  Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
-                //Snackbar.Add("Se guardó la información previa.", Severity.Success);
-                //RespuestaRegistro = result!;
+                Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
             }
         }
         private async Task MostrarOpcionCatalogos()
@@ -187,7 +189,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                 _modelo.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == _modelo.EmpleoCargoComision.IdAmbitoPublicoFK);
                 _modelo.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == _modelo.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
                 _modelo.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == _modelo.Resolucion.IdOrdenJurisdiccionalFK);
-              //  _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
+                _modelo.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEconomica.IdMonedaFK);
                 //_modelo.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == _modelo.SancionEfectivamenteCobrada.Moneda.IdMonedaFK);
             }
             catch (Exception)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SancionadosSAGB2025.Client.Interfaces;
+using SancionadosSAGB2025.Shared.Grave;
 using SancionadosSAGB2025.Shared.Login;
 using SancionadosSAGB2025.Shared.Registros;
 using SancionadosSAGB2025.Shared.Sanciones;
@@ -8,7 +9,7 @@ using System.Net.Http.Json;
 
 namespace SancionadosSAGB2025.Client.Services
 {
-	public class FaltasSPGService : IFaltasSPG
+	public class FaltasSPGService 
 	{
 		private readonly HttpClient _http;
 
@@ -50,14 +51,14 @@ namespace SancionadosSAGB2025.Client.Services
 			return result;
 		}
 
-		public async Task<List<AddFaltasDeServidoresPublicosG>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
+		public async Task<List<FaltasGravesEntidad>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
 		{
 			var response = await _http.PostAsJsonAsync("api/FaltasServidoresPublicosG/ObtenerFaltasSPG",searchFaltasDeServidoresPublicosG);
 
 			if (!response.IsSuccessStatusCode)
 				return null;
 
-			var result = await response.Content.ReadFromJsonAsync<List<AddFaltasDeServidoresPublicosG>>();
+			var result = await response.Content.ReadFromJsonAsync<List<FaltasGravesEntidad>>();
 
 			return result;
 		}

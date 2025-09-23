@@ -7,6 +7,7 @@
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
 @inject NavigationManager nav
+@inject AuthService AuthService
 @inject IDialogService DialogService
 @inject CatalagosServiceClient CatalagosService
 <MainForm>
@@ -78,17 +79,20 @@
     private bool _editTriggerRowClick;
     private string _searchString;
     private OrdenJurisdiccional entidadFederativaEntidad = new OrdenJurisdiccional();
+    private string? token;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
-            var response = await httpClient.GetFromJsonAsync<List<OrdenJurisdiccional>>("api/Catalogos/ObtenerOrdenJurisdiccional");
+            token = await AuthService.GetTokenAsync();
+            var response = await httpClient.GetFromJsonAsync<List<OrdenJurisdiccional>>($"api/Catalogos/ObtenerOrdenJurisdiccional?token={token}");
 
             if (response is not null)
             {
+
                 Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
+
             }
         }
         catch (Exception ex)
@@ -131,6 +135,7 @@
             { z => z.Titulo, "Editar Orden Jurisdiccional" },
             {z => z.MensajeSnackBar, "Orden Jurisdiccional Editado"},
             { z => z.BtnAceptar, "Guardar Cambios" },
+            {z => z.token, token},
             {z => z.nombreApi, "ActualizaOrdenJurisdiccional"}
         };
         var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.ExtraExtraLarge, BackdropClick = false, FullWidth = false };

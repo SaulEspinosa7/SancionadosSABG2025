@@ -9,5 +9,6 @@ namespace SancionadosSAGB2025.Shared
     public interface ICatalogo
     {
         string? Descripcion { get; set; }
+        string? Token { get; set; }
     }
 }

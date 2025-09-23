@@ -47,8 +47,8 @@ namespace SancionadosSAGB2025.Shared.Moral
         public int? IdPlazoPagoFK { get; set; }
         public PlazoPago? PlazoPago { get; set; } = new PlazoPago();
 
-        public int? IdSancionEfectivamenteCobradaFK { get; set; }
-        public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new SancionEfectivamenteCobradaMoral();
+        //public int? IdSancionEfectivamenteCobradaFK { get; set; }
+        //public SancionEfectivamenteCobradaMoral? SancionEfectivamenteCobrada { get; set; } = new SancionEfectivamenteCobradaMoral();
 
         public int? IdSancionEconomicaFK { get; set; }
         public  SancionEconomicaMoral? SancionEconomica { get; set; } = new SancionEconomicaMoral();

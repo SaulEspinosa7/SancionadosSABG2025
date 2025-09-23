@@ -6,6 +6,7 @@
 @using SancionadosSAGB2025.Client.Shared.Forms;
 @using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 @using SancionadosSAGB2025.Client.Services
+@inject AuthService AuthService
 @inject IDialogService DialogService
 @inject CatalagosServiceClient CatalagosService
 @inject NavigationManager nav
@@ -78,18 +79,20 @@
     private bool _editTriggerRowClick;
     private string _searchString;
     private NivelJerarquicoEntidad entidadFederativaEntidad = new NivelJerarquicoEntidad();
-
+    private string token;
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // var result = await CatalagosService.ObtenerTodosLosCatalogos();
-            var response = await httpClient.GetFromJsonAsync<List<NivelJerarquicoEntidad>>("api/Catalogos/ObtenerNivelJerarquico");
+            token = await AuthService.GetTokenAsync();
+            var response = await httpClient.GetFromJsonAsync<List<NivelJerarquicoEntidad>>($"api/Catalogos/ObtenerNivelJerarquico?token={token}");
 
             if (response is not null)
             {
+
                 Elements = response!.OrderBy(x => x.Descripcion)!.ToList();
-            }
+
+            }          
         }
         catch (Exception ex)
         {
@@ -128,6 +131,7 @@
         {
             { x => x.Entidad, entidad },
             { z => z.IsEdit, true },
+            {z => z.token, token},
             { z => z.Titulo, "Editar Nivel Jerarquico" },
             {z => z.MensajeSnackBar, "Nivel Editado"},
             { z => z.BtnAceptar, "Guardar Cambios" },

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using SancionadosSAGB2025.Client.Services;
+using SancionadosSAGB2025.Shared.Grave;
 using SancionadosSAGB2025.Shared.Login;
 using SancionadosSAGB2025.Shared.Sanciones;
 using System.Net.Http;
@@ -15,12 +16,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 		[Inject] private NavigationManager Navigation { get; set; }
         [Inject] private IJSRuntime JS { get; set; }
         private SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG { get; set; } = new();
-		private List<AddFaltasDeServidoresPublicosG> faltasDeServidoresPublicosGs { get; set; } = new();
-		private AddFaltasDeServidoresPublicosG faltasDeServidoresPublicosGsSeleccionadas { get; set; } = new();
+		private List<FaltasGravesEntidad> faltasDeServidoresPublicosGs { get; set; } = new();
+		private FaltasGravesEntidad faltasDeServidoresPublicosGsSeleccionadas { get; set; } = new();
 		private TipoEvento TiposEventos { get; set; } = TipoEvento.Principal;
 		private int IdUsuario { get; set; } = 0;
 
-		private List<AddFaltasDeServidoresPublicosG> Elements = new List<AddFaltasDeServidoresPublicosG>();
+		private List<FaltasGravesEntidad> Elements = new List<FaltasGravesEntidad>();
 		private string _searchString;
 		private bool _sortNameByLength;
 		private List<string> _events = new();
@@ -61,13 +62,13 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 			}
 		}
 
-		public async Task MostrarVistaActualizarFalta(AddFaltasDeServidoresPublicosG addFaltasDeServidoresPublicosG) 
+		public async Task MostrarVistaActualizarFalta(FaltasGravesEntidad addFaltasDeServidoresPublicosG) 
 		{
 			TiposEventos = TipoEvento.Actualizar;
 			faltasDeServidoresPublicosGsSeleccionadas = addFaltasDeServidoresPublicosG;
 		}
 
-		public async Task MostrarVisualizacionFalta(AddFaltasDeServidoresPublicosG addFaltasDeServidoresPublicosG)
+		public async Task MostrarVisualizacionFalta(FaltasGravesEntidad addFaltasDeServidoresPublicosG)
 		{
 			TiposEventos = TipoEvento.Ver;
 			faltasDeServidoresPublicosGsSeleccionadas = addFaltasDeServidoresPublicosG;
@@ -100,7 +101,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 			}
 		}
 
-		private Func<AddFaltasDeServidoresPublicosG, object> _sortBy => x =>
+		private Func<FaltasGravesEntidad, object> _sortBy => x =>
 		{
 			if (_sortNameByLength)
 				return x.Expediente.Length;
@@ -108,7 +109,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 				return x.Expediente;
 		};
 		// quick filter - filter globally across multiple columns with the same input
-		private Func<AddFaltasDeServidoresPublicosG, bool> _quickFilter => x =>
+		private Func<FaltasGravesEntidad, bool> _quickFilter => x =>
 		{
 			if (string.IsNullOrWhiteSpace(_searchString))
 				return true;
@@ -135,17 +136,17 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 		};		
 
 		// events
-		void RowClicked(DataGridRowClickEventArgs<AddFaltasDeServidoresPublicosG> args)
+		void RowClicked(DataGridRowClickEventArgs<FaltasGravesEntidad> args)
 		{
 			_events.Insert(0, $"Event = RowClick, Index = {args.RowIndex}, Data = {System.Text.Json.JsonSerializer.Serialize(args.Item)}");
 		}
 
-		void RowRightClicked(DataGridRowClickEventArgs<AddFaltasDeServidoresPublicosG> args)
+		void RowRightClicked(DataGridRowClickEventArgs<FaltasGravesEntidad> args)
 		{
 			_events.Insert(0, $"Event = RowRightClick, Index = {args.RowIndex}, Data = {System.Text.Json.JsonSerializer.Serialize(args.Item)}");
 		}
 
-		void SelectedItemsChanged(HashSet<AddFaltasDeServidoresPublicosG> items)
+		void SelectedItemsChanged(HashSet<FaltasGravesEntidad> items)
 		{
 			_events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
 		}

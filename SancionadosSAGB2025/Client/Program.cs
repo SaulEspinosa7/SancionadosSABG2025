@@ -21,6 +21,8 @@ builder.Services.AddScoped<FaltasSPGService>();
 builder.Services.AddScoped<CatalagosServiceClient>();
 builder.Services.AddScoped<FaltasSPNoGravesService>();
 builder.Services.AddScoped<FaltasGravesPersonasFisicasService>();
+builder.Services.AddScoped<AuthService>();
+
 //builder.Services.AddOptions();
 //builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
 //builder.Services.AddAuthorizationCore();

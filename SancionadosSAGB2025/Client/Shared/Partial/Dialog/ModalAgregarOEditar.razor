@@ -67,6 +67,8 @@ else
     public string MensajeSnackBar { get; set; } = string.Empty;
     [Parameter]
     public string nombreApi { get; set; } = string.Empty;
+    [Parameter]
+    public string token { get; set; }
     public string Descripcion { get; set; } = string.Empty;
     private void Cancel() => MudDialog.Cancel();
     protected override void OnParametersSet()
@@ -77,6 +79,7 @@ else
     private async Task EditarEntidad()
     {
         Entidad.Descripcion = Descripcion;
+        Entidad.Token = token;
         var res = await httpClient.PostAsJsonAsync($"api/Catalogos/{nombreApi}", Entidad);
 
         if (res.IsSuccessStatusCode)

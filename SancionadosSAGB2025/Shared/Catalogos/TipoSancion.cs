@@ -16,5 +16,6 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 		public DateTime FechaModificacion { get; set; }
 		public int Activo { get; set; }
 		public int Bandera { get; set; }
-	}
+        public string? Token { get; set; }
+    }
 }

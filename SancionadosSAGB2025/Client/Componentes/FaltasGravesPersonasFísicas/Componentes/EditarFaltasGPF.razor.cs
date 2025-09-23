@@ -24,6 +24,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
             faltasDeServidoresPublicosFisicas.Indeminizacion ??= new Indemnizacion();
             faltasDeServidoresPublicosFisicas.PlazoPago ??= new PlazoPagos(); // ¡Esta faltaba!
             faltasDeServidoresPublicosFisicas.SancionEconomica ??= new SancionEconomica();
+            faltasDeServidoresPublicosFisicas.SancionEconomica.SancionEfectivamenteCobrada ??= new();
+            faltasDeServidoresPublicosFisicas.Indeminizacion.IndeminizacionECobrada ??= new();
             faltasDeServidoresPublicosFisicas.SancionEfectivamenteCobrada ??= new SancionEfectivamenteCobrada();
             faltasDeServidoresPublicosFisicas.Otro ??= new Otro();
 
