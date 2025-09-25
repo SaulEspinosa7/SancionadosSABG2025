@@ -77,13 +77,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private bool inhabilitacion { get; set; } = false;
         protected override async Task OnInitializedAsync()
 		{
-            if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico != null)
+            if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico != null && IsEditMode != (int)TipoVistaComponentes.Agregar)
                 TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
-            else if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero != null)
+            else if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero != null && IsEditMode != (int)TipoVistaComponentes.Agregar)
                 TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
-            await ObtenerCatalogosFormulario();
-			await MostrarOpcionCatalogos();
-			await InicializarVariables();
+            await ObtenerCatalogosFormulario();          
+                await InicializarVariables();
 		}
         void Fecha()
         {
@@ -449,53 +448,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
             return Regex.IsMatch(valor, @"^[a-zA-ZÁÉÍÓÚáéíóúÑñ0-9 ]+$");
         }
 
-
-		private async Task ConstruirFaltasSPG()
-		{
-			if (RespuestaRegistro!.Data is not null)
-			{
-				FaltasDeServidoresPublicosG.Id = RespuestaRegistro.Data!.Id;
-				FaltasDeServidoresPublicosG.IdDatosGeneralesFK = RespuestaRegistro.Data!.IdDatosGeneralesFK;
-				FaltasDeServidoresPublicosG.DatosGenerales.IdDatosGenerales = RespuestaRegistro.Data!.IdDatosGeneralesFK;
-				FaltasDeServidoresPublicosG.EmpleoCargoComision.Id = RespuestaRegistro.Data!.IdEmpleoCargoComisionFK;
-				FaltasDeServidoresPublicosG.IdEmpleoCargoComisionFK = RespuestaRegistro.Data!.IdEmpleoCargoComisionFK;
-				FaltasDeServidoresPublicosG.FaltaCometida.Id = RespuestaRegistro.Data!.IdFaltaCometidaFK;
-				FaltasDeServidoresPublicosG.IdFaltaCometidaFK = RespuestaRegistro.Data!.IdFaltaCometidaFK;
-				FaltasDeServidoresPublicosG.IdInhabilitacionFK = RespuestaRegistro.Data!.IdInhabilitacionFK;
-				FaltasDeServidoresPublicosG.Inhabilitacion.Id = RespuestaRegistro.Data!.IdInhabilitacionFK;
-				FaltasDeServidoresPublicosG.IdOrigenProcedimientoFK = RespuestaRegistro.Data!.IdOrigenProcedimientoFK;
-				FaltasDeServidoresPublicosG.OrigenProcedimiento.Id = RespuestaRegistro.Data!.IdOrigenProcedimientoFK;
-				FaltasDeServidoresPublicosG.IdOtro = RespuestaRegistro.Data!.IdOtro;
-				FaltasDeServidoresPublicosG.Otro.Id = RespuestaRegistro.Data!.IdOtro;
-				FaltasDeServidoresPublicosG.IdResolucion = RespuestaRegistro.Data!.IdResolucion;
-				FaltasDeServidoresPublicosG.Resolucion.Id = RespuestaRegistro.Data!.IdResolucion;
-				FaltasDeServidoresPublicosG.IdSancionEconomicaFK = RespuestaRegistro.Data!.IdSancionEconomicaFK;
-				FaltasDeServidoresPublicosG.SancionEconomica.Id = RespuestaRegistro.Data!.IdSancionEconomicaFK;
-				FaltasDeServidoresPublicosG.IdSancionEfectivamenteCobradaFK = RespuestaRegistro.Data!.IdSancionEfectivamenteCobradaFK;
-				FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.Id = RespuestaRegistro.Data!.IdSancionEfectivamenteCobradaFK;
-				FaltasDeServidoresPublicosG.IdTipoSancionFK = RespuestaRegistro.Data!.IdTipoSancionFK;
-				FaltasDeServidoresPublicosG.DatosGenerales.IdSexoFk = FaltasDeServidoresPublicosG?.DatosGenerales?.Sexo?.IdSexo;
-				FaltasDeServidoresPublicosG.EmpleoCargoComision.IdEntidadFederativaFK = FaltasDeServidoresPublicosG?.EmpleoCargoComision?.EntidadFederativa?.IdEntidadFederativa;
-				FaltasDeServidoresPublicosG.EmpleoCargoComision.IdNivelOrdenGobiernoFK = FaltasDeServidoresPublicosG?.EmpleoCargoComision?.NivelOrdenGobierno?.IdNivelOrdenGobierno;
-				FaltasDeServidoresPublicosG.EmpleoCargoComision.IdAmbitoPublicoFK = FaltasDeServidoresPublicosG?.EmpleoCargoComision?.AmbitoPublico?.IdAmbitoPublico;
-				FaltasDeServidoresPublicosG.OrigenProcedimiento.IdOrigenProcedimientoCatFK = FaltasDeServidoresPublicosG?.OrigenProcedimiento?.Clave?.IdOrigenProcedimiento;
-				FaltasDeServidoresPublicosG.Resolucion.IdOrdenJurisdiccionalFK = FaltasDeServidoresPublicosG?.Resolucion?.OrdenJurisdiccional?.Id;
-				FaltasDeServidoresPublicosG.SancionEconomica.IdMonedaFK = FaltasDeServidoresPublicosG?.SancionEconomica?.Moneda?.IdMoneda;
-				FaltasDeServidoresPublicosG.Indeminizacion.IdTipoMonedaFK = FaltasDeServidoresPublicosG?.SancionEconomica?.Moneda?.IdMoneda;
-				FaltasDeServidoresPublicosG.SancionEfectivamenteCobrada.IdMonedaFK = FaltasDeServidoresPublicosG?.SancionEfectivamenteCobrada?.Moneda?.IdMoneda;
-				FaltasDeServidoresPublicosG.Indeminizacion.IdTipoMonedaFK = FaltasDeServidoresPublicosG?.Indeminizacion?.Moneda?.IdMoneda;
-				FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdTipoVialidadFK = FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico?.TipoVialidad?.IdTipoVialidad;
-				FaltasDeServidoresPublicosG.DatosGenerales.DomicilioMexico.IdEntidadFederativaFK = FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico?.EntidadFederativa?.IdEntidadFederativa;
-				FaltasDeServidoresPublicosG.DatosGenerales.IdDomicilioMexicoFK = FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico?.IdDomicilioMexico;
-				FaltasDeServidoresPublicosG.DatosGenerales.IdDomicilioExtranjeroFK = FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero?.IdDomicilioExtranjero;
-			}
-		}
-        private List<PlazoPago> PlazoPagos { get; set; } = new List<PlazoPago>
-        {
-            new PlazoPago { Clave = "1", Valor = "Años" },
-            new PlazoPago { Clave = "2", Valor = "Meses" },
-            new PlazoPago { Clave = "3", Valor = "Dias" },
-        };
         private async Task ObtenerCatalogosFormulario()
         {
             try
@@ -519,7 +471,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
                             FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
                             Sexos = CatalogosBD.Sexo!;
                             ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 1).ToList();
+                           // TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 || c.Bandera == 1).ToList();
+                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 1 ||  c.Bandera == 3).ToList();
                             TipoMonedas = CatalogosBD.Monedas!;
                         }
                         Console.WriteLine($" CatalogosBD {CatalogosBD.TipoVialidad}");
@@ -540,14 +493,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		{
 			try
 			{
-				var token = await AuthService.GetTokenAsync();
+                FaltasDeServidoresPublicosG.Token  = await AuthService.GetTokenAsync();
 
-				//Console.WriteLine($" token {token}");
-
-				if (!string.IsNullOrEmpty(token))
+				if (!string.IsNullOrEmpty(FaltasDeServidoresPublicosG.Token))
 				{
 					TokenResponse tokenUsuario = new();
-					tokenUsuario.Token = token;
+					tokenUsuario.Token = FaltasDeServidoresPublicosG.Token;
 					AutenticacionResponse informacionPerfil = await AuthService.ConsultarInformacionPerfil(tokenUsuario);
 					if (informacionPerfil.Usuario is not null)
 					{

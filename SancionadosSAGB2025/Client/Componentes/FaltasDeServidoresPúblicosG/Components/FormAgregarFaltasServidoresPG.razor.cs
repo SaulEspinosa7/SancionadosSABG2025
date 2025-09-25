@@ -63,21 +63,15 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 
         private MudForm? _formOtro;
 		private int index;
-		private bool loading;
+		private bool loading;       
 
         private IEnumerable<string> _optionsFaltaComedia { get; set; } = new HashSet<string>();
 
         protected override async Task OnInitializedAsync()
 		{
-            await ObtenerCatalogosFormulario();
+            await ObtenerCatalogosFormulario();          
             if (IsEditMode != (int)TipoVistaComponentes.Agregar)
                 FaltasDeServidoresPublicosG.DatosGenerales ??= new();
-            //await MostrarOpcionCatalogos();
-            //if (FaltasDeServidoresPublicosVerOEditar is not null)
-            //{
-            //    FaltasDeServidoresPublicosG = FaltasDeServidoresPublicosVerOEditar;
-            //}
-
         }
 
         private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
@@ -349,7 +343,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
         private async Task<bool> GuardarTemporal()
         {
             try
-            {
+            {               
                 await ConsultarIdUsuario();
                 if (_options is not null && _options.Any())
                 {
@@ -419,14 +413,14 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
         {
             try
             {
-                var token = await AuthService.GetTokenAsync();
+                FaltasDeServidoresPublicosG.Token = await AuthService.GetTokenAsync();
 
                 //Console.WriteLine($" token {token}");
 
-                if (!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(FaltasDeServidoresPublicosG.Token))
                 {
                     TokenResponse tokenUsuario = new();
-                    tokenUsuario.Token = token;
+                    tokenUsuario.Token = FaltasDeServidoresPublicosG.Token;
                     AutenticacionResponse informacionPerfil = await AuthService.ConsultarInformacionPerfil(tokenUsuario);
                     if (informacionPerfil.Usuario is not null)
                     {

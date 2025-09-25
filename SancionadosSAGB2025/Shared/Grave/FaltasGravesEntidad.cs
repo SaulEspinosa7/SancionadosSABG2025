@@ -109,6 +109,7 @@ namespace SancionadosSAGB2025.Shared.Grave
 
         [JsonPropertyName("errorMessage")]
         public string? ErrorMessage { get; set; }
+        public string? Token { get; set; }
     }
     public class DatosGeneralesGrave
     {

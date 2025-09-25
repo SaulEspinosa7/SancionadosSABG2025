@@ -25,22 +25,22 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 
         protected override async Task OnInitializedAsync()
         {
-            await BuscarFaltasServidoresPG();
             await ConsultarIdUsuario();
+            await BuscarFaltasServidoresPG();            
         }
 
         private async Task ConsultarIdUsuario()
         {
             try
             {
-                var token = await AuthService.GetTokenAsync();
+                searchFaltasDeServidoresPublicosG.Token = await AuthService.GetTokenAsync();
 
                 //Console.WriteLine($" token {token}");
 
-                if (!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(searchFaltasDeServidoresPublicosG.Token))
                 {
                     TokenResponse tokenUsuario = new();
-                    tokenUsuario.Token = token;
+                    tokenUsuario.Token = searchFaltasDeServidoresPublicosG.Token;
                     AutenticacionResponse informacionPerfil = await AuthService.ConsultarInformacionPerfil(tokenUsuario);
                     if (informacionPerfil.Usuario is not null)
                     {

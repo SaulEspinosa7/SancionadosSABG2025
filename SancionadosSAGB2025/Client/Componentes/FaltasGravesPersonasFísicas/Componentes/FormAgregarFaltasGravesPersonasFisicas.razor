@@ -119,11 +119,7 @@
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       RequiredError="El campo RFC es obligatorio."
                                       helpertext="Escribir los primeros diez caracteres básicos y los tres correspondientes a la homoclave."
-                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "rfcInput" })" />
-                        @if (FaltasDeServidoresPublicosG!.DatosGenerales!.Rfc is not null && FaltasDeServidoresPublicosG!.DatosGenerales!.Rfc.Length != 13)
-                        {
-                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Rfc no es valido.</MudText>
-                        }
+                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "rfcInput" })" />                      
                     </MudItem>
                     <MudItem xs="4">
                         <MudSelect @bind-Value="TipoDomicilioSeleccionado"

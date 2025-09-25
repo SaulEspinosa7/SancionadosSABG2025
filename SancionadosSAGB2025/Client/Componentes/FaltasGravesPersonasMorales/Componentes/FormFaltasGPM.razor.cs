@@ -100,7 +100,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
 
                 _modelo.Otro ??= new Otro();
                 await ObtenerCatalogosFormulario();
-                await MostrarOpcionCatalogos();
+                await MostrarOpcionCatalogos();              
                 await InicializarVariables();
             }
             catch (Exception ex)
@@ -114,8 +114,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
             try
             {
                 TipoDomicilios = Enum.GetValues(typeof(TipoDomiclio)).Cast<TipoDomiclio>().ToList();
-                //_modelo.DatosGenerales.DomicilioMexico = new();
-                //_modelo.DatosGenerales.DomicilioExtranjero = new();
             }
             catch (Exception)
             {
@@ -161,8 +159,9 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                             NivelJerarquico = CatalogosBD.NivelJerarquico!;
                             FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
                             Sexos = CatalogosBD.Sexo!;
+                            TiposVialidades = CatalogosBD.TipoVialidad!;
                             ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 1).ToList();
+                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 1 || c.Bandera == 4 || c.Bandera == 3).ToList();
                             TipoMonedas = CatalogosBD.Monedas!;
                         }
                         Console.WriteLine($" CatalogosBD {CatalogosBD.TipoVialidad}");
@@ -203,14 +202,14 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
         {
             try
             {
-                var token = await AuthService.GetTokenAsync();
+                _modelo!.Token = await AuthService.GetTokenAsync();
 
                 //Console.WriteLine($" token {token}");
 
-                if (!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(_modelo.Token))
                 {
                     TokenResponse tokenUsuario = new();
-                    tokenUsuario.Token = token;
+                    tokenUsuario.Token = _modelo.Token;
                     AutenticacionResponse informacionPerfil = await AuthService.ConsultarInformacionPerfil(tokenUsuario);
                     if (informacionPerfil.Usuario is not null)
                     {

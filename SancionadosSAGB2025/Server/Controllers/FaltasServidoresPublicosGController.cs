@@ -29,28 +29,8 @@ namespace SancionadosSAGB2025.Server.Controllers
 			return Ok(faltaagregada);
 		}
 
-		//[HttpPost("AgregarFaltasSPG")]
-		//public async Task<IActionResult> AgregarFaltasSPG([FromBody] FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
-		//{
-		//	var faltaagregada = await _faltasServidoresPublicosGService.AgregarFaltasSPG(faltasDeServidoresPublicosG);
 
-		//	if (faltaagregada == null)
-		//		return Unauthorized(new { message = "Huvo un error al agregar la falta SPG" });
-
-		//	return Ok(faltaagregada);
-		//}
-
-		[HttpPost("ActualizarFaltasSPG")]
-		public async Task<IActionResult> ActualizarFaltasSPG([FromBody] FaltasDeServidoresPublicosG faltasDeServidoresPublicosG)
-		{
-			var faltaActualizada = await _faltasServidoresPublicosGService.ActualizarFaltasSPG(faltasDeServidoresPublicosG);
-
-			if (faltaActualizada == null)
-				return Unauthorized(new { message = "Huvo un error al actualizar la falta SPG." });
-
-			return Ok(faltaActualizada);
-		}
-
+	
 		[HttpPost("ObtenerFaltasSPG")]
 		public async Task<IActionResult> ObtenerFaltasSPG([FromBody] SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
 		{

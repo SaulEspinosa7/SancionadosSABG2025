@@ -1,6 +1,8 @@
 ﻿using SancionadosSAGB2025.Server.Interfaces;
+using SancionadosSAGB2025.Shared.Grave;
 using SancionadosSAGB2025.Shared.Registros;
 using SancionadosSAGB2025.Shared.Sanciones;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -17,47 +19,52 @@ namespace SancionadosSAGB2025.Server.Services
 
 		public async Task<RespuestaRegistroNoGraves> AgregarFaltasSPG(AddFaltasDeServidoresPublicosNoGraves addFaltasDeServidoresPublicosNoGraves)
 		{
-			var json = JsonSerializer.Serialize(addFaltasDeServidoresPublicosNoGraves, new JsonSerializerOptions
-			{
-				WriteIndented = true // Opcional: para que sea más legible
-			});
+            var json = JsonSerializer.Serialize(addFaltasDeServidoresPublicosNoGraves, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
 
-			Console.WriteLine(json); // o usa tu logger
+            var request = new HttpRequestMessage(HttpMethod.Post, "FALTASSPN/AddAsync")
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
 
-			// Luego lo mandas tú mismo
-			var content = new StringContent(json, Encoding.UTF8, "application/json");
-			//var registroFalta = new RegistroFaltasSPG();
-			var response = await _http.PostAsJsonAsync($"FALTASSPN/AddAsync", addFaltasDeServidoresPublicosNoGraves);
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", addFaltasDeServidoresPublicosNoGraves.Token);
 
-			if (!response.IsSuccessStatusCode)
-			{
-				var errorContent = await response.Content.ReadAsStringAsync();
-				Console.WriteLine(errorContent);
-			}			
+            var response = await _http.SendAsync(request);
 
-			var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroNoGraves>();
-
-			if (result?.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)
-			{
-				result.Response = true;
-			}
-
-			return result;
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"⚠️ Error en la API: {response.StatusCode}");
+                Console.WriteLine(errorContent);
+                return null;
+            }
+            var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroNoGraves>();
+            if (result?.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)
+            {
+                result.Response = true;
+            }
+            return result;
+          
 		}
 
 		public async Task<List<AddFaltasDeServidoresPublicosNoGraves>> ObtenerFaltasSPG(SearchFaltasDeServidoresPublicosG searchFaltasDeServidoresPublicosG)
 		{
 			try
 			{
-				var response = await _http.GetAsync($"FALTASSPN");
+                var request = new HttpRequestMessage(HttpMethod.Get, "FALTASSPN");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", searchFaltasDeServidoresPublicosG.Token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-				var wrapper = await response.Content.ReadFromJsonAsync<ApiResponse<List<AddFaltasDeServidoresPublicosNoGraves>>>();
-				var faltas = wrapper?.Data ?? new(); // Aquí tienes tu lista real
-				return faltas.Where(falta => falta.Activo == 1).ToList();
-				//return result;
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<AddFaltasDeServidoresPublicosNoGraves>>>();
+                return result.Data.Where(falta => falta.Activo == 1).ToList();
+                
 			}
 			catch (Exception ex)
 			{

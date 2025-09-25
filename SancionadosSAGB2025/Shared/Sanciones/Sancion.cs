@@ -43,6 +43,7 @@ namespace SancionadosSAGB2025.Shared.Sanciones
         public int? IdSexoFk { set; get; }
 
         [JsonPropertyName("sexo")]
+		[JsonIgnore]
         public Sexo? Sexo { get; set; } = new();
     }
 
@@ -875,7 +876,8 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 			[JsonPropertyName("idUsuarioFK")]
 			public int? IdUsuarioFK { get; set; }
-		}
+			public string? Token { get; set; }
+    }
 
 		public class AddFaltasGravesPersonasFisicas
 		{
@@ -921,7 +923,6 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 			[JsonPropertyName("idTipoSancionFK")]
 			public int? IdTipoSancionFK { get; set; }
 
-			[JsonPropertyName("idIndeminizacionFK")]
 			public int? IdIndeminizacionFK { get; set; }
 
 			[JsonPropertyName("indeminizacion")]
@@ -970,7 +971,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 			[JsonPropertyName("idUsuarioFK")]
 			public int? IdUsuarioFK { get; set; }
-		}
+		
+			public string? Token { get; set; }
+    }
 		
 	public class IndeminizacionECobrada
 	{
@@ -1001,7 +1004,8 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
 		[JsonPropertyName("segundoApellido")]
 		public string? SegundoApellido { get; set; }
-	}
+		public string? Token { get; set; }
+    }
 
 	public class ApiResponse<T>
 	{

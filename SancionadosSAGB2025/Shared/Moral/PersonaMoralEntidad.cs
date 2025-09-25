@@ -65,6 +65,7 @@ namespace SancionadosSAGB2025.Shared.Moral
         public int? Activo { get; set; } = 1;
         public int? IdUsuarioFK { get; set; }
         public string? MultipleSancion { get; set; }
+        public string? Token { get; set; }
     }
 
     public class DirectorGeneral

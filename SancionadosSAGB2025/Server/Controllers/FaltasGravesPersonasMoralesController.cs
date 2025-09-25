@@ -23,9 +23,9 @@ namespace SancionadosSAGB2025.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtenerFaltasGravesPersonasMorales()
+        public async Task<IActionResult> ObtenerFaltasGravesPersonasMorales(string token)
         {
-            var faltasDeServidoresPublicosGs = await faltasGravesPersonasMoralesService.ObtenerFaltasGravesPersonasMorales();
+            var faltasDeServidoresPublicosGs = await faltasGravesPersonasMoralesService.ObtenerFaltasGravesPersonasMorales(token);
 
             if (faltasDeServidoresPublicosGs == null)
                 return Unauthorized(new { message = "Huvo un error al obtener las faltas SPG." });

@@ -18,33 +18,36 @@ namespace SancionadosSAGB2025.Server.Services
 		public async Task<RespuestaRegistroFaltasGravesPersonasFisicas> AgregarFaltasGravesPersonasFisicas(AddFaltasGravesPersonasFisicas addFaltasGravesPersonasFisicas)
 		{
 			addFaltasGravesPersonasFisicas = await ConstruirFaltasGravesPersonasFisicas(addFaltasGravesPersonasFisicas);
+            var json = JsonSerializer.Serialize(addFaltasGravesPersonasFisicas, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
 
-			var json = JsonSerializer.Serialize(addFaltasGravesPersonasFisicas, new JsonSerializerOptions
-			{
-				WriteIndented = true // Opcional: para que sea más legible
-			});
+            var request = new HttpRequestMessage(HttpMethod.Post, "FGPF/AddAsync")
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
 
-			Console.WriteLine(json); // o usa tu logger
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", addFaltasGravesPersonasFisicas.Token);
 
-			// Luego lo mandas tú mismo
-			var content = new StringContent(json, Encoding.UTF8, "application/json");
-			//var registroFalta = new RegistroFaltasSPG();
-			var response = await _http.PostAsJsonAsync($"FGPF/AddAsync", addFaltasGravesPersonasFisicas);
+            var response = await _http.SendAsync(request);
+             var respuesta = await response.Content.ReadAsStringAsync();
 
-			if (!response.IsSuccessStatusCode)
-			{
-				var errorContent = await response.Content.ReadAsStringAsync();
-				Console.WriteLine(errorContent);
-			}
-
-			var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasFisicas>();
-
-			if (result?.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)
-			{
-				result.Response = true;
-			}
-
-			return result;
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"⚠️ Error en la API: {response.StatusCode}");
+                Console.WriteLine(errorContent);
+                return null;
+            }
+            var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasFisicas>();
+            if (result.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)
+            {
+                result.Response = true;
+            }
+            return result;
+          
 		}
 
 		public async Task<AddFaltasGravesPersonasFisicas> ConstruirFaltasGravesPersonasFisicas(AddFaltasGravesPersonasFisicas addFaltasGravesPersonasFisicas)
@@ -61,16 +64,17 @@ namespace SancionadosSAGB2025.Server.Services
 		{
 			try
 			{
-				var response = await _http.GetAsync($"FGPF");
+                var request = new HttpRequestMessage(HttpMethod.Get, "FGPF");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", searchFaltasDeServidoresPublicosG.Token);
 
-				if (!response.IsSuccessStatusCode)
-					return null;
+                var response = await _http.SendAsync(request);
 
-                var wrapper = await response.Content.ReadFromJsonAsync<List<AddFaltasGravesPersonasFisicas>>();
+                if (!response.IsSuccessStatusCode)
+                    return null;
 
-               // var faltas = wrapper?.Data ?? new(); // Aquí tienes tu lista real
-				return wrapper.Where(falta => falta.Activo == 1).ToList(); ;
-				//return result;
+                var result = await response.Content.ReadFromJsonAsync<List<AddFaltasGravesPersonasFisicas>>();
+                return result.Where(falta => falta.Activo == 1).ToList();
+               
 			}
 			catch (Exception ex)
 			{

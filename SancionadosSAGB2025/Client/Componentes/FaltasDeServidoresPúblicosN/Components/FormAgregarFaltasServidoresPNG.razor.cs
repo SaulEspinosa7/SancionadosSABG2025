@@ -73,8 +73,8 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 
         protected override async Task OnInitializedAsync()
 		{
-			await ObtenerCatalogosFormulario();
-			await MostrarOpcionCatalogos();
+			await ObtenerCatalogosFormulario();		
+            await MostrarOpcionCatalogos();
 		}
         private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
         {
@@ -420,220 +420,6 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 			FaltasDeServidoresPublicosG.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == FaltasDeServidoresPublicosG.Resolucion.IdOrdenJurisdiccionalFK);
 		}
 
-		private async Task ValidarCampos()
-		{
-			await JS.InvokeVoidAsync("formatAndValidateClave", "curpInput", "CURP");
-			await JS.InvokeVoidAsync("formatAndValidateClave", "rfcInput", "RFC");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombresInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "primerApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "segundoApellidoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreEnteInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "siglasEntePublicoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "valorInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "areaAdscripcionInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorOrigenInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "ValorFaltaCometidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "normatividadInfringidaInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "nombreNormatividadInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "articuloInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "descripcionHechosInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "tituloDocumentoInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadResolutoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadInvestigadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "autoridadSubstanciadoraInput", "");
-			await JS.InvokeVoidAsync("formatAndAllowSpaces", "denominacionSancionInput", "");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionInput", "url");
-			//await JS.InvokeVoidAsync("formatAndValidateInputUrl", "urlResolucionFirmeInput", "url");			
-		}
-        //      void Fecha()
-        //      {
-        //	expediente = true;
-        //      }
-        //      private async Task ValidarInformacionFecha()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-
-        //	if (FaltasDeServidoresPublicosG.Fecha is not null)
-
-        //	{
-        //		BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Fecha] = true;
-        //	}
-        //	else BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Fecha] = false;
-        //}
-        //      private async Task ValidarInformacionExpediente()
-        //      {
-        //          if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-
-        //          if (FaltasDeServidoresPublicosG!.Expediente != string.Empty && FaltasDeServidoresPublicosG!.Expediente is not null)            
-        //              BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Expediente] = true;            
-        //          else 
-        //		BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Expediente] = false;
-        //      }
-        //      private async Task ValidarInformacionDatosPersonales()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var datos = FaltasDeServidoresPublicosG!.DatosGenerales;
-
-        //	bool esValido =
-        //		!string.IsNullOrWhiteSpace(datos!.Nombres) &&
-        //		!string.IsNullOrWhiteSpace(datos.PrimerApellido) &&
-        //		!string.IsNullOrWhiteSpace(datos.Curp) && datos.Curp.Length == 18 &&
-        //		!string.IsNullOrWhiteSpace(datos.Rfc) && datos.Rfc.Length == 13 &&
-        //		datos.Sexo is not null;
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DatosGenerales] = esValido;
-
-        //}
-
-        //private async Task ValidarInformacionEmpleoCargoComision()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	if (FaltasDeServidoresPublicosG!.EmpleoCargoComision!.EntidadFederativa is not null && FaltasDeServidoresPublicosG!.EmpleoCargoComision!.AmbitoPublico is not null &&
-        //		FaltasDeServidoresPublicosG!.EmpleoCargoComision!.NivelOrdenGobierno is not null && FaltasDeServidoresPublicosG!.EmpleoCargoComision!.NombreEnte is not null &&
-        //		FaltasDeServidoresPublicosG!.EmpleoCargoComision!.NombreEnte != string.Empty)
-
-        //	{
-        //		BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision] = true;
-        //	}
-        //	else
-        //	{
-        //		BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.EmpleoCargoComision] = false;
-        //	}
-        // await ValidarInformacionNivelJerarquico();
-
-        //      }
-
-        //private async Task ValidarInformacionNivelJerarquico()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var nivel = FaltasDeServidoresPublicosG?.NivelJerarquico;
-
-        //	bool datosBasicosValidos =
-        //		nivel?.Clave is not null &&
-        //		!string.IsNullOrWhiteSpace(nivel.Denominacion) &&
-        //		!string.IsNullOrWhiteSpace(nivel.AreaAdscripcion);
-
-        //	bool esOtro = nivel?.Clave?.Descripcion?.Contains("OTRO") == true;
-        //	bool valorOtroValido = !string.IsNullOrWhiteSpace(nivel?.Valor);
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.NivelJerarquico] =
-        //		datosBasicosValidos && (!esOtro || (esOtro && valorOtroValido));
-        //}
-
-        //private async Task ValidarInformacionOrigenProcedimiento()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var origen = FaltasDeServidoresPublicosG?.OrigenProcedimiento;
-        //	var clave = origen?.Clave?.Descripcion;
-        //	var esOtro = clave?.Contains("OTRO") == true;
-        //	var valorValido = !string.IsNullOrWhiteSpace(origen?.Valor);
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.OrigenProcedimiento] =
-        //		origen?.Clave is not null && (!esOtro || valorValido);
-        //}
-
-        //private async Task ValidarInformacionFaltaCometida()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var falta = FaltasDeServidoresPublicosG!.FaltaCometida;
-
-        //	bool datosCompletos =
-        //		_optionsFaltaComedia.Any() &&
-        //		!string.IsNullOrWhiteSpace(falta?.NombreNormatividad) &&
-        //		!string.IsNullOrWhiteSpace(falta?.Articulo) &&
-        //		!string.IsNullOrWhiteSpace(falta?.DescripcionHechos);
-
-        //	bool requiereValor = _optionsFaltaComedia.Contains("OTRO");
-
-        //	bool valorLleno = !string.IsNullOrWhiteSpace(falta?.Valor);
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.FaltaCometida] =
-        //		datosCompletos && (!requiereValor || valorLleno);
-        //}
-
-        //private async Task ValidarInformacionResolucion()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var resolucion = FaltasDeServidoresPublicosG!.Resolucion;
-
-        //	bool datosCompletos =
-        //		!string.IsNullOrWhiteSpace(resolucion?.TituloDocumento) &&
-        //		resolucion?.FechaResolucion != null &&
-        //		resolucion?.FechaNotificacion != null &&
-        //		resolucion?.FechaResolucionFirme != null &&
-        //		resolucion?.FechaNotificacionFirme != null &&
-        //		!string.IsNullOrWhiteSpace(resolucion?.AutoridadResolutora) &&
-        //		!string.IsNullOrWhiteSpace(resolucion?.AutoridadInvestigadora) &&
-        //		!string.IsNullOrWhiteSpace(resolucion?.AutoridadSubstanciadora);
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Resolucion] = datosCompletos;
-        //}
-
-        //private async Task ValidarInformacionTipoSancion()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	bool datosCompletos = false;
-        //	if (_options.Count() > 0) datosCompletos = true;
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion] = datosCompletos;
-        //}
-
-        //private async Task ValidarInformacionTipoAmonestacion()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	bool datosCompletos = false;
-        //	if (FaltasDeServidoresPublicosG!.TipoAmonestacion is not null) datosCompletos = true;
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion] = datosCompletos;
-        //}
-
-        //private async Task ValidarInformacionSuspencion()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var suspension = FaltasDeServidoresPublicosG.Suspension;
-
-        //	bool datosCompletos =
-        //		suspension!.PlazoMeses != null &&
-        //		suspension!.PlazoDias != null &&
-        //		suspension!.FechaInicial != null &&
-        //		suspension!.FechaFinal != null;
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Suspension] = datosCompletos;
-        //}
-
-        //private async Task ValidarInformacionDestitucionEmpleo()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var suspension = FaltasDeServidoresPublicosG.DestitucionEmpleo;
-
-        //	bool datosCompletos = true;
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo] = datosCompletos;
-        //}	
-
-        //private async Task ValidarInformacionInhabilitacion()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var inhabilitacion = FaltasDeServidoresPublicosG.Inhabilitacion;
-
-        //	bool datosCompletos =
-        //		inhabilitacion!.Anio != null && inhabilitacion.Anio != string.Empty &&
-        //		inhabilitacion!.Mes != null && inhabilitacion.Mes != string.Empty &&
-        //		inhabilitacion!.Dia != null && inhabilitacion.Dia != string.Empty &&
-        //		inhabilitacion!.FechaInicial != null && inhabilitacion!.FechaFinal != null;
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion] = datosCompletos;
-        //}
-
-        //private async Task ValidarInformacionOtro()
-        //{
-        //	if (IsEditMode == (int)TipoVistaComponentes.Ver) return;
-        //	var inhabilitacion = FaltasDeServidoresPublicosG.Otro;
-
-        //	bool datosCompletos =
-        //		inhabilitacion!.DenominacionSancion != null && inhabilitacion.DenominacionSancion != string.Empty;
-
-        //	BloquearBotonSiguientePorSesion[SesionesFaltasDeServidoresPublicosNoGraves.Otro] = datosCompletos;
-        //}
 
         private async Task ObtenerCatalogosFormulario()
         {
@@ -675,108 +461,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
                 Snackbar.Add($"Error en el proceso {ex.Message}", Severity.Error);
             }
         }
-
-        private List<PlazoPago> PlazoPagos { get; set; } = new List<PlazoPago>
-		{
-			new PlazoPago { Clave = "1", Valor = "Años" },
-			new PlazoPago { Clave = "2", Valor = "Meses" },
-			new PlazoPago { Clave = "3", Valor = "Dias" },
-		};
 	
-
-		private async Task MostrarSiguientePanel(int posicionPanel)
-		{ 
-			if (IsEditMode != (int)TipoVistaComponentes.Ver)
-			{
-				if (RespuestaRegistro is not null)
-				{
-					if (FaltasDeServidoresPublicosG!.Id is null && IsEditMode == (int)TipoVistaComponentes.Agregar)
-						await GuardarInformacionDeFaltasTemporales();
-					else
-						await ActualizarInformacionDeFaltasTemporales();
-
-				}
-			}
-			if (ResultadoCorrecto && IsEditMode == (int)TipoVistaComponentes.Agregar) await MostrarPanel(posicionPanel);
-			else if (IsEditMode != (int)TipoVistaComponentes.Agregar) await MostrarPanel(posicionPanel);
-		}
-
-		private async Task MostrarPanel(int posicionPanel)
-		{
-			if ((int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion == posicionPanel)
-			{
-				if (_options.Contains("SUSPENSIÓN DEL EMPLEO,CARGO O COMISIÓN"))
-				{
-					int valor = (int)SesionesFaltasDeServidoresPublicosNoGraves.Suspension;
-					if (!ListActivePanel.Contains(valor)) ListActivePanel.Add(valor);
-					BloqueoSesiones.Add(ActivePanel);
-				}
-				if (_options.Contains("DESTITUCIÓN DEL EMPLEO,CARGO O COMISIÓN"))
-				{
-					int valor = (int)SesionesFaltasDeServidoresPublicosNoGraves.DestitucionEmpleo;
-					if (!ListActivePanel.Contains(valor)) ListActivePanel.Add(valor);
-					BloqueoSesiones.Add(ActivePanel);
-				}
-				if (_options.Contains("AMONESTACION"))
-				{
-					int valor = (int)SesionesFaltasDeServidoresPublicosNoGraves.Amonestacion;
-					if (!ListActivePanel.Contains(valor)) ListActivePanel.Add(valor);
-					BloqueoSesiones.Add(ActivePanel);
-				}
-				if (_options.Contains("INHABILITACIÓN TEMPORAL PARA PARTICIPAR EN ADQUISICIONES,ARRENDAMIENTOS,SERVICIOS U OBRAS PÚBLICAS"))
-				{
-					int valor = (int)SesionesFaltasDeServidoresPublicosNoGraves.Inhabilitacion;
-					if (!ListActivePanel.Contains(valor)) ListActivePanel.Add(valor);
-					BloqueoSesiones.Add(ActivePanel);
-				}
-				if (_options.Contains("OTRO (Especifique)"))
-				{
-					int valor = (int)SesionesFaltasDeServidoresPublicosNoGraves.Otro;
-					if (!ListActivePanel.Contains(valor)) ListActivePanel.Add(valor);
-					BloqueoSesiones.Add(ActivePanel);
-				}
-				ActivePanel = ListActivePanel.Min();
-				BloqueoSesiones.Add(ActivePanel);
-				Console.WriteLine($"If MostrarPanel ActivePanel - {ActivePanel}");
-			}
-			else if (posicionPanel > (int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion)
-			{
-				var listaOrdenada = ListActivePanel.OrderBy(x => x).ToList();
-				int index = listaOrdenada.IndexOf(posicionPanel);
-				int? siguiente = (index >= 0 && index < listaOrdenada.Count - 1)
-						? listaOrdenada[index + 1]
-						: null;
-				ActivePanel = (int)siguiente!;
-				BloqueoSesiones.Add(ActivePanel);
-				Console.WriteLine($"Else if MostrarPanel ActivePanel - {ActivePanel}, Siguiente {siguiente}, index {index} , index siguiente {index + 1}");
-			}
-			else
-			{
-				ActivePanel = posicionPanel;
-				ActivePanel++;
-				BloqueoSesiones.Add(ActivePanel);
-			}
-		}
-
-		private async Task MostrarAnteriorPanel(int posicionPanel)
-		{
-			if (posicionPanel > (int)SesionesFaltasDeServidoresPublicosNoGraves.TipoSancion)
-			{
-				var listaOrdenada = ListActivePanel.OrderBy(x => x).ToList();
-				int index = listaOrdenada.IndexOf(posicionPanel);
-				int? anterior = (index > 0 && index < listaOrdenada.Count)
-						? listaOrdenada[index - 1]
-						: null;
-				ActivePanel = anterior ?? 7;
-			}
-			else
-			{
-				ActivePanel = posicionPanel;
-				ActivePanel--;
-			}
-			//await GuardarInformacionDeFaltasTemporales();
-		}
-
 		public async Task GuardarInformacionDeFaltasTemporales()
 		{
 			try
@@ -876,20 +561,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 				FaltasDeServidoresPublicosG.IdTipoAmonestacionFK = FaltasDeServidoresPublicosG?.TipoAmonestacion?.IdTipoAmonestacion;			
 			}
 		}
-
-		private async Task OpenDialogAsync()
-		{
-			var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.Small, BackdropClick = false };
-
-			var dialog = await DialogService.ShowAsync<ModalFinalizarRegistroFaltasSPG>("Finalizar registro", options);
-			var result = await dialog.Result;
-
-			if (!result.Canceled)
-			{
-				await ActualizarInformacionDeFaltasTemporales(true);
-			}
-		}
-
+	
 		private async Task MostrarModalDeCancelarRegistro()
 		{
 			var options = new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, MaxWidth = MaxWidth.Small, BackdropClick = false };
@@ -911,14 +583,14 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 		{
 			try
 			{
-				var token = await AuthService.GetTokenAsync();
+				FaltasDeServidoresPublicosG.Token = await AuthService.GetTokenAsync();
 
 				//Console.WriteLine($" token {token}");
 
-				if (!string.IsNullOrEmpty(token))
+				if (!string.IsNullOrEmpty(FaltasDeServidoresPublicosG.Token))
 				{
 					TokenResponse tokenUsuario = new();
-					tokenUsuario.Token = token;
+					tokenUsuario.Token = FaltasDeServidoresPublicosG.Token;
 					AutenticacionResponse informacionPerfil = await AuthService.ConsultarInformacionPerfil(tokenUsuario);
 					if (informacionPerfil.Usuario is not null)
 					{

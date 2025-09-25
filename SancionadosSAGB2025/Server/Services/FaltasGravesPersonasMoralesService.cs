@@ -1,4 +1,6 @@
-﻿using SancionadosSAGB2025.Shared.Moral;
+﻿using SancionadosSAGB2025.Shared;
+using SancionadosSAGB2025.Shared.Catalogos;
+using SancionadosSAGB2025.Shared.Moral;
 using SancionadosSAGB2025.Shared.Registros;
 using SancionadosSAGB2025.Shared.Sanciones;
 using System.Text;
@@ -7,48 +9,57 @@ using static System.Net.WebRequestMethods;
 
 namespace SancionadosSAGB2025.Server.Services
 {
-    public class FaltasGravesPersonasMoralesService(HttpClient httpClient)
+    public class FaltasGravesPersonasMoralesService(HttpClient httpClient, IConfiguration configuration)
     {
-        public async Task<RespuestaRegistroFaltasGravesPersonasMorales> AgregarFaltasGravesPersonasMorales(PersonaMoralEntidad addFaltasGravesPersonasFisicas)
-        {      
+        public async Task<RespuestaRegistroFaltasGravesPersonasMorales> AgregarFaltasGravesPersonasMorales(PersonaMoralEntidad addFaltasGravesPersonasMorales)
+        {
 
-            var json = JsonSerializer.Serialize(addFaltasGravesPersonasFisicas, new JsonSerializerOptions
+            var json = JsonSerializer.Serialize(addFaltasGravesPersonasMorales, new JsonSerializerOptions
             {
-                WriteIndented = true // Opcional: para que sea más legible
+                WriteIndented = true
             });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");          
-            var response = await httpClient.PostAsJsonAsync($"FGPMD/AddAsync", addFaltasGravesPersonasFisicas);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "FGPMD/AddAsync")
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", addFaltasGravesPersonasMorales.Token);
+
+            var response = await httpClient.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"⚠️ Error en la API: {response.StatusCode}");
                 Console.WriteLine(errorContent);
+                return null;
             }
-
             var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasMorales>();
-
             if (result?.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)
             {
                 result.Response = true;
             }
-
             return result;
+           
         }
 
-        public async Task<List<PersonaMoralEntidad>> ObtenerFaltasGravesPersonasMorales()
+        public async Task<List<PersonaMoralEntidad>> ObtenerFaltasGravesPersonasMorales(string token)
         {
             try
             {
-                var response = await httpClient.PostAsync($"FGPMD/Get", null);
+                var request = new HttpRequestMessage(HttpMethod.Get, "FGPMD/Get");
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",token);
+
+                var response = await httpClient.SendAsync(request);
 
                 if (!response.IsSuccessStatusCode)
                     return null;
 
-                var wrapper = await response.Content.ReadFromJsonAsync<List<PersonaMoralEntidad>>();
-
-                // var faltas = wrapper?.Data ?? new(); // Aquí tienes tu lista real
-                return wrapper.Where(falta => falta.Activo == 1).ToList(); 
-                //return result;
+                var result = await response.Content.ReadFromJsonAsync<List<PersonaMoralEntidad>>();
+                return result.Where(falta => falta.Activo == 1).ToList();
+              
             }
             catch (Exception ex)
             {
