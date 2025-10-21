@@ -36,6 +36,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private List<Sexo> Sexos { get; set; } = new();
 		private List<TipoSancion> TipoSancionClaves { get; set; } = new();
 
+
         private List<TipoVialidad> TiposVialidades { get; set; } = new();
 		private List<PaisCat> Paises { get; set; } = new();
 		private IEnumerable<string> _options { get; set; } = new HashSet<string>();
@@ -77,17 +78,14 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
 		private bool inhabilitacion { get; set; } = false;
         protected override async Task OnInitializedAsync()
 		{
-            if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico != null && IsEditMode != (int)TipoVistaComponentes.Agregar)
-                TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
-            else if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero != null && IsEditMode != (int)TipoVistaComponentes.Agregar)
+                   if (FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioExtranjero != null && FaltasDeServidoresPublicosG.DatosGenerales.IdDomicilioExtranjeroFK is not null)
                 TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
+                else if(FaltasDeServidoresPublicosG?.DatosGenerales?.DomicilioMexico != null && FaltasDeServidoresPublicosG.DatosGenerales.IdDomicilioMexicoFK is not null)
+                TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;       
+
             await ObtenerCatalogosFormulario();          
                 await InicializarVariables();
-		}
-        void Fecha()
-        {
-            expediente = true;
-        }
+		}       
         private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
         {
             if (arg.Action == StepAction.Complete)
@@ -468,10 +466,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasFísicas.Co
                             AmbitoPublico = CatalogosBD.AmbitoPublico!;
                             OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
                             NivelJerarquico = CatalogosBD.NivelJerarquico!;
-                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
+                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
                             Sexos = CatalogosBD.Sexo!;
+                            TiposVialidades = CatalogosBD.TipoVialidad!;
                             ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                           // TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 || c.Bandera == 1).ToList();
+                            Paises = CatalogosBD.Paises!;
+                            // TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 || c.Bandera == 1).ToList();
                             TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 11 && c.IdTipoSancionCat != 1 && c.IdTipoSancionCat != 2 || c.Bandera == 1 ||  c.Bandera == 3).ToList();
                             TipoMonedas = CatalogosBD.Monedas!;
                         }

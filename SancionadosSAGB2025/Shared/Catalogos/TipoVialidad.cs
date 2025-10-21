@@ -9,7 +9,7 @@ namespace SancionadosSAGB2025.Shared.Catalogos
 	public class TipoVialidad : ICatalogo
 	{
 		public int? IdTipoVialidad { set; get; }
-		public string Descripcion { get; set; } = string.Empty;
+		public string? Descripcion { set; get; } = string.Empty;
 		public DateTime? FechaCreacion { get; set; }
 		public DateTime? FechaModificacion { get; set; }
 		public int? Activo { get; set; }

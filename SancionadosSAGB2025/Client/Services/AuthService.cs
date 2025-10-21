@@ -1,10 +1,12 @@
 ﻿using Blazored.LocalStorage;
 using Intersoft.Crosslight.Mobile;
 using Microsoft.AspNetCore.Components;
+using SancionadosSAGB2025.Client.Shared.Extensiones;
 using SancionadosSAGB2025.Shared.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using SancionadosSAGB2025.Client.Shared.Extensiones;
 using System.Security.Claims;
 
 namespace SancionadosSAGB2025.Client.Services
@@ -34,7 +36,7 @@ namespace SancionadosSAGB2025.Client.Services
 
 			if (result != null && !string.IsNullOrEmpty(result.Token))
 			{
-				await _localStorage.SetItemAsync("authToken", result.Token);
+                await _localStorage.SetItemAsync("authToken", result.Token);
 				_http.DefaultRequestHeaders.Authorization =
 					new AuthenticationHeaderValue("Bearer", result.Token);
 

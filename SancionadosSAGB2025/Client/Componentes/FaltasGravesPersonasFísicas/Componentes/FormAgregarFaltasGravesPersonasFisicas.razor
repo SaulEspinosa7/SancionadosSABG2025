@@ -257,15 +257,17 @@
                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver" />
                         </MudItem>
                         <MudItem xs="4">
-                            <MudSelect @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioExtranjero.Pais"
+                            <MudSelect T="int?"
+                                       @bind-Value="FaltasDeServidoresPublicosG.DatosGenerales.DomicilioExtranjero.IdPaisFK"
                                        Label="PAÍS"
                                        Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                       HelperText="Seleccionar el pais en donde se realizó la falta.">
+                                       HelperText="Seleccionar el país en donde se realizó la falta.">
                                 @foreach (var pais in Paises)
                                 {
-                                    <MudSelectItem Value="@pais.codigoISO">@pais.nombrePais</MudSelectItem>
+                                    <MudSelectItem Value="@((int?)pais.id)">@pais.nombrePais</MudSelectItem>
                                 }
                             </MudSelect>
+
                         </MudItem>
                     }
                 </MudGrid>
@@ -371,15 +373,11 @@
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    Label="Tipo de Falta Cometida"
                                    HelperText="Seleccionar del catálogo la (s) falta (s) cometida (s) por la persona servidora pública. Se podrán elegir de las siguientes opciones:">
-                            @foreach (var falta in FaltasCometidas)
+                            @foreach (var falta in FaltasCometidas.OrderBy(x => x.Descripcion).ToList())
                             {
                                 <MudSelectItem Value="@falta.Descripcion">@falta.Descripcion</MudSelectItem>
                             }
-                        </MudSelect>
-                        @if (!(_optionsFaltaComedia ?? Enumerable.Empty<string>()).Any())
-                        {
-                            <MudText Typo="Typo.caption" Color="Color.Error">El campo de Tipo de Falta Cometida es obligatorio.</MudText>
-                        }
+                        </MudSelect>                     
                     </MudItem>
 
                     @if ((_optionsFaltaComedia ?? Enumerable.Empty<string>()).Contains("OTRO (Especifique)"))
@@ -387,8 +385,8 @@
                         <MudItem xs="6">
                             <MudTextField @bind-value="FaltasDeServidoresPublicosG!.FaltaCometida!.Valor"
                                           Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                          Required="!modoVista"
-                                          label="Valor"
+                                          Required="!modoVista"                                          
+                                          RequiredError="El campo de OTRO es obligatorio."
                                           helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el el tipo de falta cometida por parte de la persona servidora pública sancionada."
                                           UserAttributes="@(new Dictionary<string, object> { ["id"] = "ValorFaltaCometidaInput" })" />
                         </MudItem>
@@ -508,8 +506,7 @@
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       label="AUTORIDAD RESOLUTORA"
                                       required="!modoVista"
-                                      RequiredError="El campo Autoridad Resolutora es obligatorio."
-                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadResolutoraInput" })"
+                                      RequiredError="El campo Autoridad Resolutora es obligatorio."                                    
                                       helpertext="Indicar el nombre de la autoridad facultada para dictar la sanción" />
                     </MudItem>
                     <MudItem xs="4">
@@ -517,8 +514,7 @@
                                       label="AUTORIDAD INVESTIGADORA"
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       required="!modoVista"
-                                      RequiredError="El campo Autoridad Investigadora es obligatorio."
-                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadInvestigadoraInput" })"
+                                      RequiredError="El campo Autoridad Investigadora es obligatorio."                               
                                       helpertext="Especificar el nombre de la autoridad encargada de la investigación de la falta administrativa grave." />
                     </MudItem>
                     <MudItem xs="4">
@@ -526,8 +522,7 @@
                                       label="AUTORIDAD SUBSTANCIADORA"
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       required="!modoVista"
-                                      RequiredError="El campo Autoridad Substanciadora es obligatorio."
-                                      UserAttributes="@(new Dictionary<string, object> { ["id"] = "autoridadSubstanciadoraInput" })"
+                                      RequiredError="El campo Autoridad Substanciadora es obligatorio."                    
                                       helpertext="Señalar el nombre de la autoridad substanciadora del procedimiento." />
                     </MudItem>
                 </MudGrid>
@@ -680,7 +675,7 @@
                                     </MudSelect>
                                 </MudItem>
                                 <MudItem xs="6">
-                                    <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Indeminizacion.IndeminizacionECobrada!.FechaCobroSancion" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
+                                    <MudDatePicker Label="FECHA DE COBRO DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Indeminizacion.IndeminizacionECobrada!.FechaCobroSancion" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                 </MudItem>
                                 <MudItem xs="6">
                                     <MudDatePicker Label="FECHA EN LA QUE SE REALIZÓ EL PAGO TOTAL DE LA INDEMNIZACIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.Indeminizacion.IndeminizacionECobrada!.FechaPagoTotalS" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
@@ -779,6 +774,7 @@
                                 <MudItem xs="4">
                                     <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica.SancionEfectivamenteCobrada!.IdMonedaFK"
                                                Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
+                                               T="int?"
                                                Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                                RequiredError="El campo Moneda es obligatorio."
                                                HelperText="Elegir el tipo de moneda:">

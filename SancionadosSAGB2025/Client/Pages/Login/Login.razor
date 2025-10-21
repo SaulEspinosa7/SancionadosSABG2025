@@ -1,10 +1,14 @@
 ﻿@page "/"
 @page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
 @using SancionadosSAGB2025.Shared.Login
 @using MudBlazor
 @using MudBlazor.Components
 @using SancionadosSAGB2025.Client.Services;
+@using SancionadosSAGB2025.Client.Shared.Extensiones
 @inject AuthService AuthService
+@inject HttpClient Http
+@inject AuthenticationStateProvider autenticacionProvider
 
 <style>
     .login-wrapper {

@@ -92,11 +92,12 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                 if (personaMoralEntidadVistaEdicion is not null)
                 {
                     _modelo = personaMoralEntidadVistaEdicion;
-                    if (_modelo?.DatosGenerales?.DomicilioMexico != null)
-                        TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
-                    else if (_modelo?.DatosGenerales?.DomicilioExtranjero != null)
+                    if (_modelo?.DatosGenerales?.DomicilioExtranjero != null && _modelo.DatosGenerales.IdDomicilioExtranjeroFK is not null)
                         TipoDomicilioSeleccionado = TipoDomiclio.EXTRANJERO;
-                }             
+                    else if (_modelo?.DatosGenerales?.DomicilioMexico != null && _modelo.DatosGenerales.IdDomicilioMexicoFK is not null)
+                        TipoDomicilioSeleccionado = TipoDomiclio.MEXICO;
+
+                }
 
                 _modelo.Otro ??= new Otro();
                 await ObtenerCatalogosFormulario();
@@ -157,7 +158,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasGravesPersonasMorales.Com
                             AmbitoPublico = CatalogosBD.AmbitoPublico!;
                             OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
                             NivelJerarquico = CatalogosBD.NivelJerarquico!;
-                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
+                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 3).ToList();
                             Sexos = CatalogosBD.Sexo!;
                             TiposVialidades = CatalogosBD.TipoVialidad!;
                             ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;

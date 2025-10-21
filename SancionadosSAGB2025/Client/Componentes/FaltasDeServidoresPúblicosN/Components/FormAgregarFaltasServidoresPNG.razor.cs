@@ -36,7 +36,7 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
 		private List<OrigenProcedimientoEntidad> ListaOrigenesInvestigacion { get; set; } = new();
 		private List<Sexo> Sexos { get; set; } = new();
 		private List<TipoSancion> TipoSancionClaves { get; set; } = new();
-		private List<TipoAmonestacion> TiposAmonestacion { get; set; } = new();
+		private List<TipoAmonestacion> TiposAmonestaciones { get; set; } = new();
 		private IEnumerable<string> _options { get; set; } = new HashSet<string>();
         private MudForm? _formFecha;
         private MudForm? _formExpediente;
@@ -314,10 +314,10 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
                 else
                 {
                     bool guardado = await GuardarTemporal();
-                    if (guardado && FaltasDeServidoresPublicosG is null)
+                    if (guardado && FaltasDeServidoresPublicosG is not null)
                     {
                         Snackbar.Add("REGISTRO GUARDADO CORRECTAMENTE", Severity.Success);
-                        Navigation.NavigateTo("/BuscarServidoresPublicosGravesFisica");
+                        Navigation.NavigateTo("/BuscarServidoresPúblicosNoGraves");
                     }
                     else
                     {
@@ -441,10 +441,11 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN.Co
                             AmbitoPublico = CatalogosBD.AmbitoPublico!;
                             OrdenJurisdiccional = CatalogosBD.OrdenJurisdiccional!;
                             NivelJerarquico = CatalogosBD.NivelJerarquico!;
-                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 0 || c.Bandera == 1).ToList();
+                            FaltasCometidas = CatalogosBD.FaltaCometidas!.Where(c => c.Bandera == 2).ToList();
                             Sexos = CatalogosBD.Sexo!;
                             ListaOrigenesInvestigacion = CatalogosBD.OrigenProcedimiento!;
-                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 1).ToList();
+                            TiposAmonestaciones = CatalogosBD.TipoAmonestacion!;
+                            TipoSancionClaves = CatalogosBD.TipoSancion!.Where(c => c.Bandera == 0 && c.IdTipoSancionCat != 4 || c.Bandera == 2).ToList();
                             TipoMonedas = CatalogosBD.Monedas!;
                         }
                         Console.WriteLine($" CatalogosBD {CatalogosBD.TipoVialidad}");

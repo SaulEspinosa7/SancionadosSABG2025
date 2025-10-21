@@ -27,7 +27,7 @@ namespace SancionadosSAGB2025.Server.Controllers
 			if (usuario == null)
 				return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
-			return Ok(new { usuario.Token });
+			return Ok(usuario);
 		}
 
 		[HttpPost("consultarInformacionPerfil")]

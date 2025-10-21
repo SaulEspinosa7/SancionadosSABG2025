@@ -1,14 +1,22 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using SancionadosSAGB2025.Client.Shared.Extensiones;
 using SancionadosSAGB2025.Shared.Login;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace SancionadosSAGB2025.Client.Pages.Login
 {
 	partial class Login
 	{
 		private LoginModel loginModel { set; get; } = new();
+        [Inject]
+        private ILocalStorageService localStorageService { get; set; } = default!;
 
-		private bool MostrarSpinner { get; set; }
+
+        private bool MostrarSpinner { get; set; }
 
 		// Nuevas variables para el diseño y la validación
 		private MudForm form; // Para validar el formulario
@@ -19,20 +27,14 @@ namespace SancionadosSAGB2025.Client.Pages.Login
 		private string errorMessage = string.Empty; // Para mostrar mensajes de error específicos
 
 		// Tus servicios inyectados
-		[Inject] private HttpClient Http { get; set; }
+
 		[Inject] private NavigationManager Navigation { get; set; }
 		[Inject] private ISnackbar Snackbar { get; set; }
 
-		// Tu lógica existente para OnInitializedAsync
-		protected override async Task OnInitializedAsync()
-		{
+       
 
-			// Aquí podrías inicializar MostrarSpinner si lo necesitas al cargar la página
-			// MostrarSpinner = true; // Por ejemplo, si hay una carga inicial
-		}
-
-		// Nueva función para alternar la visibilidad de la contraseña
-		private void TogglePasswordVisibility()
+        // Nueva función para alternar la visibilidad de la contraseña
+        private void TogglePasswordVisibility()
 		{
 			showPassword = !showPassword;
 		}
@@ -52,12 +54,23 @@ namespace SancionadosSAGB2025.Client.Pages.Login
 
 			try
 			{
-				var isSuccess = await AuthService.LoginAsync(loginModel);
-				if (isSuccess)
-				{
-					//Snackbar.Add("Inicio de sesión exitoso!", Severity.Success);
+				//var isSuccess = await AuthService.LoginAsync(loginModel);
+                var response = await Http.PostAsJsonAsync("api/login/Authenticate", loginModel);
+
+                if (!response.IsSuccessStatusCode)
+                    return;
+
+                var result = await response.Content.ReadFromJsonAsync<AutenticacionResponse>();
+
+                if (result != null && !string.IsNullOrEmpty(result.Token))
+                {
+                    var autenticacionExt = (AutenticacionExtension)autenticacionProvider;
+                    await autenticacionExt.ActualizarEstadoAutenticacion(result);
+					await localStorageService.SetItemAsync("authToken", result.Token);
+					Http.DefaultRequestHeaders.Authorization =
+						new AuthenticationHeaderValue("Bearer", result.Token);
 					Navigation.NavigateTo("/dashboard");
-				}
+                }   
 				else
 				{
 					errorMessage = "El nombre de usuario o contraseña es incorrecto";

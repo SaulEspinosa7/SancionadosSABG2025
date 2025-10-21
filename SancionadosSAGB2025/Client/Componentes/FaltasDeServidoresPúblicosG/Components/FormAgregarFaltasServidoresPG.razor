@@ -98,6 +98,7 @@
                                       label="CURP"
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       required="!modoVista"
+                                      For="@(() => FaltasDeServidoresPublicosG.DatosGenerales.Curp!)"
                                       RequiredError="El campo Curp es obligatorio."
                                       MaxLength="18"
                                       helpertext="Escribir los dieciocho caracteres alfanuméricos como aparece en el documento que emite la Secretaría de Gobernación."
@@ -107,6 +108,7 @@
                         <MudTextField @bind-value="FaltasDeServidoresPublicosG.DatosGenerales.Rfc"
                                       label="RFC CON HOMOCLAVE"
                                       required="!modoVista"
+                                      For="@(() => FaltasDeServidoresPublicosG.DatosGenerales.Rfc!)"
                                       MaxLength="13"
                                       Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                       RequiredError="El campo RFC es obligatorio."
@@ -140,12 +142,12 @@
                         <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.EmpleoCargoComision!.IdEntidadFederativaFK"
                                    Label="ENTIDAD FEDERATIVA"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                   required="!modoVista"
+                                   required="!modoVista"         
                                    RequiredError="El campo de Entidad Federativa es obligatorio."
                                    HelperText="Seleccionar la entidad federativa donde se ubica el Ente público donde labora o laboraba la persona servidora pública sancionada, al momento de cometer la falta administrativa. ">
                             @foreach (var entidad in EntidadesFederativas)
                             {
-                                <MudSelectItem Value="@entidad.IdEntidadFederativa">@entidad.Descripcion</MudSelectItem>
+                                <MudSelectItem T="int?" Value="@entidad.IdEntidadFederativa">@entidad.Descripcion</MudSelectItem>
                             }
                         </MudSelect>                      
                     </MudItem>
@@ -214,7 +216,7 @@
                             }
                         </MudSelect>                        
                     </MudItem>
-                    @if (FaltasDeServidoresPublicosG!.NivelJerarquico?.Clave?.Descripcion?.Contains("OTRO (Especifique)") == true)
+                    @if (FaltasDeServidoresPublicosG!.NivelJerarquico?.IdNivelJerarquicoFK == 10)
                     {
                         <MudItem xs="4">
                             <MudTextField @bind-value="FaltasDeServidoresPublicosG!.NivelJerarquico!.Valor"
@@ -253,6 +255,7 @@
                         <MudSelect T="int?"
                                    @bind-Value="FaltasDeServidoresPublicosG.OrigenProcedimiento.IdOrigenProcedimientoCatFK"
                                    Label="Clave"
+                                   Required="!modoVista"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    HelperText="Se deberá señalar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave.">
 
@@ -396,7 +399,7 @@
                                             Si al momento de registrar la información la autoridad no cuenta con el dato señalado en el presente numeral, esta podrá registrarse posteriormente mediante una actualización de su registro." />
                     </MudItem>
                     <MudItem xs="4">
-                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Resolucion!.OrdenJurisdiccional"
+                        <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.Resolucion!.IdOrdenJurisdiccionalFK"
                                    Label="ORDEN JURISDICCIONAL"
                                    Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
                                    required="!modoVista"
@@ -406,7 +409,7 @@
                             {
                                 @foreach (var orden in OrdenJurisdiccional)
                                 {
-                                    <MudSelectItem Value="@orden">@orden.Descripcion</MudSelectItem>
+                                    <MudSelectItem Value="@orden.Id">@orden.Descripcion</MudSelectItem>
                                 }
                             }
 
@@ -590,19 +593,17 @@
                                     <b>SANCIÓN ECONÓMICA EFECTIVAMENTE COBRADA</b>
                                 </MudItem>
                                 <MudItem xs="4">
-                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG!.SancionEconomica!.SancionEfectivamenteCobrada.Monto"
+                                    <MudNumericField @bind-value="FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada.Monto"
                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                                  label="MONTO"
-                                                     HideSpinButtons="false"
-                                                  required="!modoVista"
+                                                  label="MONTO"                                                 
+                                                  HideSpinButtons="false"                                                 
                                                   RequiredError="El campo Monto es obligatorio."
                                                   helpertext="Colocar el monto total de la sanción económica." />
                                 </MudItem>                        
                                     <MudItem xs="4">
                                         <MudSelect @bind-Value="FaltasDeServidoresPublicosG!.SancionEconomica!.SancionEfectivamenteCobrada.IdMonedaFK"
                                                    Label="MONEDA (Ejemplo: MXN de acuerdo con el ISO 4217)"
-                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"
-                                                   required="!modoVista"
+                                                   Disabled="IsEditMode == (int)TipoVistaComponentes.Ver"                                               
                                                    RequiredError="El campo Moneda es obligatorio."
                                                    HelperText="Elegir el tipo de moneda:">
                                             @foreach (var moneda in TipoMonedas)
@@ -616,7 +617,7 @@
                                     <MudDatePicker Label="FECHA DE COBRO DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada!.FechaCobro" Disabled="modoVista" helpertext="Especificar la fecha en que se realizó el cobro de la sanción económica." />
                                 </MudItem>
                                 <MudItem xs="6">
-                                    <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
+                                    <MudDatePicker Label="FECHA EN QUE SE REALIZÓ EL PAGO TOTAL DE LA SANCIÓN (DD-MM-AAAA)" @bind-Date="FaltasDeServidoresPublicosG.SancionEconomica!.SancionEfectivamenteCobrada!.FechaPagoTotal" Disabled="modoVista" helpertext="Especificar la fecha en que la persona servidora pública cubrió el pago total de la sanción económica." />
                                 </MudItem>
                             
                             </MudGrid>

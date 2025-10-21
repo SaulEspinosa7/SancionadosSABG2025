@@ -34,9 +34,11 @@ namespace SancionadosSAGB2025.Shared.Sanciones
         public string? SegundoApellido { get; set; }
 
         [CurpValidation(ErrorMessage = "La CURP debe contener 18 caracteres")]
+        [RegularExpression(@"\b[A-Z][A,E,I,O,U,X][A-Z]{2}[0-9]{2}[0-1][0-9][0-3][0-9][M,H][A-Z]{2}[B,C,D,F,G,H,J,K,L,M,N,Ñ,P,Q,R,S,T,V,W,X,Y,Z]{3}[0-9,A-Z][0-9]$", ErrorMessage = "CURP no valido")]
         public string? Curp { get; set; }
 
         [JsonPropertyName("rfc")]
+        [RfcValidationCharactersFisica(ErrorMessage = "El RFC no es válido")]
         public string? Rfc { get; set; }
 
         [JsonPropertyName("idSexoFk")]
@@ -63,10 +65,12 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 		public string? SegundoApellido { get; set; }
 
         [CurpValidation(ErrorMessage = "La CURP debe contener 18 caracteres")]
+        [RegularExpression(@"\b[A-Z][A,E,I,O,U,X][A-Z]{2}[0-9]{2}[0-1][0-9][0-3][0-9][M,H][A-Z]{2}[B,C,D,F,G,H,J,K,L,M,N,Ñ,P,Q,R,S,T,V,W,X,Y,Z]{3}[0-9,A-Z][0-9]$", ErrorMessage = "CURP no valido")]
         public string? Curp { get; set; }
 
 		[JsonPropertyName("rfc")]
-		public string? Rfc { get; set; }
+        [RfcValidationCharactersFisica(ErrorMessage = "El RFC no es válido")]
+        public string? Rfc { get; set; }
 
 		[JsonPropertyName("idSexoFk")]
 		public int? IdSexoFk { set; get; }
@@ -161,9 +165,9 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 
     public class EmpleoCargoComision
 	{
-		[JsonPropertyName("id")]
-		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public int? Id { get; set; }
+        [JsonPropertyName("Id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? Id { get; set; }
 
 		[JsonPropertyName("idEntidadFederativaFK")]
 		public int? IdEntidadFederativaFK { set; get; }
@@ -402,10 +406,10 @@ namespace SancionadosSAGB2025.Shared.Sanciones
 	{
 		public int? Id { get; set; }
 		public decimal? Monto { get; set; }
-		public int? IdMonedaFK { get; set; }
-		public MonedaCat? Moneda { get; set; } = new();
-		public DateTime? FechaCobro { get; set; }
-		public DateTime? FechaPagoTotal { get; set; }
+		public int? IdMonedaFK { get; set; } 
+        public MonedaCat? Moneda { get; set; } = new();
+		public DateTime? FechaCobro { get; set; } = null;
+        public DateTime? FechaPagoTotal { get; set; } = null;
     }
 
     public class SancionEconomicaMoral

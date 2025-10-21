@@ -18,11 +18,11 @@ namespace SancionadosSAGB2025.Shared.Login
 
 	public class AutenticacionResponse
 	{
-		public bool Autenticado { get; set; }
-		public string Mensaje { get; set; }
-		public Usuario Usuario { get; set; }
-		public string Token { get; set; }
-	}
+		public bool? Autenticado { get; set; }
+		public string? Mensaje { get; set; } = string.Empty;
+        public Usuario? Usuario { get; set; } = new Usuario();
+        public string? Token { get; set; } = string.Empty;
+    }
 	public class TokenResponse
 	{
 		public string Token { get; set; }
@@ -31,12 +31,12 @@ namespace SancionadosSAGB2025.Shared.Login
 	public class Usuario
 	{
 		public int Id { get; set; }
-		public string Nombre { get; set; }
-		public string User { get; set; }
-		public string Password { get; set; }
-		public DateTime FechaRegistro { get; set; }
-		public DateTime FechaActualizacion { get; set; }
-		public int Activo { get; set; }
+		public string? Nombre { get; set; } = string.Empty;
+		public string? User { get; set; } = string.Empty;
+		public string? Password { get; set; } = string.Empty;
+		public DateTime? FechaRegistro { get; set; }
+		public DateTime? FechaActualizacion { get; set; }
+		public int? Activo { get; set; }
 	}
 
 }

@@ -84,8 +84,13 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 					faltasDeServidoresPublicosGs = result;
 					Elements = result;
 				}
-				else
-				{
+				else if (result.Count() == 0)
+				{				
+					faltasDeServidoresPublicosGs = new List<FaltasGravesEntidad>();
+					Elements = new List<FaltasGravesEntidad>();
+				}
+                else
+                {
 					Snackbar.Add("Hubo un error al guardar la información previa.", Severity.Error);
 					//Snackbar.Add("Se guardó la información previa.", Severity.Success);
 					//RespuestaRegistro = result!;

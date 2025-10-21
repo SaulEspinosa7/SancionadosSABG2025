@@ -224,15 +224,16 @@
                                                                  label="CÓDIGO POSTAL" />
                                             </MudItem>
                                             <MudItem xs="4">
-                                                <MudSelect @bind-Value="_modelo.DatosGenerales.DomicilioExtranjero.Pais"
-                                                           Disabled="modoVista"
-                                                           Label="PAÍS"
-                                                           HelperText="Seleccionar el pais en donde se realizó la falta.">
-                                                    @foreach (var pais in Paises)
-                                                    {
-                                                        <MudSelectItem Value="@pais.codigoISO">@pais.nombrePais</MudSelectItem>
-                                                    }
-                                                </MudSelect>
+                                            <MudSelect T="int?"
+                                                       @bind-Value="_modelo.DatosGenerales.DomicilioExtranjero.IdPaisFK"
+                                                       Label="PAÍS"
+                                                       Disabled="modoVista"
+                                                       HelperText="Seleccionar el país en donde se realizó la falta.">
+                                                @foreach (var pais in Paises)
+                                                {
+                                                    <MudSelectItem Value="@((int?)pais.id)">@pais.nombrePais</MudSelectItem>
+                                                }
+                                            </MudSelect>
                                             </MudItem>
                                         }
 
@@ -433,6 +434,7 @@
                                             <MudItem xs="6">
                                                 <MudTextField @bind-value="_modelo!.OrigenProcedimiento!.Valor"
                                                               Disabled="modoVista"
+                                                              Required="!modoVista"
                                                               label="Valor"
                                                               helpertext="En caso de seleccionar la opción OTRO, se deberá especificar el motivo que dio origen a la investigación por la comisión de la falta administrativa grave." />
                                             </MudItem>

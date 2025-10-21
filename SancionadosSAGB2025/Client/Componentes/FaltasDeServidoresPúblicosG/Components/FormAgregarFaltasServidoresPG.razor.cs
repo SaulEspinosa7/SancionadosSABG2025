@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
+using SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosN;
 using SancionadosSAGB2025.Client.Services;
 using SancionadosSAGB2025.Client.Shared.Partial.Dialog;
 using SancionadosSAGB2025.Shared;
@@ -69,11 +70,17 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
 
         protected override async Task OnInitializedAsync()
 		{
-            await ObtenerCatalogosFormulario();          
+            await ObtenerCatalogosFormulario();  
+           
             if (IsEditMode != (int)TipoVistaComponentes.Agregar)
                 FaltasDeServidoresPublicosG.DatosGenerales ??= new();
-        }
 
+        }
+        protected override async Task OnParametersSetAsync()
+        {
+            FaltasDeServidoresPublicosG.SancionEconomica ??= new SancionEconomica();
+            FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada ??= new();
+        }
         private async Task OnPreviewInteraction(StepperInteractionEventArgs arg)
         {
             if (arg.Action == StepAction.Complete)
@@ -445,20 +452,20 @@ namespace SancionadosSAGB2025.Client.Componentes.FaltasDeServidoresPúblicosG.Co
             Ver,
             Actualizar
         }
-        private async Task MostrarOpcionCatalogos()
-        {
+        //private async Task MostrarOpcionCatalogos()
+        //{
 
-            FaltasDeServidoresPublicosG.DatosGenerales!.Sexo = Sexos.FirstOrDefault(x => x.IdSexo == FaltasDeServidoresPublicosG.DatosGenerales.IdSexoFk);
-            FaltasDeServidoresPublicosG.EmpleoCargoComision!.EntidadFederativa = EntidadesFederativas.FirstOrDefault(x => x.IdEntidadFederativa == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdEntidadFederativaFK);
-            FaltasDeServidoresPublicosG.EmpleoCargoComision!.NivelOrdenGobierno = NivelOrdenGobierno.FirstOrDefault(x => x.IdNivelOrdenGobierno == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdNivelOrdenGobiernoFK);
-            FaltasDeServidoresPublicosG.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdAmbitoPublicoFK);
-            FaltasDeServidoresPublicosG.NivelJerarquico!.Clave = NivelJerarquico.FirstOrDefault(x => x.IdNivelJerarquicoCat == FaltasDeServidoresPublicosG.NivelJerarquico.IdNivelJerarquicoFK);
-            FaltasDeServidoresPublicosG.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == FaltasDeServidoresPublicosG.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
-            FaltasDeServidoresPublicosG.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == FaltasDeServidoresPublicosG.Resolucion.IdOrdenJurisdiccionalFK);
-            FaltasDeServidoresPublicosG.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEconomica.IdMonedaFK);
-            FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada.IdMonedaFK);
-        }
-  
+        //    FaltasDeServidoresPublicosG.DatosGenerales!.Sexo = Sexos.FirstOrDefault(x => x.IdSexo == FaltasDeServidoresPublicosG.DatosGenerales.IdSexoFk);
+        //    FaltasDeServidoresPublicosG.EmpleoCargoComision!.EntidadFederativa = EntidadesFederativas.FirstOrDefault(x => x.IdEntidadFederativa == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdEntidadFederativaFK);
+        //    FaltasDeServidoresPublicosG.EmpleoCargoComision!.NivelOrdenGobierno = NivelOrdenGobierno.FirstOrDefault(x => x.IdNivelOrdenGobierno == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdNivelOrdenGobiernoFK);
+        //    FaltasDeServidoresPublicosG.EmpleoCargoComision!.AmbitoPublico = AmbitoPublico.FirstOrDefault(x => x.IdAmbitoPublico == FaltasDeServidoresPublicosG.EmpleoCargoComision.IdAmbitoPublicoFK);
+        //    FaltasDeServidoresPublicosG.NivelJerarquico!.Clave = NivelJerarquico.FirstOrDefault(x => x.IdNivelJerarquicoCat == FaltasDeServidoresPublicosG.NivelJerarquico.IdNivelJerarquicoFK);
+        //    FaltasDeServidoresPublicosG.OrigenProcedimiento!.Clave = ListaOrigenesInvestigacion.FirstOrDefault(x => x.IdOrigenProcedimiento == FaltasDeServidoresPublicosG.OrigenProcedimiento.IdOrigenProcedimientoCatFK);
+        //    FaltasDeServidoresPublicosG.Resolucion!.OrdenJurisdiccional = OrdenJurisdiccional.FirstOrDefault(x => x.Id == FaltasDeServidoresPublicosG.Resolucion.IdOrdenJurisdiccionalFK);
+        //    FaltasDeServidoresPublicosG.SancionEconomica.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEconomica.IdMonedaFK);
+        //    FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada.Moneda = TipoMonedas.FirstOrDefault(x => x.IdMoneda == FaltasDeServidoresPublicosG.SancionEconomica.SancionEfectivamenteCobrada.IdMonedaFK);
+        //}
+
 
         private async Task ObtenerCatalogosFormulario()
 		{

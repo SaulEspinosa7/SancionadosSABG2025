@@ -17,7 +17,7 @@ namespace SancionadosSAGB2025.Server.Services
 
 		public async Task<RespuestaRegistroFaltasGravesPersonasFisicas> AgregarFaltasGravesPersonasFisicas(AddFaltasGravesPersonasFisicas addFaltasGravesPersonasFisicas)
 		{
-			addFaltasGravesPersonasFisicas = await ConstruirFaltasGravesPersonasFisicas(addFaltasGravesPersonasFisicas);
+			//addFaltasGravesPersonasFisicas = await ConstruirFaltasGravesPersonasFisicas(addFaltasGravesPersonasFisicas);
             var json = JsonSerializer.Serialize(addFaltasGravesPersonasFisicas, new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -37,9 +37,8 @@ namespace SancionadosSAGB2025.Server.Services
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"⚠️ Error en la API: {response.StatusCode}");
-                Console.WriteLine(errorContent);
-                return null;
+                var respuestaerror = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasFisicas>();              
+                return respuestaerror;
             }
             var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasFisicas>();
             if (result.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)

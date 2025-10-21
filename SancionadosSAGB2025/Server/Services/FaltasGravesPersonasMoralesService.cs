@@ -32,9 +32,8 @@ namespace SancionadosSAGB2025.Server.Services
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"⚠️ Error en la API: {response.StatusCode}");
-                Console.WriteLine(errorContent);
-                return null;
+                var respuestaerror = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasMorales>();              
+                return respuestaerror;
             }
             var result = await response.Content.ReadFromJsonAsync<RespuestaRegistroFaltasGravesPersonasMorales>();
             if (result?.Mensaje?.Contains("REGISTRO ELIMINADO CORRECTAMENTE") == true)

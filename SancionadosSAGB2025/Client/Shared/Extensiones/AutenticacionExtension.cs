@@ -5,147 +5,161 @@ using SancionadosSAGB2025.Shared.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace SancionadosSAGB2025.Client.Shared.Extensiones
 {
-    //public class AutenticacionExtension : AuthenticationStateProvider
-    //{
-    //    private readonly ILocalStorageService _sessionStorage;
-    //    private readonly IConfiguration _configuration;
-    //    private readonly NavigationManager navigationManager;
-    //    private readonly HttpClient _httpclient;
-    //    private ClaimsPrincipal _sinInformacion = new ClaimsPrincipal(new ClaimsIdentity());
+    public class AutenticacionExtension(ILocalStorageService localStorageService, IConfiguration configuration, HttpClient httpClient) : AuthenticationStateProvider
+    {
 
-    //    public AutenticacionExtension(ILocalStorageService sessionStorage, IConfiguration configuration, HttpClient httpClient)
-    //    {
-    //        _sessionStorage = sessionStorage;
-    //        _configuration = configuration;
-    //        _httpclient = httpClient;
-    //    }
+        private readonly NavigationManager navigationManager;
+        private ClaimsPrincipal _sinInformacion = new ClaimsPrincipal(new ClaimsIdentity());
 
-    //    public async Task ActualizarEstadoAutenticacion(AutenticacionResponse? sesionUsuario)
-    //    {
-    //        ClaimsPrincipal claimsPrincipal;
+       
 
-    //        if (sesionUsuario != null)
-    //        {
-    //            claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-    //            {
-    //                new Claim(ClaimTypes.Role,sesionUsuario.Usuario.User)
-    //            }, "JwtAuth"));
+        public async Task ActualizarEstadoAutenticacion(AutenticacionResponse? sesionUsuario)
+        {
+            try
+            {
+                ClaimsPrincipal claimsPrincipal;
 
-    //            await _sessionStorage.SetItemAsync("sesionUsuario", sesionUsuario);
-    //        }
-    //        else
-    //        {
-    //            claimsPrincipal = _sinInformacion;
-    //            await _sessionStorage.RemoveItemAsync("sesionUsuario");
-    //        }
+                if (sesionUsuario != null)
+                {
+                    claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role,sesionUsuario.Usuario.User)
+                }, "JwtAuth"));
 
-    //        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+                    await localStorageService.SetItemAsync("sesionUsuario", sesionUsuario.Token);
+                }
+                else
+                {
+                    claimsPrincipal = _sinInformacion;
+                    await localStorageService.RemoveItemAsync("sesionUsuario");
+                }
 
-    //    }
+                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            } 
 
-    //    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
-    //    {
+        }
 
-    //        var sesionUsuario = await _sessionStorage.GetItemAsync<AutenticacionResponse>("sesionUsuario");
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+        {
+            AutenticacionResponse? sesionUsuario = null;
 
-    //        if (sesionUsuario == null)
-    //            return await Task.FromResult(new AuthenticationState(_sinInformacion));
+            try
+            {
+                sesionUsuario = await localStorageService.GetItemAsync<AutenticacionResponse>("sesionUsuario");
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error deserializando sesión: {ex.Message}");
+                await localStorageService.RemoveItemAsync("sesionUsuario");
+            }
 
-    //        var claimPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-    //        {
-    //           new Claim(ClaimTypes.Role,sesionUsuario.Usuario.User)
-    //        }, "JwtAuth"));
+            if (sesionUsuario?.Usuario != null)
+            {
+                var claimPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+        {
+            new Claim(ClaimTypes.Role, sesionUsuario.Usuario.User ?? string.Empty)
+        }, "JwtAuth"));
 
-    //        return await Task.FromResult(new AuthenticationState(claimPrincipal));
-    //    }
+                return new AuthenticationState(claimPrincipal);
+            }
 
-    //    //public async Task<bool> CheckTokenExpiration(string token)
-    //    //{
-    //    //    try
-    //    //    {
-    //    //        if (DateTime.Now <= GetTimeExpiredToken(token))
-    //    //            return true;
+            return new AuthenticationState(_sinInformacion);
+        }
 
-    //    //        await Logout(token);
-    //    //        return false;
-    //    //    }
-    //    //    catch (Exception ex)
-    //    //    {
-    //    //        Console.WriteLine(ex.Message);
-    //    //        await _sessionStorage.RemoveItemAsync("sesionUsuario");
-    //    //        return false;
-    //    //    }
-    //    //}
 
-    //    //private static DateTime GetTimeExpiredToken(string token)
-    //    //{
-    //    //    Claim expiration = ParsearClaimsDelJwt(token)
-    //    //                            .First(claim => claim.Type == "exp");
-    //    //    return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(expiration.Value)).LocalDateTime;
-    //    //}
+        //    //public async Task<bool> CheckTokenExpiration(string token)
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        if (DateTime.Now <= GetTimeExpiredToken(token))
+        //    //            return true;
 
-    //    //private static IEnumerable<Claim> ParsearClaimsDelJwt(string? token)
-    //    //{
-    //    //    var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-    //    //    var tokenDeserializado = jwtSecurityTokenHandler.ReadJwtToken(token);
+        //    //        await Logout(token);
+        //    //        return false;
+        //    //    }
+        //    //    catch (Exception ex)
+        //    //    {
+        //    //        Console.WriteLine(ex.Message);
+        //    //        await _sessionStorage.RemoveItemAsync("sesionUsuario");
+        //    //        return false;
+        //    //    }
+        //    //}
 
-    //    //    return tokenDeserializado.Claims.Append(
-    //    //        new Claim(ClaimTypes.Role, tokenDeserializado.Claims.First(claim => claim.Type == "tipo_usuario").Value)
-    //    //    );
-    //    //}
-    //    //public async Task<AuthenticationState> BuildAuthenticationState(string token)
-    //    //{
-    //    //    token = await RefreshToken(token);
-    //    //    var res = await CheckTokenExpiration(token);
-    //    //    if (!res)
-    //    //    {
-    //    //        return null;
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        var listClaims = ParsearClaimsDelJwt(token);
+        //    //private static DateTime GetTimeExpiredToken(string token)
+        //    //{
+        //    //    Claim expiration = ParsearClaimsDelJwt(token)
+        //    //                            .First(claim => claim.Type == "exp");
+        //    //    return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(expiration.Value)).LocalDateTime;
+        //    //}
 
-    //    //        IEnumerable<Claim> claims = listClaims.ToList();
+        //    //private static IEnumerable<Claim> ParsearClaimsDelJwt(string? token)
+        //    //{
+        //    //    var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        //    //    var tokenDeserializado = jwtSecurityTokenHandler.ReadJwtToken(token);
 
-    //    //        return new AuthenticationState(
-    //    //            new ClaimsPrincipal(
-    //    //                new ClaimsIdentity(
-    //    //                    claims,
-    //    //                    "jwt"
-    //    //                )
-    //    //            )
-    //    //        );
-    //    //    }
-    //    //}
-    //    //private async Task<string> RefreshToken(string token)
-    //    //{
-    //    //    if (GetTimeExpiredToken(token).Subtract(DateTime.Now).Minutes > 5) return token;
+        //    //    return tokenDeserializado.Claims.Append(
+        //    //        new Claim(ClaimTypes.Role, tokenDeserializado.Claims.First(claim => claim.Type == "tipo_usuario").Value)
+        //    //    );
+        //    //}
+        //    //public async Task<AuthenticationState> BuildAuthenticationState(string token)
+        //    //{
+        //    //    token = await RefreshToken(token);
+        //    //    var res = await CheckTokenExpiration(token);
+        //    //    if (!res)
+        //    //    {
+        //    //        return null;
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        var listClaims = ParsearClaimsDelJwt(token);
 
-    //    //    var sesionUsuario = await _sessionStorage.GetItemAsync<UserDTO>("sesionUsuario");
+        //    //        IEnumerable<Claim> claims = listClaims.ToList();
 
-    //    //    var loginResponse = await _httpclient.PostAsJsonAsync("/api/User/RefreshToken", sesionUsuario);
-    //    //    var responseObject = await loginResponse.Content.ReadFromJsonAsync<ResponseRefreshToken>();
+        //    //        return new AuthenticationState(
+        //    //            new ClaimsPrincipal(
+        //    //                new ClaimsIdentity(
+        //    //                    claims,
+        //    //                    "jwt"
+        //    //                )
+        //    //            )
+        //    //        );
+        //    //    }
+        //    //}
+        //    //private async Task<string> RefreshToken(string token)
+        //    //{
+        //    //    if (GetTimeExpiredToken(token).Subtract(DateTime.Now).Minutes > 5) return token;
 
-    //    //    if (responseObject!.Code == 200)
-    //    //    {
-    //    //        sesionUsuario.RefreshToken = responseObject.Data?.RefreshToken;
-    //    //        sesionUsuario.token = responseObject.Data?.AccessToken;
-    //    //        await _sessionStorage.SetItemAsync("sesionUsuario", sesionUsuario);
+        //    //    var sesionUsuario = await _sessionStorage.GetItemAsync<UserDTO>("sesionUsuario");
 
-    //    //    }
+        //    //    var loginResponse = await _httpclient.PostAsJsonAsync("/api/User/RefreshToken", sesionUsuario);
+        //    //    var responseObject = await loginResponse.Content.ReadFromJsonAsync<ResponseRefreshToken>();
 
-    //    //    return string.IsNullOrEmpty(responseObject.Data?.AccessToken) ? token : responseObject.Data?.AccessToken!;
-    //    //}
+        //    //    if (responseObject!.Code == 200)
+        //    //    {
+        //    //        sesionUsuario.RefreshToken = responseObject.Data?.RefreshToken;
+        //    //        sesionUsuario.token = responseObject.Data?.AccessToken;
+        //    //        await _sessionStorage.SetItemAsync("sesionUsuario", sesionUsuario);
 
-    //    //private async Task Logout(string token)
-    //    //{
-    //    //    UserDTO userDTO = new();
-    //    //    userDTO.token = token;
-    //    //    var loginResponse = await _httpclient.PostAsJsonAsync("/api/User/VerificarLogout", userDTO);
-    //    //    await _sessionStorage.RemoveItemAsync("sesionUsuario");
-    //    //}
-    //}
+        //    //    }
+
+        //    //    return string.IsNullOrEmpty(responseObject.Data?.AccessToken) ? token : responseObject.Data?.AccessToken!;
+        //    //}
+
+        private async Task Logout(string token)
+        {
+            AutenticacionResponse userDTO = new();
+            userDTO.Token = token;
+            var loginResponse = await httpClient.PostAsJsonAsync("/api/User/VerificarLogout", userDTO);
+            await localStorageService.RemoveItemAsync("sesionUsuario");
+        }
+    }
 }

@@ -24,7 +24,7 @@ builder.Services.AddScoped<FaltasGravesPersonasFisicasService>();
 builder.Services.AddScoped<AuthService>();
 
 //builder.Services.AddOptions();
-//builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
-//builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, AutenticacionExtension>();
+builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();

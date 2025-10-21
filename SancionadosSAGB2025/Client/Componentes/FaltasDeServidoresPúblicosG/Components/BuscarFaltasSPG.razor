@@ -1,4 +1,4 @@
-﻿@page "/BuscarServidoresPúblicosG";
+﻿@page "/BuscarServidoresPublicosG";
 @using Microsoft.AspNetCore.Components.Forms
 @using SancionadosSAGB2025.Client.Services
 @using SancionadosSAGB2025.Shared.Sanciones
@@ -75,7 +75,12 @@
                                         <MudDataGridPager T="FaltasGravesEntidad" RowsPerPageString="Filas por pagina" InfoFormat="{first_item}-{last_item} de {all_items}" />
                                     </PagerContent>
                                 </MudDataGrid>
-                            }else
+                            }
+                            else if(faltasDeServidoresPublicosGs.Count() == 0)
+                            {
+                                <MudText Typo="Typo.h6" Align="Align.Center">No se encontraron registros.</MudText>
+                            }
+                            else
                             {                              
                         
                                 <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
